@@ -1,0 +1,43 @@
+{
+    "buttonSave": "Save",
+    "@buttonSave": {
+        "description": "Button label to save the server address",
+        "type": "text"
+    },
+    "buttonLogin": "Login",
+    "@buttonLogin": {
+        "description": "Button label to login to the server",
+        "type": "text"
+    },
+    "labelLoginScreen": "Login to Audiobookshelf",
+    "@labelLoginScreen": {
+        "description": "Label for the Login Screen",
+        "type": "text"
+    },
+    "labelUsername": "Username",
+    "@labelUsername": {
+        "description": "TextField label for the username field",
+        "type": "text"
+    },
+    "labelPassword": "Password",
+    "@labelPassword": {
+        "description": "TextField label for the password field",
+        "type": "text"
+    },
+    "@@locale": "en",
+    "labelSetServerAddress": "Set Server Address",
+    "@labelSetServerAddress": {
+        "description": "Header message on the init screen",
+        "type": "text"
+    },
+    "labelServerAddress": "Server Address",
+    "@labelServerAddress": {
+        "description": "TextField label for the server address",
+        "type": "text"
+    },
+    "labelServerAddressDescription": "Enter the server address of Audiobookshelf",
+    "@labelServerAddressDescription": {
+        "description": "TextField description for the server address",
+        "type": "text"
+    }
+}

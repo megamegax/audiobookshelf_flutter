@@ -1,0 +1,43 @@
+{
+    "@@locale": "hu",
+    "buttonSave": "Mentés",
+    "@buttonSave": {
+        "description": "Button label to save the server address",
+        "type": "text"
+    },
+    "buttonLogin": "Bejelentkezés",
+    "@buttonLogin": {
+        "description": "Button label to login to the server",
+        "type": "text"
+    },
+    "labelLoginScreen": "Bejelentkezés az Audiobookshelfbe",
+    "@labelLoginScreen": {
+        "description": "Label for the Login Screen",
+        "type": "text"
+    },
+    "labelUsername": "Felhasználónév",
+    "@labelUsername": {
+        "description": "TextField label for the username field",
+        "type": "text"
+    },
+    "labelPassword": "Jelszó",
+    "@labelPassword": {
+        "description": "TextField label for the password field",
+        "type": "text"
+    },
+    "labelSetServerAddress": "Szerver Cím Beállítása",
+    "@labelSetServerAddress": {
+        "description": "Header message on the init screen",
+        "type": "text"
+    },
+    "labelServerAddress": "Szerver Cím",
+    "@labelServerAddress": {
+        "description": "TextField label for the server address",
+        "type": "text"
+    },
+    "labelServerAddressDescription": "Adja meg az Audiobookshelf szerver címét",
+    "@labelServerAddressDescription": {
+        "description": "TextField description for the server address",
+        "type": "text"
+    }
+}

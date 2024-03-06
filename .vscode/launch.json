@@ -1,0 +1,26 @@
+{
+    // IntelliSense használata a lehetséges attribútumok listázásához
+    // Húzza fölé az egeret a létező attribútumok leírásának megtekintéséhez!
+    // További információért látogassa meg a következőt: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "audiobookshelf_flutter (Mac)",
+            "request": "launch",
+            "deviceId": "macOS",
+            "type": "dart"
+        },
+        {
+            "name": "audiobookshelf_flutter (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "audiobookshelf_flutter (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

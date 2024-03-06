@@ -1,0 +1,23 @@
+import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'library_items_response.freezed.dart';
+part 'library_items_response.g.dart';
+
+@freezed
+class LibraryItemsResponse with _$LibraryItemsResponse {
+  const factory LibraryItemsResponse(
+      {required List<LibraryItem> results,
+      required int total,
+      required int limit,
+      required int page,
+      required bool sortDesc,
+      required String mediaType,
+      required bool minified,
+      required bool collapseseries,
+      required String include,
+      required int offset}) = _LibraryItemsResponse;
+
+  factory LibraryItemsResponse.fromJson(Map<String, dynamic> json) =>
+      _$LibraryItemsResponseFromJson(json);
+}
