@@ -1,5 +1,4 @@
 import 'package:audiobookshelf_flutter/model/login/login_response.dart';
-import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'login_state.freezed.dart';

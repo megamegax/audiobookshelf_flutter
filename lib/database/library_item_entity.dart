@@ -19,7 +19,7 @@ class LibraryItemEntity {
   int ctimeMs;
   int birthtimeMs;
   int addedAt;
-  int updatedAt;
+  int? updatedAt;
   bool isMissing;
   LibraryItemEntity(
       {this.itemId,

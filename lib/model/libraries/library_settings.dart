@@ -1,6 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:isar/isar.dart';
-
 part 'library_settings.freezed.dart';
 part 'library_settings.g.dart';
 

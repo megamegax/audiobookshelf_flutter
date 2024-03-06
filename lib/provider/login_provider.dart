@@ -176,7 +176,7 @@ Future<void> _cacheLibrary(Ref ref, LibraryItemsResponse library) async {
         .findFirst();
     if (cachedLibraryItem != null) {
       if (cachedLibraryItem.updatedAt != null &&
-          cachedLibraryItem.updatedAt > (cachedLibraryItem.updatedAt ?? 0)) {
+          cachedLibraryItem.updatedAt! > (cachedLibraryItem.updatedAt ?? 0)) {
         cachedLibraryItem
           ..birthtimeMs = fetchedLibrary.birthtimeMs
           ..ctimeMs = fetchedLibrary.ctimeMs

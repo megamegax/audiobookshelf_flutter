@@ -1,7 +1,4 @@
-import 'package:audiobookshelf_flutter/model/login/user_model.dart';
-import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:flutter/foundation.dart';
 
 part 'server_settings.freezed.dart';
 part 'server_settings.g.dart';
