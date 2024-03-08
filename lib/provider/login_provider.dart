@@ -5,6 +5,7 @@ import 'package:audiobookshelf_flutter/database/library_entity.dart';
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/database/media_progress_entity.dart';
 import 'package:audiobookshelf_flutter/database/library_settings_entity.dart';
+import 'package:audiobookshelf_flutter/login_repository.dart';
 import 'package:audiobookshelf_flutter/model/libraries/libraries_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_items_response.dart';
@@ -15,8 +16,25 @@ import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/database_provider.dart';
 import 'package:audiobookshelf_flutter/provider/http_client_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
+
+final loginRepositoryProvider = Provider<LoginRepository>((ref) {
+  return LoginRepository(
+      ref.watch(httpClientProvider), ref.watch(serverAddressProvider));
+});
+final loginStateProvider =
+    StateNotifierProvider<LoginStateNotifier, LoginState>((ref) {
+  return LoginStateNotifier();
+});
+
+class LoginStateNotifier extends StateNotifier<LoginState> {
+  LoginStateNotifier() : super(const LoginState.initial());
+  void updateState(LoginState loginState) {
+    state = loginState;
+  }
+}
 
 final serverSettingsNotifierProvider =
     StateNotifierProvider<ServerSettingsNotifier, ServerSettings?>((ref) {
@@ -27,8 +45,13 @@ class ServerSettingsNotifier extends StateNotifier<ServerSettings?> {
   final Ref ref;
 
   ServerSettingsNotifier(this.ref) : super(null);
+  ServerSettings loadServerSettings() {
+    //todo load server settings from database
+    return state!;
+  }
 
   void updateServerSettings(ServerSettings serverSettings) {
+    //todo save server settings to database
     state = serverSettings;
   }
 }
@@ -42,57 +65,18 @@ class UserModelNotifier extends StateNotifier<UserModel?> {
   final Ref ref;
 
   UserModelNotifier(this.ref) : super(null);
+  UserModel loadUserModel() {
+    //todo load user model from database
+    return state!;
+  }
 
   void updateUserModel(UserModel userModel) async {
+    //todo save user model to database
     state = userModel;
   }
 }
 
-Future<LibraryItemEntity?> checkCache(Isar isar, String itemId) async {
-  return await isar.libraryItemEntitys
-      .where()
-      .filter()
-      .itemIdEqualTo(itemId)
-      .findFirst();
-}
-
-final loginNotifierProvider =
-    StateNotifierProvider<LoginNotifier, LoginState>((ref) {
-  return LoginNotifier(ref);
-});
-
-class LoginNotifier extends StateNotifier<LoginState> {
-  final Ref ref;
-
-  LoginNotifier(this.ref) : super(const LoginState.initial());
-
-  void handleLogin(LoginState loginState) {
-    state = loginState;
-  }
-}
-
-Future<LoginState> login(
-    AutoDisposeFutureProviderRef ref, String username, String password) async {
-  if (username.isEmpty || password.isEmpty) {
-    return LoginState.error('Username and password must not be empty');
-  }
-  try {
-    final response = await ref.read(httpClientProvider).post(
-      Uri.parse('${ref.read(serverAddressProvider)}/login'),
-      body: {
-        "username": username,
-        "password": password,
-      },
-    );
-    final responseBody = jsonDecode(response.body);
-    final loginResponse = LoginResponse.fromJson(responseBody);
-    return LoginState.success(loginResponse);
-  } catch (e) {
-    return LoginState.error(e.toString());
-  }
-}
-
-Future<List<Library>> fetchLibraries(Ref ref, UserModel userModel) async {
+Future<List<Library>> fetchLibraries(WidgetRef ref, UserModel userModel) async {
   final token = userModel.token;
   final fetchLibrariesResponse = await ref.read(httpClientProvider).get(
       Uri.parse(
@@ -101,19 +85,30 @@ Future<List<Library>> fetchLibraries(Ref ref, UserModel userModel) async {
   final List<Library> libraries =
       LibrariesResponse.fromJson(responseBody).libraries;
   await _cacheLibraries(ref, libraries);
-  final LibraryItemsResponse library =
-      await fetchLibrary(ref, userModel, libraries[0].id);
-  await _cacheLibrary(ref, library);
+  int limit = 100;
+  int offset = 0;
+  LibraryItemsResponse library;
+  do {
+    library =
+        await fetchLibrary(ref, userModel, libraries[0].id, limit, offset);
+    offset += limit;
+    await _cacheLibrary(ref, library);
+  } while (library.results.length == limit);
+
   await _cacheMediaProgress(ref, userModel);
   return libraries;
 }
 
-Future<void> _cacheMediaProgress(Ref<Object?> ref, UserModel userModel) async {
+Future<void> _cacheMediaProgress(WidgetRef ref, UserModel userModel) async {
   final Isar isar = await ref.read(databaseProvider.future);
 
   userModel.mediaProgress?.forEach((element) async {
-    final LibraryItemEntity? cachedLibraryItem =
-        await checkCache(isar, element.libraryItemId!);
+    final LibraryItemEntity? cachedLibraryItem = await isar.libraryItemEntitys
+        .where()
+        .filter()
+        .itemIdEqualTo(element.libraryItemId)
+        .findFirst();
+
     if (cachedLibraryItem!.mediaProgress == null) {
       await isar.writeTxn(() async {
         isar.libraryItemEntitys.put(cachedLibraryItem
@@ -153,19 +148,19 @@ Future<void> _cacheMediaProgress(Ref<Object?> ref, UserModel userModel) async {
   });
 }
 
-Future<LibraryItemsResponse> fetchLibrary(
-    Ref ref, UserModel userModel, String libraryId) async {
+Future<LibraryItemsResponse> fetchLibrary(WidgetRef ref, UserModel userModel,
+    String libraryId, int limit, int offset) async {
   final token = userModel.token;
   final fetchLibraryItemsResponse = await ref.read(httpClientProvider).get(
       Uri.parse(
-          '${ref.read(serverAddressProvider)}/api/libraries/$libraryId/items?limit=100&minified=1&token=$token'));
+          '${ref.read(serverAddressProvider)}/api/libraries/$libraryId/items?limit=$limit&offset=$offset&minified=1&token=$token'));
   final responseBody = jsonDecode(fetchLibraryItemsResponse.body);
   final LibraryItemsResponse librariesResponse =
       LibraryItemsResponse.fromJson(responseBody);
   return librariesResponse;
 }
 
-Future<void> _cacheLibrary(Ref ref, LibraryItemsResponse library) async {
+Future<void> _cacheLibrary(WidgetRef ref, LibraryItemsResponse library) async {
   final Isar isar = await ref.read(databaseProvider.future);
   for (int i = 0; i < library.results.length; i++) {
     final fetchedLibrary = library.results[i];
@@ -209,9 +204,10 @@ Future<void> _cacheLibrary(Ref ref, LibraryItemsResponse library) async {
   }
 }
 
-Future<void> _cacheLibraries(Ref ref, List<Library> libraries) async {
+Future<void> _cacheLibraries(WidgetRef ref, List<Library> libraries) async {
   final Isar isar = await ref.read(databaseProvider.future);
-  libraries.forEach((fetchedLibrary) async {
+  for (int i = 0; i < libraries.length; i++) {
+    final fetchedLibrary = libraries[i];
     LibraryEntity? lib = await isar.libraryEntitys
         .where()
         .filter()
@@ -286,5 +282,5 @@ Future<void> _cacheLibraries(Ref ref, List<Library> libraries) async {
         isar.writeTxn(() => isar.libraryEntitys.put(lib));
       }
     }
-  });
+  }
 }

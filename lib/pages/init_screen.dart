@@ -1,32 +1,41 @@
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
+import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/pages/login_screen.dart';
+import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // ignore: must_be_immutable
-class InitScreen extends HookConsumerWidget {
-  InitScreen({super.key});
-  bool onceFilled = false;
+class InitScreen extends ConsumerStatefulWidget {
+  const InitScreen({super.key});
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final serverAddress = ref.read(serverAddressProvider);
-    final serverAddressState = ref.watch(serverAddressLoaderProvider);
-    final TextEditingController controller = useTextEditingController();
-    useEffect(() {
-      void updateController() {
-        if (!onceFilled && serverAddress.isNotEmpty) {
-          controller.text = serverAddress;
-          onceFilled = true;
-        }
-      }
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return InitScreenState();
+  }
+}
 
-      updateController();
-      return null;
-    }, [serverAddressState]);
+class InitScreenState extends ConsumerState<InitScreen> {
+  late String serverAddress;
+  late TextEditingController controller;
+  @override
+  void initState() {
+    serverAddress = ref.read(serverAddressLoaderProvider);
+    controller = TextEditingController(text: serverAddress);
+    super.initState();
+  }
 
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.labelSetServerAddress),
@@ -37,8 +46,6 @@ class InitScreen extends HookConsumerWidget {
           children: [
             TextField(
               controller: controller,
-              onChanged: (value) =>
-                  ref.read(serverAddressProvider.notifier).state = value,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.labelServerAddress,
                 helperText:
@@ -48,19 +55,15 @@ class InitScreen extends HookConsumerWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                final address = ref.read(serverAddressProvider);
+                final address = controller.text;
                 if (address.isNotEmpty) {
                   await saveServerAddress(ref, address);
                   if (kDebugMode) {
                     print('Server address saved: $serverAddress');
                   }
-
-                  Navigator.push(
-                    // ignore: use_build_context_synchronously
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()),
-                  );
+                  ref
+                      .read(loginStateProvider.notifier)
+                      .updateState(const LoginState.login());
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

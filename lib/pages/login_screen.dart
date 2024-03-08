@@ -1,10 +1,10 @@
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
-import 'package:audiobookshelf_flutter/model/login/login_response.dart';
+import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/provider/credential_provider.dart';
+import 'package:audiobookshelf_flutter/provider/initialization_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -19,24 +19,15 @@ class LoginScreen extends HookConsumerWidget {
       ),
       body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Consumer(builder: (context, ref, child) {
-            final state = ref.watch(loginNotifierProvider);
-
-            return state.when(
-              initial: () => _buildInitialState(context, ref),
-              loading: () => const CircularProgressIndicator(),
-              success: (LoginResponse loginResponse) => Text(
-                  'Sikeres bejelentkezés, token: ${loginResponse.user.id}'),
-              error: (message) => Text('Hiba: $message'),
-            );
-          })),
+          child: _buildInitialState(context, ref)),
     );
   }
 
   Widget _buildInitialState(BuildContext context, WidgetRef ref) {
     final serverAddress = ref.read(serverAddressProvider);
-    final _usernameController = useTextEditingController();
-    final _passwordController = useTextEditingController();
+    final usernameController = useTextEditingController.fromValue(
+        TextEditingValue(text: ref.watch(usernameLoaderProvider).toString()));
+    final passwordController = useTextEditingController();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -51,21 +42,23 @@ class LoginScreen extends HookConsumerWidget {
             IconButton(
               icon: const Icon(Icons.edit),
               onPressed: () {
-                Navigator.pop(context);
+                ref
+                    .read(loginStateProvider.notifier)
+                    .updateState(const LoginState.initial());
               },
             ),
           ],
         ),
         const SizedBox(height: 20),
         TextField(
-          controller: _usernameController,
+          controller: usernameController,
           decoration: InputDecoration(
             labelText: AppLocalizations.of(context)!.labelUsername,
           ),
         ),
         const SizedBox(height: 10),
         TextField(
-          controller: _passwordController,
+          controller: passwordController,
           decoration: InputDecoration(
             labelText: AppLocalizations.of(context)!.labelPassword,
           ),
@@ -74,8 +67,8 @@ class LoginScreen extends HookConsumerWidget {
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            saveUsername(ref, _usernameController.text);
-            savePassword(ref, _passwordController.text);
+            saveUsername(ref, usernameController.text);
+            savePassword(ref, passwordController.text);
           },
           child: Text(AppLocalizations.of(context)!.buttonLogin),
         ),

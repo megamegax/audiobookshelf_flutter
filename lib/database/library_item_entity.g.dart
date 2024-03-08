@@ -196,7 +196,7 @@ LibraryItemEntity _libraryItemEntityDeserialize(
     mtimeMs: reader.readLong(offsets[10]),
     path: reader.readString(offsets[11]),
     relPath: reader.readString(offsets[12]),
-    updatedAt: reader.readLong(offsets[13]),
+    updatedAt: reader.readLongOrNull(offsets[13]),
   );
   object.id = id;
   return object;
@@ -240,7 +240,7 @@ P _libraryItemEntityDeserializeProp<P>(
     case 12:
       return (reader.readString(offset)) as P;
     case 13:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -1562,7 +1562,25 @@ extension LibraryItemEntityQueryFilter
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
-      updatedAtEqualTo(int value) {
+      updatedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      updatedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'updatedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      updatedAtEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'updatedAt',
@@ -1573,7 +1591,7 @@ extension LibraryItemEntityQueryFilter
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       updatedAtGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1587,7 +1605,7 @@ extension LibraryItemEntityQueryFilter
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       updatedAtLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1601,8 +1619,8 @@ extension LibraryItemEntityQueryFilter
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       updatedAtBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -2194,7 +2212,7 @@ extension LibraryItemEntityQueryProperty
     });
   }
 
-  QueryBuilder<LibraryItemEntity, int, QQueryOperations> updatedAtProperty() {
+  QueryBuilder<LibraryItemEntity, int?, QQueryOperations> updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'updatedAt');
     });

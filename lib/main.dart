@@ -79,19 +79,28 @@ const ColorScheme flexSchemeDark = ColorScheme(
   inversePrimary: Color(0xff697177),
   surfaceTint: Color(0xffd4e6ff),
 );
+final navigatorKeyProvider = Provider((_) => GlobalKey<NavigatorState>());
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final initialScreen = ref.watch(initializationProvider);
-
     return MaterialApp(
-      home: initialScreen.when(
-        data: (screen) => screen,
-        loading: () => const SplashScreen(),
-        error: (err, stack) => ErrorScreen(err),
+      navigatorKey: ref.watch(navigatorKeyProvider),
+      home: FutureBuilder<Widget>(
+        future: initialization(ref),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return ErrorScreen(
+                snapshot.error.toString(),
+              );
+            }
+            return snapshot.data!;
+          }
+          return const SplashScreen();
+        },
       ),
       theme: FlexThemeData.light(colorScheme: flexSchemeLight),
       darkTheme: FlexThemeData.dark(colorScheme: flexSchemeDark),
