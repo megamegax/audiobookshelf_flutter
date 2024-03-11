@@ -1,7 +1,6 @@
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/provider/credential_provider.dart';
-import 'package:audiobookshelf_flutter/provider/initialization_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

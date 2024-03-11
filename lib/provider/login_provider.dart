@@ -1,22 +1,24 @@
 import 'dart:convert';
 
+import 'package:audiobookshelf_flutter/database/collapsed_series_entity.dart';
 import 'package:audiobookshelf_flutter/database/folder_entity.dart';
 import 'package:audiobookshelf_flutter/database/library_entity.dart';
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
+import 'package:audiobookshelf_flutter/database/media_entity.dart';
 import 'package:audiobookshelf_flutter/database/media_progress_entity.dart';
 import 'package:audiobookshelf_flutter/database/library_settings_entity.dart';
-import 'package:audiobookshelf_flutter/login_repository.dart';
+import 'package:audiobookshelf_flutter/database/metadata_entity.dart';
+import 'package:audiobookshelf_flutter/model/login/media_progress.dart';
+import 'package:audiobookshelf_flutter/repositories/login_repository.dart';
 import 'package:audiobookshelf_flutter/model/libraries/libraries_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_items_response.dart';
-import 'package:audiobookshelf_flutter/model/login/login_response.dart';
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/database_provider.dart';
 import 'package:audiobookshelf_flutter/provider/http_client_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -88,12 +90,10 @@ Future<List<Library>> fetchLibraries(WidgetRef ref, UserModel userModel) async {
   int limit = 100;
   int offset = 0;
   LibraryItemsResponse library;
-  do {
-    library =
-        await fetchLibrary(ref, userModel, libraries[0].id, limit, offset);
-    offset += limit;
-    await _cacheLibrary(ref, library);
-  } while (library.results.length == limit);
+
+  library = await fetchLibrary(ref, userModel, libraries[0].id, limit, offset);
+
+  await _cacheLibrary(ref, library);
 
   await _cacheMediaProgress(ref, userModel);
   return libraries;
@@ -101,18 +101,18 @@ Future<List<Library>> fetchLibraries(WidgetRef ref, UserModel userModel) async {
 
 Future<void> _cacheMediaProgress(WidgetRef ref, UserModel userModel) async {
   final Isar isar = await ref.read(databaseProvider.future);
-
-  userModel.mediaProgress?.forEach((element) async {
+  for (int i = 0; i < userModel.mediaProgress!.length; i++) {
+    final MediaProgress element = userModel.mediaProgress![i];
     final LibraryItemEntity? cachedLibraryItem = await isar.libraryItemEntitys
         .where()
         .filter()
         .itemIdEqualTo(element.libraryItemId)
         .findFirst();
-
-    if (cachedLibraryItem!.mediaProgress == null) {
+    if (cachedLibraryItem == null) break;
+    if (cachedLibraryItem!.media.progress == null) {
       await isar.writeTxn(() async {
         isar.libraryItemEntitys.put(cachedLibraryItem
-          ..mediaProgress = MediaProgressEntity(
+          ..media.progress = MediaProgressEntity(
               itemId: element.libraryItemId,
               progress: element.progress,
               duration: element.duration,
@@ -123,13 +123,12 @@ Future<void> _cacheMediaProgress(WidgetRef ref, UserModel userModel) async {
               ebookProgress: element.ebookProgress,
               lastUpdate: element.lastUpdate,
               startedAt: element.startedAt,
-              finishedAt: element.finishedAt,
-              coverBytes: null));
+              finishedAt: element.finishedAt));
       });
     } else {
       if ((element.lastUpdate ?? 0) >
-          (cachedLibraryItem.mediaProgress?.lastUpdate ?? 0)) {
-        final cachedMediaProgress = cachedLibraryItem.mediaProgress!;
+          (cachedLibraryItem.media.progress?.lastUpdate ?? 0)) {
+        final cachedMediaProgress = cachedLibraryItem.media.progress!;
         cachedMediaProgress.progress = element.progress;
         cachedMediaProgress.duration = element.duration;
         cachedMediaProgress.currentTime = element.currentTime;
@@ -141,11 +140,11 @@ Future<void> _cacheMediaProgress(WidgetRef ref, UserModel userModel) async {
         cachedMediaProgress.lastUpdate = element.lastUpdate;
         cachedMediaProgress.startedAt = element.startedAt;
         cachedMediaProgress.finishedAt = element.finishedAt;
-        cachedLibraryItem.mediaProgress = cachedMediaProgress;
+        cachedLibraryItem.media.progress = cachedMediaProgress;
         isar.writeTxn(() => isar.libraryItemEntitys.put(cachedLibraryItem));
       }
     }
-  });
+  }
 }
 
 Future<LibraryItemsResponse> fetchLibrary(WidgetRef ref, UserModel userModel,
@@ -153,7 +152,8 @@ Future<LibraryItemsResponse> fetchLibrary(WidgetRef ref, UserModel userModel,
   final token = userModel.token;
   final fetchLibraryItemsResponse = await ref.read(httpClientProvider).get(
       Uri.parse(
-          '${ref.read(serverAddressProvider)}/api/libraries/$libraryId/items?limit=$limit&offset=$offset&minified=1&token=$token'));
+          '${ref.read(serverAddressProvider)}/api/libraries/$libraryId/items?expanded=1&include=progress,rssfeed,authors'),
+      headers: {"Authorization": "Bearer $token"});
   final responseBody = jsonDecode(fetchLibraryItemsResponse.body);
   final LibraryItemsResponse librariesResponse =
       LibraryItemsResponse.fromJson(responseBody);
@@ -171,7 +171,7 @@ Future<void> _cacheLibrary(WidgetRef ref, LibraryItemsResponse library) async {
         .findFirst();
     if (cachedLibraryItem != null) {
       if (cachedLibraryItem.updatedAt != null &&
-          cachedLibraryItem.updatedAt! > (cachedLibraryItem.updatedAt ?? 0)) {
+          fetchedLibrary.updatedAt > (cachedLibraryItem.updatedAt!)) {
         cachedLibraryItem
           ..birthtimeMs = fetchedLibrary.birthtimeMs
           ..ctimeMs = fetchedLibrary.ctimeMs
@@ -179,13 +179,34 @@ Future<void> _cacheLibrary(WidgetRef ref, LibraryItemsResponse library) async {
           ..ino = fetchedLibrary.ino
           ..isFile = fetchedLibrary.isFile
           ..isMissing = fetchedLibrary.isMissing
-          ..updatedAt = fetchedLibrary.updatedAt;
+          ..updatedAt = fetchedLibrary.updatedAt
+          ..media = cachedLibraryItem.media
+          ..birthtimeMs = fetchedLibrary.birthtimeMs
+          ..ctimeMs = fetchedLibrary.ctimeMs
+          ..mtimeMs = fetchedLibrary.mtimeMs
+          ..numFiles = fetchedLibrary.numFiles
+          ..size = fetchedLibrary.size
+          ..isInvalid = fetchedLibrary.isInvalid
+          ..mediaType = fetchedLibrary.mediaType
+          ..path = fetchedLibrary.path
+          ..relPath = fetchedLibrary.relPath
+          ..folderId = fetchedLibrary.folderId
+          ..libraryId = fetchedLibrary.libraryId
+          ..itemId = fetchedLibrary.id
+          ..collapsedSeries = fetchedLibrary.collapsedSeries == null
+              ? null
+              : CollapsedSeriesEntity(
+                  name: fetchedLibrary.collapsedSeries!.name,
+                  numBooks: fetchedLibrary.collapsedSeries!.numBooks,
+                  nameIgnorePrefix:
+                      fetchedLibrary.collapsedSeries!.nameIgnorePrefix,
+                  id: cachedLibraryItem.collapsedSeries!.id ?? "0",
+                );
       }
     } else {
       isar.writeTxn(() {
         final libraryEntity = LibraryItemEntity(
             itemId: fetchedLibrary.id,
-            mediaProgress: null,
             ino: fetchedLibrary.ino,
             libraryId: fetchedLibrary.libraryId,
             folderId: fetchedLibrary.folderId,
@@ -197,7 +218,50 @@ Future<void> _cacheLibrary(WidgetRef ref, LibraryItemsResponse library) async {
             birthtimeMs: fetchedLibrary.birthtimeMs,
             addedAt: fetchedLibrary.addedAt,
             updatedAt: fetchedLibrary.updatedAt,
-            isMissing: fetchedLibrary.isMissing);
+            isMissing: fetchedLibrary.isMissing,
+            isInvalid: fetchedLibrary.isInvalid,
+            mediaType: fetchedLibrary.mediaType,
+            media: MediaEntity(
+                coverBytes: null,
+                coverPath: fetchedLibrary.media.coverPath,
+                duration: fetchedLibrary.media.duration,
+                ebookFileFormat: fetchedLibrary.media.ebookFileFormat,
+                metadata: MetadataEntity(
+                    title: fetchedLibrary.media.metadata.title,
+                    authorName: fetchedLibrary.media.metadata.authorName,
+                    seriesName: fetchedLibrary.media.metadata.seriesName,
+                    asin: fetchedLibrary.media.metadata.asin,
+                    description: fetchedLibrary.media.metadata.description,
+                    genres: fetchedLibrary.media.metadata.genres,
+                    isbn: fetchedLibrary.media.metadata.isbn,
+                    language: fetchedLibrary.media.metadata.language,
+                    narratorName: fetchedLibrary.media.metadata.narratorName,
+                    publishedDate: fetchedLibrary.media.metadata.publishedDate,
+                    publishedYear: fetchedLibrary.media.metadata.publishedYear,
+                    publisher: fetchedLibrary.media.metadata.publisher,
+                    subtitle: fetchedLibrary.media.metadata.subtitle,
+                    titleIgnorePrefix:
+                        fetchedLibrary.media.metadata.titleIgnorePrefix,
+                    explicit: fetchedLibrary.media.metadata.explicit),
+                numAudioFiles: fetchedLibrary.media.numAudioFiles,
+                numChapters: fetchedLibrary.media.numChapters,
+                numInvalidAudioFiles: fetchedLibrary.media.numInvalidAudioFiles,
+                numMissingParts: fetchedLibrary.media.numMissingParts,
+                numTracks: fetchedLibrary.media.numTracks,
+                size: fetchedLibrary.media.size,
+                tags: fetchedLibrary.media.tags,
+                progress: null),
+            numFiles: fetchedLibrary.numFiles,
+            size: fetchedLibrary.size,
+            collapsedSeries: fetchedLibrary.collapsedSeries == null
+                ? null
+                : CollapsedSeriesEntity(
+                    name: fetchedLibrary.collapsedSeries!.name,
+                    numBooks: fetchedLibrary.collapsedSeries!.numBooks,
+                    nameIgnorePrefix:
+                        fetchedLibrary.collapsedSeries!.nameIgnorePrefix,
+                    id: cachedLibraryItem?.collapsedSeries!.id ?? "0",
+                  ));
         return isar.libraryItemEntitys.put(libraryEntity);
       });
     }

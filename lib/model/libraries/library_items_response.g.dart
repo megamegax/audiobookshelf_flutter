@@ -13,14 +13,15 @@ _$LibraryItemsResponseImpl _$$LibraryItemsResponseImplFromJson(
           .map((e) => LibraryItem.fromJson(e as Map<String, dynamic>))
           .toList(),
       total: json['total'] as int,
-      limit: json['limit'] as int,
-      page: json['page'] as int,
+      limit: json['limit'] as int?,
+      page: json['page'] as int?,
+      sortBy: json['sortBy'] as String?,
       sortDesc: json['sortDesc'] as bool,
+      filterBy: json['filterBy'] as String?,
       mediaType: json['mediaType'] as String,
       minified: json['minified'] as bool,
       collapseseries: json['collapseseries'] as bool,
-      include: json['include'] as String,
-      offset: json['offset'] as int,
+      include: json['include'] as String?,
     );
 
 Map<String, dynamic> _$$LibraryItemsResponseImplToJson(
@@ -30,10 +31,11 @@ Map<String, dynamic> _$$LibraryItemsResponseImplToJson(
       'total': instance.total,
       'limit': instance.limit,
       'page': instance.page,
+      'sortBy': instance.sortBy,
       'sortDesc': instance.sortDesc,
+      'filterBy': instance.filterBy,
       'mediaType': instance.mediaType,
       'minified': instance.minified,
       'collapseseries': instance.collapseseries,
       'include': instance.include,
-      'offset': instance.offset,
     };

@@ -1,16 +1,10 @@
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
+import 'package:audiobookshelf_flutter/pages/book_details.dart';
 import 'package:audiobookshelf_flutter/provider/bookshelf_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-class Book {
-  final String title;
-  final String author;
-
-  Book({required this.title, required this.author});
-}
 
 class BookshelfScreen extends ConsumerWidget {
   const BookshelfScreen({super.key});
@@ -43,12 +37,20 @@ class BookshelfScreen extends ConsumerWidget {
                   builder: (context, snapshot) {
                     LibraryItemEntity? item = snapshot.data;
                     return ListTile(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => BookDetails(
+                                    item: item,
+                                  )),
+                        );
+                      },
                       leading: coverSnapshot.data == null
                           ? Container(color: Colors.red)
                           : Image.memory(coverSnapshot.data!),
-                      title: Text(item?.relPath ?? "-"),
+                      title: Text(item?.media.metadata?.title ?? "-"),
                       subtitle: Text(
-                          "Progress: ${mediaProgress?.currentTime.toString() ?? ""}"),
+                          "Progress: ${((mediaProgress?.currentTime ?? 0.0) / (item?.media.duration ?? 0.0) * 100).toStringAsPrecision(3)}%"),
                     );
                   },
                 );

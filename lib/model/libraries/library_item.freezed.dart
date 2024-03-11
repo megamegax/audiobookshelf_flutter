@@ -33,6 +33,12 @@ mixin _$LibraryItem {
   int get addedAt => throw _privateConstructorUsedError;
   int get updatedAt => throw _privateConstructorUsedError;
   bool get isMissing => throw _privateConstructorUsedError;
+  bool get isInvalid => throw _privateConstructorUsedError;
+  String get mediaType => throw _privateConstructorUsedError;
+  Media get media => throw _privateConstructorUsedError;
+  int get numFiles => throw _privateConstructorUsedError;
+  int get size => throw _privateConstructorUsedError;
+  CollapsedSeries? get collapsedSeries => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -59,7 +65,16 @@ abstract class $LibraryItemCopyWith<$Res> {
       int birthtimeMs,
       int addedAt,
       int updatedAt,
-      bool isMissing});
+      bool isMissing,
+      bool isInvalid,
+      String mediaType,
+      Media media,
+      int numFiles,
+      int size,
+      CollapsedSeries? collapsedSeries});
+
+  $MediaCopyWith<$Res> get media;
+  $CollapsedSeriesCopyWith<$Res>? get collapsedSeries;
 }
 
 /// @nodoc
@@ -88,6 +103,12 @@ class _$LibraryItemCopyWithImpl<$Res, $Val extends LibraryItem>
     Object? addedAt = null,
     Object? updatedAt = null,
     Object? isMissing = null,
+    Object? isInvalid = null,
+    Object? mediaType = null,
+    Object? media = null,
+    Object? numFiles = null,
+    Object? size = null,
+    Object? collapsedSeries = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -142,7 +163,51 @@ class _$LibraryItemCopyWithImpl<$Res, $Val extends LibraryItem>
           ? _value.isMissing
           : isMissing // ignore: cast_nullable_to_non_nullable
               as bool,
+      isInvalid: null == isInvalid
+          ? _value.isInvalid
+          : isInvalid // ignore: cast_nullable_to_non_nullable
+              as bool,
+      mediaType: null == mediaType
+          ? _value.mediaType
+          : mediaType // ignore: cast_nullable_to_non_nullable
+              as String,
+      media: null == media
+          ? _value.media
+          : media // ignore: cast_nullable_to_non_nullable
+              as Media,
+      numFiles: null == numFiles
+          ? _value.numFiles
+          : numFiles // ignore: cast_nullable_to_non_nullable
+              as int,
+      size: null == size
+          ? _value.size
+          : size // ignore: cast_nullable_to_non_nullable
+              as int,
+      collapsedSeries: freezed == collapsedSeries
+          ? _value.collapsedSeries
+          : collapsedSeries // ignore: cast_nullable_to_non_nullable
+              as CollapsedSeries?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $MediaCopyWith<$Res> get media {
+    return $MediaCopyWith<$Res>(_value.media, (value) {
+      return _then(_value.copyWith(media: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $CollapsedSeriesCopyWith<$Res>? get collapsedSeries {
+    if (_value.collapsedSeries == null) {
+      return null;
+    }
+
+    return $CollapsedSeriesCopyWith<$Res>(_value.collapsedSeries!, (value) {
+      return _then(_value.copyWith(collapsedSeries: value) as $Val);
+    });
   }
 }
 
@@ -167,7 +232,18 @@ abstract class _$$LibraryItemImplCopyWith<$Res>
       int birthtimeMs,
       int addedAt,
       int updatedAt,
-      bool isMissing});
+      bool isMissing,
+      bool isInvalid,
+      String mediaType,
+      Media media,
+      int numFiles,
+      int size,
+      CollapsedSeries? collapsedSeries});
+
+  @override
+  $MediaCopyWith<$Res> get media;
+  @override
+  $CollapsedSeriesCopyWith<$Res>? get collapsedSeries;
 }
 
 /// @nodoc
@@ -194,6 +270,12 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
     Object? addedAt = null,
     Object? updatedAt = null,
     Object? isMissing = null,
+    Object? isInvalid = null,
+    Object? mediaType = null,
+    Object? media = null,
+    Object? numFiles = null,
+    Object? size = null,
+    Object? collapsedSeries = freezed,
   }) {
     return _then(_$LibraryItemImpl(
       id: null == id
@@ -248,6 +330,30 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
           ? _value.isMissing
           : isMissing // ignore: cast_nullable_to_non_nullable
               as bool,
+      isInvalid: null == isInvalid
+          ? _value.isInvalid
+          : isInvalid // ignore: cast_nullable_to_non_nullable
+              as bool,
+      mediaType: null == mediaType
+          ? _value.mediaType
+          : mediaType // ignore: cast_nullable_to_non_nullable
+              as String,
+      media: null == media
+          ? _value.media
+          : media // ignore: cast_nullable_to_non_nullable
+              as Media,
+      numFiles: null == numFiles
+          ? _value.numFiles
+          : numFiles // ignore: cast_nullable_to_non_nullable
+              as int,
+      size: null == size
+          ? _value.size
+          : size // ignore: cast_nullable_to_non_nullable
+              as int,
+      collapsedSeries: freezed == collapsedSeries
+          ? _value.collapsedSeries
+          : collapsedSeries // ignore: cast_nullable_to_non_nullable
+              as CollapsedSeries?,
     ));
   }
 }
@@ -268,7 +374,13 @@ class _$LibraryItemImpl implements _LibraryItem {
       required this.birthtimeMs,
       required this.addedAt,
       required this.updatedAt,
-      required this.isMissing});
+      required this.isMissing,
+      required this.isInvalid,
+      required this.mediaType,
+      required this.media,
+      required this.numFiles,
+      required this.size,
+      required this.collapsedSeries});
 
   factory _$LibraryItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$LibraryItemImplFromJson(json);
@@ -299,10 +411,22 @@ class _$LibraryItemImpl implements _LibraryItem {
   final int updatedAt;
   @override
   final bool isMissing;
+  @override
+  final bool isInvalid;
+  @override
+  final String mediaType;
+  @override
+  final Media media;
+  @override
+  final int numFiles;
+  @override
+  final int size;
+  @override
+  final CollapsedSeries? collapsedSeries;
 
   @override
   String toString() {
-    return 'LibraryItem(id: $id, ino: $ino, libraryId: $libraryId, folderId: $folderId, path: $path, relPath: $relPath, isFile: $isFile, mtimeMs: $mtimeMs, ctimeMs: $ctimeMs, birthtimeMs: $birthtimeMs, addedAt: $addedAt, updatedAt: $updatedAt, isMissing: $isMissing)';
+    return 'LibraryItem(id: $id, ino: $ino, libraryId: $libraryId, folderId: $folderId, path: $path, relPath: $relPath, isFile: $isFile, mtimeMs: $mtimeMs, ctimeMs: $ctimeMs, birthtimeMs: $birthtimeMs, addedAt: $addedAt, updatedAt: $updatedAt, isMissing: $isMissing, isInvalid: $isInvalid, mediaType: $mediaType, media: $media, numFiles: $numFiles, size: $size, collapsedSeries: $collapsedSeries)';
   }
 
   @override
@@ -327,26 +451,43 @@ class _$LibraryItemImpl implements _LibraryItem {
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
             (identical(other.isMissing, isMissing) ||
-                other.isMissing == isMissing));
+                other.isMissing == isMissing) &&
+            (identical(other.isInvalid, isInvalid) ||
+                other.isInvalid == isInvalid) &&
+            (identical(other.mediaType, mediaType) ||
+                other.mediaType == mediaType) &&
+            (identical(other.media, media) || other.media == media) &&
+            (identical(other.numFiles, numFiles) ||
+                other.numFiles == numFiles) &&
+            (identical(other.size, size) || other.size == size) &&
+            (identical(other.collapsedSeries, collapsedSeries) ||
+                other.collapsedSeries == collapsedSeries));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      ino,
-      libraryId,
-      folderId,
-      path,
-      relPath,
-      isFile,
-      mtimeMs,
-      ctimeMs,
-      birthtimeMs,
-      addedAt,
-      updatedAt,
-      isMissing);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        ino,
+        libraryId,
+        folderId,
+        path,
+        relPath,
+        isFile,
+        mtimeMs,
+        ctimeMs,
+        birthtimeMs,
+        addedAt,
+        updatedAt,
+        isMissing,
+        isInvalid,
+        mediaType,
+        media,
+        numFiles,
+        size,
+        collapsedSeries
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -376,7 +517,13 @@ abstract class _LibraryItem implements LibraryItem {
       required final int birthtimeMs,
       required final int addedAt,
       required final int updatedAt,
-      required final bool isMissing}) = _$LibraryItemImpl;
+      required final bool isMissing,
+      required final bool isInvalid,
+      required final String mediaType,
+      required final Media media,
+      required final int numFiles,
+      required final int size,
+      required final CollapsedSeries? collapsedSeries}) = _$LibraryItemImpl;
 
   factory _LibraryItem.fromJson(Map<String, dynamic> json) =
       _$LibraryItemImpl.fromJson;
@@ -407,6 +554,18 @@ abstract class _LibraryItem implements LibraryItem {
   int get updatedAt;
   @override
   bool get isMissing;
+  @override
+  bool get isInvalid;
+  @override
+  String get mediaType;
+  @override
+  Media get media;
+  @override
+  int get numFiles;
+  @override
+  int get size;
+  @override
+  CollapsedSeries? get collapsedSeries;
   @override
   @JsonKey(ignore: true)
   _$$LibraryItemImplCopyWith<_$LibraryItemImpl> get copyWith =>

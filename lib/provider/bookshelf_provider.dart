@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
-import 'package:audiobookshelf_flutter/database/media_progress_entity.dart';
 import 'package:audiobookshelf_flutter/provider/database_provider.dart';
 import 'package:audiobookshelf_flutter/provider/http_client_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
@@ -32,19 +31,19 @@ Future<Uint8List?> fetchCover(WidgetRef ref, String itemId) async {
       .itemIdEqualTo(itemId)
       .findFirst();
 
-  if (item!.mediaProgress?.coverBytes == null) {
+  if (item!.media.coverBytes == null) {
     final url = Uri.parse(
         "$serverAddress/api/items/$itemId/cover?token=${userModel?.token}");
 
     final response = await httpClient.get(url);
     final bytes = response.bodyBytes;
-    item.mediaProgress = MediaProgressEntity(coverBytes: bytes);
+    item.media.coverBytes = bytes;
     isar.writeTxn(() => isar.libraryItemEntitys.put(item));
 
     return bytes;
   } else {
-    return item.mediaProgress?.coverBytes == null
+    return item.media.coverBytes == null
         ? null
-        : Uint8List.fromList(item.mediaProgress!.coverBytes!);
+        : Uint8List.fromList(item.media.coverBytes!);
   }
 }

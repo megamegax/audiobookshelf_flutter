@@ -15,11 +15,9 @@ class MediaProgressEntity {
   int? lastUpdate;
   int? startedAt;
   int? finishedAt;
-  List<int>? coverBytes;
 
   MediaProgressEntity(
       {this.itemId,
-      this.coverBytes,
       this.mediaItemType,
       this.duration,
       this.progress,

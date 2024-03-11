@@ -27,64 +27,90 @@ const LibraryItemEntitySchema = CollectionSchema(
       name: r'birthtimeMs',
       type: IsarType.long,
     ),
-    r'ctimeMs': PropertySchema(
+    r'collapsedSeries': PropertySchema(
       id: 2,
+      name: r'collapsedSeries',
+      type: IsarType.object,
+      target: r'CollapsedSeriesEntity',
+    ),
+    r'ctimeMs': PropertySchema(
+      id: 3,
       name: r'ctimeMs',
       type: IsarType.long,
     ),
     r'folderId': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'folderId',
       type: IsarType.string,
     ),
     r'ino': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'ino',
       type: IsarType.string,
     ),
     r'isFile': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'isFile',
       type: IsarType.bool,
     ),
+    r'isInvalid': PropertySchema(
+      id: 7,
+      name: r'isInvalid',
+      type: IsarType.bool,
+    ),
     r'isMissing': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'isMissing',
       type: IsarType.bool,
     ),
     r'itemId': PropertySchema(
-      id: 7,
+      id: 9,
       name: r'itemId',
       type: IsarType.string,
     ),
     r'libraryId': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'libraryId',
       type: IsarType.string,
     ),
-    r'mediaProgress': PropertySchema(
-      id: 9,
-      name: r'mediaProgress',
+    r'media': PropertySchema(
+      id: 11,
+      name: r'media',
       type: IsarType.object,
-      target: r'MediaProgressEntity',
+      target: r'MediaEntity',
+    ),
+    r'mediaType': PropertySchema(
+      id: 12,
+      name: r'mediaType',
+      type: IsarType.string,
     ),
     r'mtimeMs': PropertySchema(
-      id: 10,
+      id: 13,
       name: r'mtimeMs',
       type: IsarType.long,
     ),
+    r'numFiles': PropertySchema(
+      id: 14,
+      name: r'numFiles',
+      type: IsarType.long,
+    ),
     r'path': PropertySchema(
-      id: 11,
+      id: 15,
       name: r'path',
       type: IsarType.string,
     ),
     r'relPath': PropertySchema(
-      id: 12,
+      id: 16,
       name: r'relPath',
       type: IsarType.string,
     ),
+    r'size': PropertySchema(
+      id: 17,
+      name: r'size',
+      type: IsarType.long,
+    ),
     r'updatedAt': PropertySchema(
-      id: 13,
+      id: 18,
       name: r'updatedAt',
       type: IsarType.long,
     )
@@ -110,7 +136,12 @@ const LibraryItemEntitySchema = CollectionSchema(
     )
   },
   links: {},
-  embeddedSchemas: {r'MediaProgressEntity': MediaProgressEntitySchema},
+  embeddedSchemas: {
+    r'MediaEntity': MediaEntitySchema,
+    r'MediaProgressEntity': MediaProgressEntitySchema,
+    r'MetadataEntity': MetadataEntitySchema,
+    r'CollapsedSeriesEntity': CollapsedSeriesEntitySchema
+  },
   getId: _libraryItemEntityGetId,
   getLinks: _libraryItemEntityGetLinks,
   attach: _libraryItemEntityAttach,
@@ -123,6 +154,14 @@ int _libraryItemEntityEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.collapsedSeries;
+    if (value != null) {
+      bytesCount += 3 +
+          CollapsedSeriesEntitySchema.estimateSize(
+              value, allOffsets[CollapsedSeriesEntity]!, allOffsets);
+    }
+  }
   bytesCount += 3 + object.folderId.length * 3;
   bytesCount += 3 + object.ino.length * 3;
   {
@@ -132,14 +171,10 @@ int _libraryItemEntityEstimateSize(
     }
   }
   bytesCount += 3 + object.libraryId.length * 3;
-  {
-    final value = object.mediaProgress;
-    if (value != null) {
-      bytesCount += 3 +
-          MediaProgressEntitySchema.estimateSize(
-              value, allOffsets[MediaProgressEntity]!, allOffsets);
-    }
-  }
+  bytesCount += 3 +
+      MediaEntitySchema.estimateSize(
+          object.media, allOffsets[MediaEntity]!, allOffsets);
+  bytesCount += 3 + object.mediaType.length * 3;
   bytesCount += 3 + object.path.length * 3;
   bytesCount += 3 + object.relPath.length * 3;
   return bytesCount;
@@ -153,23 +188,33 @@ void _libraryItemEntitySerialize(
 ) {
   writer.writeLong(offsets[0], object.addedAt);
   writer.writeLong(offsets[1], object.birthtimeMs);
-  writer.writeLong(offsets[2], object.ctimeMs);
-  writer.writeString(offsets[3], object.folderId);
-  writer.writeString(offsets[4], object.ino);
-  writer.writeBool(offsets[5], object.isFile);
-  writer.writeBool(offsets[6], object.isMissing);
-  writer.writeString(offsets[7], object.itemId);
-  writer.writeString(offsets[8], object.libraryId);
-  writer.writeObject<MediaProgressEntity>(
-    offsets[9],
+  writer.writeObject<CollapsedSeriesEntity>(
+    offsets[2],
     allOffsets,
-    MediaProgressEntitySchema.serialize,
-    object.mediaProgress,
+    CollapsedSeriesEntitySchema.serialize,
+    object.collapsedSeries,
   );
-  writer.writeLong(offsets[10], object.mtimeMs);
-  writer.writeString(offsets[11], object.path);
-  writer.writeString(offsets[12], object.relPath);
-  writer.writeLong(offsets[13], object.updatedAt);
+  writer.writeLong(offsets[3], object.ctimeMs);
+  writer.writeString(offsets[4], object.folderId);
+  writer.writeString(offsets[5], object.ino);
+  writer.writeBool(offsets[6], object.isFile);
+  writer.writeBool(offsets[7], object.isInvalid);
+  writer.writeBool(offsets[8], object.isMissing);
+  writer.writeString(offsets[9], object.itemId);
+  writer.writeString(offsets[10], object.libraryId);
+  writer.writeObject<MediaEntity>(
+    offsets[11],
+    allOffsets,
+    MediaEntitySchema.serialize,
+    object.media,
+  );
+  writer.writeString(offsets[12], object.mediaType);
+  writer.writeLong(offsets[13], object.mtimeMs);
+  writer.writeLong(offsets[14], object.numFiles);
+  writer.writeString(offsets[15], object.path);
+  writer.writeString(offsets[16], object.relPath);
+  writer.writeLong(offsets[17], object.size);
+  writer.writeLong(offsets[18], object.updatedAt);
 }
 
 LibraryItemEntity _libraryItemEntityDeserialize(
@@ -181,22 +226,32 @@ LibraryItemEntity _libraryItemEntityDeserialize(
   final object = LibraryItemEntity(
     addedAt: reader.readLong(offsets[0]),
     birthtimeMs: reader.readLong(offsets[1]),
-    ctimeMs: reader.readLong(offsets[2]),
-    folderId: reader.readString(offsets[3]),
-    ino: reader.readString(offsets[4]),
-    isFile: reader.readBool(offsets[5]),
-    isMissing: reader.readBool(offsets[6]),
-    itemId: reader.readStringOrNull(offsets[7]),
-    libraryId: reader.readString(offsets[8]),
-    mediaProgress: reader.readObjectOrNull<MediaProgressEntity>(
-      offsets[9],
-      MediaProgressEntitySchema.deserialize,
+    collapsedSeries: reader.readObjectOrNull<CollapsedSeriesEntity>(
+      offsets[2],
+      CollapsedSeriesEntitySchema.deserialize,
       allOffsets,
     ),
-    mtimeMs: reader.readLong(offsets[10]),
-    path: reader.readString(offsets[11]),
-    relPath: reader.readString(offsets[12]),
-    updatedAt: reader.readLongOrNull(offsets[13]),
+    ctimeMs: reader.readLong(offsets[3]),
+    folderId: reader.readString(offsets[4]),
+    ino: reader.readString(offsets[5]),
+    isFile: reader.readBool(offsets[6]),
+    isInvalid: reader.readBool(offsets[7]),
+    isMissing: reader.readBool(offsets[8]),
+    itemId: reader.readStringOrNull(offsets[9]),
+    libraryId: reader.readString(offsets[10]),
+    media: reader.readObjectOrNull<MediaEntity>(
+          offsets[11],
+          MediaEntitySchema.deserialize,
+          allOffsets,
+        ) ??
+        MediaEntity(),
+    mediaType: reader.readString(offsets[12]),
+    mtimeMs: reader.readLong(offsets[13]),
+    numFiles: reader.readLong(offsets[14]),
+    path: reader.readString(offsets[15]),
+    relPath: reader.readString(offsets[16]),
+    size: reader.readLong(offsets[17]),
+    updatedAt: reader.readLong(offsets[18]),
   );
   object.id = id;
   return object;
@@ -214,33 +269,48 @@ P _libraryItemEntityDeserializeProp<P>(
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
+      return (reader.readObjectOrNull<CollapsedSeriesEntity>(
+        offset,
+        CollapsedSeriesEntitySchema.deserialize,
+        allOffsets,
+      )) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 6:
       return (reader.readBool(offset)) as P;
     case 7:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 9:
-      return (reader.readObjectOrNull<MediaProgressEntity>(
-        offset,
-        MediaProgressEntitySchema.deserialize,
-        allOffsets,
-      )) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readLong(offset)) as P;
-    case 11:
       return (reader.readString(offset)) as P;
+    case 11:
+      return (reader.readObjectOrNull<MediaEntity>(
+            offset,
+            MediaEntitySchema.deserialize,
+            allOffsets,
+          ) ??
+          MediaEntity()) as P;
     case 12:
       return (reader.readString(offset)) as P;
     case 13:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
+    case 14:
+      return (reader.readLong(offset)) as P;
+    case 15:
+      return (reader.readString(offset)) as P;
+    case 16:
+      return (reader.readString(offset)) as P;
+    case 17:
+      return (reader.readLong(offset)) as P;
+    case 18:
+      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -517,6 +587,24 @@ extension LibraryItemEntityQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      collapsedSeriesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'collapsedSeries',
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      collapsedSeriesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'collapsedSeries',
       ));
     });
   }
@@ -916,6 +1004,16 @@ extension LibraryItemEntityQueryFilter
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      isInvalidEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isInvalid',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       isMissingEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1216,19 +1314,137 @@ extension LibraryItemEntityQueryFilter
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
-      mediaProgressIsNull() {
+      mediaTypeEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'mediaProgress',
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'mediaType',
+        value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
-      mediaProgressIsNotNull() {
+      mediaTypeGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'mediaProgress',
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'mediaType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      mediaTypeLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'mediaType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      mediaTypeBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'mediaType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      mediaTypeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'mediaType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      mediaTypeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'mediaType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      mediaTypeContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'mediaType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      mediaTypeMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'mediaType',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      mediaTypeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'mediaType',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      mediaTypeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'mediaType',
+        value: '',
       ));
     });
   }
@@ -1281,6 +1497,62 @@ extension LibraryItemEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'mtimeMs',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      numFilesEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'numFiles',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      numFilesGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'numFiles',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      numFilesLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'numFiles',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      numFilesBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'numFiles',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1562,25 +1834,63 @@ extension LibraryItemEntityQueryFilter
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
-      updatedAtIsNull() {
+      sizeEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'updatedAt',
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'size',
+        value: value,
       ));
     });
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
-      updatedAtIsNotNull() {
+      sizeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'updatedAt',
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'size',
+        value: value,
       ));
     });
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
-      updatedAtEqualTo(int? value) {
+      sizeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'size',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      sizeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'size',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      updatedAtEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'updatedAt',
@@ -1591,7 +1901,7 @@ extension LibraryItemEntityQueryFilter
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       updatedAtGreaterThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1605,7 +1915,7 @@ extension LibraryItemEntityQueryFilter
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       updatedAtLessThan(
-    int? value, {
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1619,8 +1929,8 @@ extension LibraryItemEntityQueryFilter
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       updatedAtBetween(
-    int? lower,
-    int? upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1639,9 +1949,16 @@ extension LibraryItemEntityQueryFilter
 extension LibraryItemEntityQueryObject
     on QueryBuilder<LibraryItemEntity, LibraryItemEntity, QFilterCondition> {
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
-      mediaProgress(FilterQuery<MediaProgressEntity> q) {
+      collapsedSeries(FilterQuery<CollapsedSeriesEntity> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'mediaProgress');
+      return query.object(q, r'collapsedSeries');
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
+      media(FilterQuery<MediaEntity> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'media');
     });
   }
 }
@@ -1735,6 +2052,20 @@ extension LibraryItemEntityQuerySortBy
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      sortByIsInvalid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isInvalid', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      sortByIsInvalidDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isInvalid', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
       sortByIsMissing() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isMissing', Sort.asc);
@@ -1777,6 +2108,20 @@ extension LibraryItemEntityQuerySortBy
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      sortByMediaType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mediaType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      sortByMediaTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mediaType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
       sortByMtimeMs() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'mtimeMs', Sort.asc);
@@ -1787,6 +2132,20 @@ extension LibraryItemEntityQuerySortBy
       sortByMtimeMsDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'mtimeMs', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      sortByNumFiles() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFiles', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      sortByNumFilesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFiles', Sort.desc);
     });
   }
 
@@ -1815,6 +2174,20 @@ extension LibraryItemEntityQuerySortBy
       sortByRelPathDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'relPath', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      sortBySize() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'size', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      sortBySizeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'size', Sort.desc);
     });
   }
 
@@ -1932,6 +2305,20 @@ extension LibraryItemEntityQuerySortThenBy
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      thenByIsInvalid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isInvalid', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      thenByIsInvalidDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isInvalid', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
       thenByIsMissing() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isMissing', Sort.asc);
@@ -1974,6 +2361,20 @@ extension LibraryItemEntityQuerySortThenBy
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      thenByMediaType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mediaType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      thenByMediaTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mediaType', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
       thenByMtimeMs() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'mtimeMs', Sort.asc);
@@ -1984,6 +2385,20 @@ extension LibraryItemEntityQuerySortThenBy
       thenByMtimeMsDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'mtimeMs', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      thenByNumFiles() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFiles', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      thenByNumFilesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFiles', Sort.desc);
     });
   }
 
@@ -2012,6 +2427,20 @@ extension LibraryItemEntityQuerySortThenBy
       thenByRelPathDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'relPath', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      thenBySize() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'size', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterSortBy>
+      thenBySizeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'size', Sort.desc);
     });
   }
 
@@ -2075,6 +2504,13 @@ extension LibraryItemEntityQueryWhereDistinct
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QDistinct>
+      distinctByIsInvalid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isInvalid');
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QDistinct>
       distinctByIsMissing() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isMissing');
@@ -2096,9 +2532,23 @@ extension LibraryItemEntityQueryWhereDistinct
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QDistinct>
+      distinctByMediaType({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'mediaType', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QDistinct>
       distinctByMtimeMs() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'mtimeMs');
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QDistinct>
+      distinctByNumFiles() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'numFiles');
     });
   }
 
@@ -2113,6 +2563,13 @@ extension LibraryItemEntityQueryWhereDistinct
       distinctByRelPath({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'relPath', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QDistinct>
+      distinctBySize() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'size');
     });
   }
 
@@ -2144,6 +2601,13 @@ extension LibraryItemEntityQueryProperty
     });
   }
 
+  QueryBuilder<LibraryItemEntity, CollapsedSeriesEntity?, QQueryOperations>
+      collapsedSeriesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'collapsedSeries');
+    });
+  }
+
   QueryBuilder<LibraryItemEntity, int, QQueryOperations> ctimeMsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'ctimeMs');
@@ -2168,6 +2632,12 @@ extension LibraryItemEntityQueryProperty
     });
   }
 
+  QueryBuilder<LibraryItemEntity, bool, QQueryOperations> isInvalidProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isInvalid');
+    });
+  }
+
   QueryBuilder<LibraryItemEntity, bool, QQueryOperations> isMissingProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isMissing');
@@ -2187,16 +2657,29 @@ extension LibraryItemEntityQueryProperty
     });
   }
 
-  QueryBuilder<LibraryItemEntity, MediaProgressEntity?, QQueryOperations>
-      mediaProgressProperty() {
+  QueryBuilder<LibraryItemEntity, MediaEntity, QQueryOperations>
+      mediaProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'mediaProgress');
+      return query.addPropertyName(r'media');
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, String, QQueryOperations>
+      mediaTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'mediaType');
     });
   }
 
   QueryBuilder<LibraryItemEntity, int, QQueryOperations> mtimeMsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'mtimeMs');
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, int, QQueryOperations> numFilesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'numFiles');
     });
   }
 
@@ -2212,7 +2695,13 @@ extension LibraryItemEntityQueryProperty
     });
   }
 
-  QueryBuilder<LibraryItemEntity, int?, QQueryOperations> updatedAtProperty() {
+  QueryBuilder<LibraryItemEntity, int, QQueryOperations> sizeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'size');
+    });
+  }
+
+  QueryBuilder<LibraryItemEntity, int, QQueryOperations> updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'updatedAt');
     });

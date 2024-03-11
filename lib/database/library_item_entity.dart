@@ -1,4 +1,7 @@
+import 'package:audiobookshelf_flutter/database/collapsed_series_entity.dart';
+import 'package:audiobookshelf_flutter/database/media_entity.dart';
 import 'package:audiobookshelf_flutter/database/media_progress_entity.dart';
+import 'package:audiobookshelf_flutter/database/metadata_entity.dart';
 import 'package:isar/isar.dart';
 
 part 'library_item_entity.g.dart';
@@ -8,7 +11,6 @@ class LibraryItemEntity {
   Id id = Isar.autoIncrement;
   @Index()
   String? itemId;
-  MediaProgressEntity? mediaProgress;
   String ino;
   String libraryId;
   String folderId;
@@ -21,9 +23,14 @@ class LibraryItemEntity {
   int addedAt;
   int? updatedAt;
   bool isMissing;
+  bool isInvalid;
+  String mediaType;
+  MediaEntity media;
+  int numFiles;
+  int size;
+  CollapsedSeriesEntity? collapsedSeries;
   LibraryItemEntity(
-      {this.itemId,
-      this.mediaProgress,
+      {required this.itemId,
       required this.ino,
       required this.libraryId,
       required this.folderId,
@@ -34,6 +41,12 @@ class LibraryItemEntity {
       required this.ctimeMs,
       required this.birthtimeMs,
       required this.addedAt,
-      required this.updatedAt,
-      required this.isMissing});
+      this.updatedAt,
+      required this.isMissing,
+      required this.isInvalid,
+      required this.mediaType,
+      required this.media,
+      required this.numFiles,
+      required this.size,
+      required this.collapsedSeries});
 }

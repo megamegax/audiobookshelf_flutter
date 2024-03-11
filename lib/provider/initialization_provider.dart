@@ -1,5 +1,4 @@
 import 'package:audiobookshelf_flutter/main.dart';
-import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/pages/bookshelf_screen.dart';
 import 'package:audiobookshelf_flutter/pages/init_screen.dart';
 import 'package:audiobookshelf_flutter/pages/login_screen.dart';

@@ -13,63 +13,58 @@ const MediaProgressEntitySchema = Schema(
   name: r'MediaProgressEntity',
   id: -6016900498692830462,
   properties: {
-    r'coverBytes': PropertySchema(
-      id: 0,
-      name: r'coverBytes',
-      type: IsarType.longList,
-    ),
     r'currentTime': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'currentTime',
       type: IsarType.double,
     ),
     r'duration': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'duration',
       type: IsarType.double,
     ),
     r'ebookProgress': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'ebookProgress',
       type: IsarType.double,
     ),
     r'finishedAt': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'finishedAt',
       type: IsarType.long,
     ),
     r'hideFromContinueListening': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'hideFromContinueListening',
       type: IsarType.bool,
     ),
     r'isFinished': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'isFinished',
       type: IsarType.bool,
     ),
     r'itemId': PropertySchema(
-      id: 7,
+      id: 6,
       name: r'itemId',
       type: IsarType.string,
     ),
     r'lastUpdate': PropertySchema(
-      id: 8,
+      id: 7,
       name: r'lastUpdate',
       type: IsarType.long,
     ),
     r'mediaItemType': PropertySchema(
-      id: 9,
+      id: 8,
       name: r'mediaItemType',
       type: IsarType.string,
     ),
     r'progress': PropertySchema(
-      id: 10,
+      id: 9,
       name: r'progress',
       type: IsarType.double,
     ),
     r'startedAt': PropertySchema(
-      id: 11,
+      id: 10,
       name: r'startedAt',
       type: IsarType.long,
     )
@@ -86,12 +81,6 @@ int _mediaProgressEntityEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.coverBytes;
-    if (value != null) {
-      bytesCount += 3 + value.length * 8;
-    }
-  }
   {
     final value = object.itemId;
     if (value != null) {
@@ -113,18 +102,17 @@ void _mediaProgressEntitySerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLongList(offsets[0], object.coverBytes);
-  writer.writeDouble(offsets[1], object.currentTime);
-  writer.writeDouble(offsets[2], object.duration);
-  writer.writeDouble(offsets[3], object.ebookProgress);
-  writer.writeLong(offsets[4], object.finishedAt);
-  writer.writeBool(offsets[5], object.hideFromContinueListening);
-  writer.writeBool(offsets[6], object.isFinished);
-  writer.writeString(offsets[7], object.itemId);
-  writer.writeLong(offsets[8], object.lastUpdate);
-  writer.writeString(offsets[9], object.mediaItemType);
-  writer.writeDouble(offsets[10], object.progress);
-  writer.writeLong(offsets[11], object.startedAt);
+  writer.writeDouble(offsets[0], object.currentTime);
+  writer.writeDouble(offsets[1], object.duration);
+  writer.writeDouble(offsets[2], object.ebookProgress);
+  writer.writeLong(offsets[3], object.finishedAt);
+  writer.writeBool(offsets[4], object.hideFromContinueListening);
+  writer.writeBool(offsets[5], object.isFinished);
+  writer.writeString(offsets[6], object.itemId);
+  writer.writeLong(offsets[7], object.lastUpdate);
+  writer.writeString(offsets[8], object.mediaItemType);
+  writer.writeDouble(offsets[9], object.progress);
+  writer.writeLong(offsets[10], object.startedAt);
 }
 
 MediaProgressEntity _mediaProgressEntityDeserialize(
@@ -134,18 +122,17 @@ MediaProgressEntity _mediaProgressEntityDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = MediaProgressEntity(
-    coverBytes: reader.readLongList(offsets[0]),
-    currentTime: reader.readDoubleOrNull(offsets[1]),
-    duration: reader.readDoubleOrNull(offsets[2]),
-    ebookProgress: reader.readDoubleOrNull(offsets[3]),
-    finishedAt: reader.readLongOrNull(offsets[4]),
-    hideFromContinueListening: reader.readBoolOrNull(offsets[5]) ?? false,
-    isFinished: reader.readBoolOrNull(offsets[6]) ?? false,
-    itemId: reader.readStringOrNull(offsets[7]),
-    lastUpdate: reader.readLongOrNull(offsets[8]),
-    mediaItemType: reader.readStringOrNull(offsets[9]),
-    progress: reader.readDoubleOrNull(offsets[10]),
-    startedAt: reader.readLongOrNull(offsets[11]),
+    currentTime: reader.readDoubleOrNull(offsets[0]),
+    duration: reader.readDoubleOrNull(offsets[1]),
+    ebookProgress: reader.readDoubleOrNull(offsets[2]),
+    finishedAt: reader.readLongOrNull(offsets[3]),
+    hideFromContinueListening: reader.readBoolOrNull(offsets[4]) ?? false,
+    isFinished: reader.readBoolOrNull(offsets[5]) ?? false,
+    itemId: reader.readStringOrNull(offsets[6]),
+    lastUpdate: reader.readLongOrNull(offsets[7]),
+    mediaItemType: reader.readStringOrNull(offsets[8]),
+    progress: reader.readDoubleOrNull(offsets[9]),
+    startedAt: reader.readLongOrNull(offsets[10]),
   );
   return object;
 }
@@ -158,28 +145,26 @@ P _mediaProgressEntityDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongList(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 1:
       return (reader.readDoubleOrNull(offset)) as P;
     case 2:
       return (reader.readDoubleOrNull(offset)) as P;
     case 3:
-      return (reader.readDoubleOrNull(offset)) as P;
-    case 4:
       return (reader.readLongOrNull(offset)) as P;
+    case 4:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 5:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 6:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readStringOrNull(offset)) as P;
-    case 8:
       return (reader.readLongOrNull(offset)) as P;
-    case 9:
+    case 8:
       return (reader.readStringOrNull(offset)) as P;
-    case 10:
+    case 9:
       return (reader.readDoubleOrNull(offset)) as P;
-    case 11:
+    case 10:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -188,169 +173,6 @@ P _mediaProgressEntityDeserializeProp<P>(
 
 extension MediaProgressEntityQueryFilter on QueryBuilder<MediaProgressEntity,
     MediaProgressEntity, QFilterCondition> {
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'coverBytes',
-      ));
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'coverBytes',
-      ));
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesElementEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'coverBytes',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesElementGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'coverBytes',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesElementLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'coverBytes',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesElementBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'coverBytes',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        length,
-        true,
-        length,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        0,
-        true,
-        0,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        0,
-        false,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        0,
-        true,
-        length,
-        include,
-      );
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        length,
-        include,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
-      coverBytesLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
-      );
-    });
-  }
-
   QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
       currentTimeIsNull() {
     return QueryBuilder.apply(this, (query) {

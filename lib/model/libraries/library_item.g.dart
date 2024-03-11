@@ -21,6 +21,15 @@ _$LibraryItemImpl _$$LibraryItemImplFromJson(Map<String, dynamic> json) =>
       addedAt: json['addedAt'] as int,
       updatedAt: json['updatedAt'] as int,
       isMissing: json['isMissing'] as bool,
+      isInvalid: json['isInvalid'] as bool,
+      mediaType: json['mediaType'] as String,
+      media: Media.fromJson(json['media'] as Map<String, dynamic>),
+      numFiles: json['numFiles'] as int,
+      size: json['size'] as int,
+      collapsedSeries: json['collapsedSeries'] == null
+          ? null
+          : CollapsedSeries.fromJson(
+              json['collapsedSeries'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$LibraryItemImplToJson(_$LibraryItemImpl instance) =>
@@ -38,4 +47,10 @@ Map<String, dynamic> _$$LibraryItemImplToJson(_$LibraryItemImpl instance) =>
       'addedAt': instance.addedAt,
       'updatedAt': instance.updatedAt,
       'isMissing': instance.isMissing,
+      'isInvalid': instance.isInvalid,
+      'mediaType': instance.mediaType,
+      'media': instance.media,
+      'numFiles': instance.numFiles,
+      'size': instance.size,
+      'collapsedSeries': instance.collapsedSeries,
     };

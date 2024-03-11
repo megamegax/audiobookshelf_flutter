@@ -22,14 +22,15 @@ LibraryItemsResponse _$LibraryItemsResponseFromJson(Map<String, dynamic> json) {
 mixin _$LibraryItemsResponse {
   List<LibraryItem> get results => throw _privateConstructorUsedError;
   int get total => throw _privateConstructorUsedError;
-  int get limit => throw _privateConstructorUsedError;
-  int get page => throw _privateConstructorUsedError;
+  int? get limit => throw _privateConstructorUsedError;
+  int? get page => throw _privateConstructorUsedError;
+  String? get sortBy => throw _privateConstructorUsedError;
   bool get sortDesc => throw _privateConstructorUsedError;
+  String? get filterBy => throw _privateConstructorUsedError;
   String get mediaType => throw _privateConstructorUsedError;
   bool get minified => throw _privateConstructorUsedError;
   bool get collapseseries => throw _privateConstructorUsedError;
-  String get include => throw _privateConstructorUsedError;
-  int get offset => throw _privateConstructorUsedError;
+  String? get include => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -46,14 +47,15 @@ abstract class $LibraryItemsResponseCopyWith<$Res> {
   $Res call(
       {List<LibraryItem> results,
       int total,
-      int limit,
-      int page,
+      int? limit,
+      int? page,
+      String? sortBy,
       bool sortDesc,
+      String? filterBy,
       String mediaType,
       bool minified,
       bool collapseseries,
-      String include,
-      int offset});
+      String? include});
 }
 
 /// @nodoc
@@ -72,14 +74,15 @@ class _$LibraryItemsResponseCopyWithImpl<$Res,
   $Res call({
     Object? results = null,
     Object? total = null,
-    Object? limit = null,
-    Object? page = null,
+    Object? limit = freezed,
+    Object? page = freezed,
+    Object? sortBy = freezed,
     Object? sortDesc = null,
+    Object? filterBy = freezed,
     Object? mediaType = null,
     Object? minified = null,
     Object? collapseseries = null,
-    Object? include = null,
-    Object? offset = null,
+    Object? include = freezed,
   }) {
     return _then(_value.copyWith(
       results: null == results
@@ -90,18 +93,26 @@ class _$LibraryItemsResponseCopyWithImpl<$Res,
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as int,
-      limit: null == limit
+      limit: freezed == limit
           ? _value.limit
           : limit // ignore: cast_nullable_to_non_nullable
-              as int,
-      page: null == page
+              as int?,
+      page: freezed == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
+      sortBy: freezed == sortBy
+          ? _value.sortBy
+          : sortBy // ignore: cast_nullable_to_non_nullable
+              as String?,
       sortDesc: null == sortDesc
           ? _value.sortDesc
           : sortDesc // ignore: cast_nullable_to_non_nullable
               as bool,
+      filterBy: freezed == filterBy
+          ? _value.filterBy
+          : filterBy // ignore: cast_nullable_to_non_nullable
+              as String?,
       mediaType: null == mediaType
           ? _value.mediaType
           : mediaType // ignore: cast_nullable_to_non_nullable
@@ -114,14 +125,10 @@ class _$LibraryItemsResponseCopyWithImpl<$Res,
           ? _value.collapseseries
           : collapseseries // ignore: cast_nullable_to_non_nullable
               as bool,
-      include: null == include
+      include: freezed == include
           ? _value.include
           : include // ignore: cast_nullable_to_non_nullable
-              as String,
-      offset: null == offset
-          ? _value.offset
-          : offset // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String?,
     ) as $Val);
   }
 }
@@ -137,14 +144,15 @@ abstract class _$$LibraryItemsResponseImplCopyWith<$Res>
   $Res call(
       {List<LibraryItem> results,
       int total,
-      int limit,
-      int page,
+      int? limit,
+      int? page,
+      String? sortBy,
       bool sortDesc,
+      String? filterBy,
       String mediaType,
       bool minified,
       bool collapseseries,
-      String include,
-      int offset});
+      String? include});
 }
 
 /// @nodoc
@@ -160,14 +168,15 @@ class __$$LibraryItemsResponseImplCopyWithImpl<$Res>
   $Res call({
     Object? results = null,
     Object? total = null,
-    Object? limit = null,
-    Object? page = null,
+    Object? limit = freezed,
+    Object? page = freezed,
+    Object? sortBy = freezed,
     Object? sortDesc = null,
+    Object? filterBy = freezed,
     Object? mediaType = null,
     Object? minified = null,
     Object? collapseseries = null,
-    Object? include = null,
-    Object? offset = null,
+    Object? include = freezed,
   }) {
     return _then(_$LibraryItemsResponseImpl(
       results: null == results
@@ -178,18 +187,26 @@ class __$$LibraryItemsResponseImplCopyWithImpl<$Res>
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as int,
-      limit: null == limit
+      limit: freezed == limit
           ? _value.limit
           : limit // ignore: cast_nullable_to_non_nullable
-              as int,
-      page: null == page
+              as int?,
+      page: freezed == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
+      sortBy: freezed == sortBy
+          ? _value.sortBy
+          : sortBy // ignore: cast_nullable_to_non_nullable
+              as String?,
       sortDesc: null == sortDesc
           ? _value.sortDesc
           : sortDesc // ignore: cast_nullable_to_non_nullable
               as bool,
+      filterBy: freezed == filterBy
+          ? _value.filterBy
+          : filterBy // ignore: cast_nullable_to_non_nullable
+              as String?,
       mediaType: null == mediaType
           ? _value.mediaType
           : mediaType // ignore: cast_nullable_to_non_nullable
@@ -202,14 +219,10 @@ class __$$LibraryItemsResponseImplCopyWithImpl<$Res>
           ? _value.collapseseries
           : collapseseries // ignore: cast_nullable_to_non_nullable
               as bool,
-      include: null == include
+      include: freezed == include
           ? _value.include
           : include // ignore: cast_nullable_to_non_nullable
-              as String,
-      offset: null == offset
-          ? _value.offset
-          : offset // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String?,
     ));
   }
 }
@@ -220,14 +233,15 @@ class _$LibraryItemsResponseImpl implements _LibraryItemsResponse {
   const _$LibraryItemsResponseImpl(
       {required final List<LibraryItem> results,
       required this.total,
-      required this.limit,
-      required this.page,
+      this.limit,
+      this.page,
+      this.sortBy,
       required this.sortDesc,
+      this.filterBy,
       required this.mediaType,
       required this.minified,
       required this.collapseseries,
-      required this.include,
-      required this.offset})
+      this.include})
       : _results = results;
 
   factory _$LibraryItemsResponseImpl.fromJson(Map<String, dynamic> json) =>
@@ -244,11 +258,15 @@ class _$LibraryItemsResponseImpl implements _LibraryItemsResponse {
   @override
   final int total;
   @override
-  final int limit;
+  final int? limit;
   @override
-  final int page;
+  final int? page;
+  @override
+  final String? sortBy;
   @override
   final bool sortDesc;
+  @override
+  final String? filterBy;
   @override
   final String mediaType;
   @override
@@ -256,13 +274,11 @@ class _$LibraryItemsResponseImpl implements _LibraryItemsResponse {
   @override
   final bool collapseseries;
   @override
-  final String include;
-  @override
-  final int offset;
+  final String? include;
 
   @override
   String toString() {
-    return 'LibraryItemsResponse(results: $results, total: $total, limit: $limit, page: $page, sortDesc: $sortDesc, mediaType: $mediaType, minified: $minified, collapseseries: $collapseseries, include: $include, offset: $offset)';
+    return 'LibraryItemsResponse(results: $results, total: $total, limit: $limit, page: $page, sortBy: $sortBy, sortDesc: $sortDesc, filterBy: $filterBy, mediaType: $mediaType, minified: $minified, collapseseries: $collapseseries, include: $include)';
   }
 
   @override
@@ -274,16 +290,18 @@ class _$LibraryItemsResponseImpl implements _LibraryItemsResponse {
             (identical(other.total, total) || other.total == total) &&
             (identical(other.limit, limit) || other.limit == limit) &&
             (identical(other.page, page) || other.page == page) &&
+            (identical(other.sortBy, sortBy) || other.sortBy == sortBy) &&
             (identical(other.sortDesc, sortDesc) ||
                 other.sortDesc == sortDesc) &&
+            (identical(other.filterBy, filterBy) ||
+                other.filterBy == filterBy) &&
             (identical(other.mediaType, mediaType) ||
                 other.mediaType == mediaType) &&
             (identical(other.minified, minified) ||
                 other.minified == minified) &&
             (identical(other.collapseseries, collapseseries) ||
                 other.collapseseries == collapseseries) &&
-            (identical(other.include, include) || other.include == include) &&
-            (identical(other.offset, offset) || other.offset == offset));
+            (identical(other.include, include) || other.include == include));
   }
 
   @JsonKey(ignore: true)
@@ -294,12 +312,13 @@ class _$LibraryItemsResponseImpl implements _LibraryItemsResponse {
       total,
       limit,
       page,
+      sortBy,
       sortDesc,
+      filterBy,
       mediaType,
       minified,
       collapseseries,
-      include,
-      offset);
+      include);
 
   @JsonKey(ignore: true)
   @override
@@ -321,14 +340,15 @@ abstract class _LibraryItemsResponse implements LibraryItemsResponse {
   const factory _LibraryItemsResponse(
       {required final List<LibraryItem> results,
       required final int total,
-      required final int limit,
-      required final int page,
+      final int? limit,
+      final int? page,
+      final String? sortBy,
       required final bool sortDesc,
+      final String? filterBy,
       required final String mediaType,
       required final bool minified,
       required final bool collapseseries,
-      required final String include,
-      required final int offset}) = _$LibraryItemsResponseImpl;
+      final String? include}) = _$LibraryItemsResponseImpl;
 
   factory _LibraryItemsResponse.fromJson(Map<String, dynamic> json) =
       _$LibraryItemsResponseImpl.fromJson;
@@ -338,11 +358,15 @@ abstract class _LibraryItemsResponse implements LibraryItemsResponse {
   @override
   int get total;
   @override
-  int get limit;
+  int? get limit;
   @override
-  int get page;
+  int? get page;
+  @override
+  String? get sortBy;
   @override
   bool get sortDesc;
+  @override
+  String? get filterBy;
   @override
   String get mediaType;
   @override
@@ -350,9 +374,7 @@ abstract class _LibraryItemsResponse implements LibraryItemsResponse {
   @override
   bool get collapseseries;
   @override
-  String get include;
-  @override
-  int get offset;
+  String? get include;
   @override
   @JsonKey(ignore: true)
   _$$LibraryItemsResponseImplCopyWith<_$LibraryItemsResponseImpl>
