@@ -6,11 +6,11 @@ import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-class LoginRepository {
+class LoginService {
   final http.Client httpClient;
   final String serverAddress;
 
-  LoginRepository(this.httpClient, this.serverAddress);
+  LoginService(this.httpClient, this.serverAddress);
 
   Future<void> login(WidgetRef ref, String username, String password) async {
     LoginState loginState;

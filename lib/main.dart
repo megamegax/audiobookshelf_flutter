@@ -1,4 +1,5 @@
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
+import 'package:audiobookshelf_flutter/pages/bookshelf_screen.dart';
 import 'package:audiobookshelf_flutter/pages/error_screen.dart';
 import 'package:audiobookshelf_flutter/pages/splash_screen.dart';
 import 'package:audiobookshelf_flutter/provider/initialization_provider.dart';
