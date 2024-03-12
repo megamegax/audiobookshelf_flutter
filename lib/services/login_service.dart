@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'package:audiobookshelf_flutter/model/login/login_response.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 class LoginService {
   final http.Client httpClient;
   final String serverAddress;
+  final LoginStateNotifier loginStateNotifier;
 
-  LoginService(this.httpClient, this.serverAddress);
+  LoginService(this.httpClient, this.serverAddress, this.loginStateNotifier);
 
-  Future<void> login(WidgetRef ref, String username, String password) async {
+  Future<LoginResponse?> login(String username, String password) async {
     LoginState loginState;
     if (username.isEmpty || password.isEmpty) {
       loginState =
@@ -30,9 +30,11 @@ class LoginService {
       final responseBody = jsonDecode(response.body);
       final loginResponse = LoginResponse.fromJson(responseBody);
       loginState = LoginState.success(loginResponse);
+      return loginResponse;
     } catch (e) {
       loginState = LoginState.error(e.toString());
     }
-    ref.read(loginStateProvider.notifier).updateState(loginState);
+    loginStateNotifier.updateState(loginState);
+    return null;
   }
 }

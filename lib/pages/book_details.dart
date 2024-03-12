@@ -10,7 +10,15 @@ class BookDetails extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(item?.media.metadata?.title ?? ""),
+        title: Hero(
+            tag: 'bookTitle${item?.itemId}',
+            child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(item?.media.metadata?.title ?? "",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: Colors.white)))),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -21,10 +29,26 @@ class BookDetails extends ConsumerWidget {
             children: [
               SizedBox(
                 width: 200,
-                child: Image.memory(
-                  item?.media.coverBytes == null
-                      ? Uint8List.fromList([])
-                      : Uint8List.fromList(item!.media.coverBytes!),
+                child: Hero(
+                  tag: 'bookImage${item?.itemId}',
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Image.memory(
+                        item?.media.coverBytes == null
+                            ? Uint8List.fromList([])
+                            : Uint8List.fromList(item!.media.coverBytes!),
+                        fit: BoxFit.cover),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

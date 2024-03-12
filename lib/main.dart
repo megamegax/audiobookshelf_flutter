@@ -1,8 +1,5 @@
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
-import 'package:audiobookshelf_flutter/pages/bookshelf_screen.dart';
-import 'package:audiobookshelf_flutter/pages/error_screen.dart';
 import 'package:audiobookshelf_flutter/pages/splash_screen.dart';
-import 'package:audiobookshelf_flutter/provider/initialization_provider.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,20 +86,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       navigatorKey: ref.watch(navigatorKeyProvider),
-      home: FutureBuilder<Widget>(
-        future: initialization(ref),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return ErrorScreen(
-                snapshot.error.toString(),
-              );
-            }
-            return snapshot.data!;
-          }
-          return const SplashScreen();
-        },
-      ),
+      home: const SplashScreen(),
       theme: FlexThemeData.light(colorScheme: flexSchemeLight),
       darkTheme: FlexThemeData.dark(colorScheme: flexSchemeDark),
       localizationsDelegates: AppLocalizations.localizationsDelegates,

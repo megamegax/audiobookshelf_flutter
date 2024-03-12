@@ -1,30 +1,14 @@
-import 'dart:convert';
-
-import 'package:audiobookshelf_flutter/database/collapsed_series_entity.dart';
-import 'package:audiobookshelf_flutter/database/folder_entity.dart';
-import 'package:audiobookshelf_flutter/database/library_entity.dart';
-import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
-import 'package:audiobookshelf_flutter/database/media_entity.dart';
-import 'package:audiobookshelf_flutter/database/media_progress_entity.dart';
-import 'package:audiobookshelf_flutter/database/library_settings_entity.dart';
-import 'package:audiobookshelf_flutter/database/metadata_entity.dart';
-import 'package:audiobookshelf_flutter/model/login/media_progress.dart';
-import 'package:audiobookshelf_flutter/repositories/login_service.dart';
-import 'package:audiobookshelf_flutter/model/libraries/libraries_response.dart';
-import 'package:audiobookshelf_flutter/model/libraries/library.dart';
-import 'package:audiobookshelf_flutter/model/libraries/library_items_response.dart';
+import 'package:audiobookshelf_flutter/services/login_service.dart';
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
-import 'package:audiobookshelf_flutter/provider/database_provider.dart';
 import 'package:audiobookshelf_flutter/provider/http_client_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:isar/isar.dart';
 
 final loginServiceProvider = Provider<LoginService>((ref) {
-  return LoginService(
-      ref.watch(httpClientProvider), ref.watch(serverAddressProvider));
+  return LoginService(ref.watch(httpClientProvider),
+      ref.watch(serverAddressProvider), ref.read(loginStateProvider.notifier));
 });
 final loginStateProvider =
     StateNotifierProvider<LoginStateNotifier, LoginState>((ref) {

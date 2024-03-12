@@ -11,14 +11,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
 final libraryItemsRepositoryProvider =
-    FutureProvider<LibraryRepository>((ref) async {
-  return LibraryRepository(await ref.watch(databaseProvider.future));
+    FutureProvider<LibraryItemsRepository>((ref) async {
+  return LibraryItemsRepository(await ref.watch(databaseProvider.future));
 });
 
-class LibraryRepository {
+class LibraryItemsRepository {
   final Isar _isar;
 
-  LibraryRepository(this._isar);
+  LibraryItemsRepository(this._isar);
   Future<List<LibraryItemEntity>> getBooks(String libraryId) async {
     final List<LibraryItemEntity> libraryItems = await _isar.libraryItemEntitys
         .where()

@@ -47,8 +47,14 @@ class BookshelfScreen extends ConsumerWidget {
                       },
                       leading: coverSnapshot.data == null
                           ? Container(color: Colors.red)
-                          : Image.memory(coverSnapshot.data!),
-                      title: Text(item?.media.metadata?.title ?? "-"),
+                          : Hero(
+                              tag: 'bookImage${item?.itemId ?? ""}',
+                              child: Image.memory(coverSnapshot.data!,
+                                  fit: BoxFit.cover)),
+                      title: Hero(
+                          tag: 'bookTitle${item?.itemId ?? ""}',
+                          child: Text(item?.media.metadata?.title ?? "-",
+                              style: Theme.of(context).textTheme.titleMedium)),
                       subtitle: Text(
                           "Progress: ${((mediaProgress?.currentTime ?? 0.0) / (item?.media.duration ?? 0.0) * 100).toStringAsPrecision(3)}%"),
                     );

@@ -22,7 +22,9 @@ class InitScreenState extends ConsumerState<InitScreen> {
   late TextEditingController controller;
   @override
   void initState() {
-    serverAddress = ref.read(serverAddressLoaderProvider);
+    ref.read(serverAddressLoaderProvider.future).then((value) => setState(() {
+          serverAddress = value;
+        }));
     controller = TextEditingController(text: serverAddress);
     super.initState();
   }

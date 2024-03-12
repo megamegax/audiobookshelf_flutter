@@ -1,17 +1,19 @@
 import 'package:audiobookshelf_flutter/provider/shared_preferences_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final serverAddressProvider = StateProvider<String>((ref) {
   return '';
 });
 
-final serverAddressLoaderProvider = StateProvider<String>((ref) {
-  ref.watch(sharedPreferencesProvider.future).then((sharedPrefs) {
-    final serverAddress = sharedPrefs.getString('serverAddress') ?? '';
-    if (serverAddress.isNotEmpty) {
-      ref.read(serverAddressProvider.notifier).state = serverAddress;
-    }
-  });
+final serverAddressLoaderProvider = FutureProvider<String>((ref) async {
+  final SharedPreferences sharedPrefs =
+      await ref.watch(sharedPreferencesProvider.future);
+  final serverAddress = sharedPrefs.getString('serverAddress') ?? '';
+  if (serverAddress.isNotEmpty) {
+    ref.read(serverAddressProvider.notifier).state = serverAddress;
+  }
+
   return ref.watch(serverAddressProvider);
 });
 
