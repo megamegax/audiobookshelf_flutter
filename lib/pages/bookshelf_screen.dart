@@ -68,40 +68,47 @@ class BookshelfScreenState extends ConsumerState<BookshelfScreen> {
                     .where((book) => book.media.metadata!.title!
                         .toLowerCase()
                         .contains(searchQuery.toLowerCase()))
-                    .map((libraryItem) => ListTile(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => BookDetails(
-                                        item: libraryItem,
-                                      )),
-                            );
-                          },
-                          leading: Hero(
-                              tag: 'bookImage${libraryItem.itemId ?? ""}',
-                              child: SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: Image.memory(
-                                    Uint8List.fromList(
-                                        libraryItem.media.coverBytes ?? []),
-                                    fit: BoxFit.scaleDown),
-                              )),
-                          title: Hero(
-                              tag: 'bookTitle${libraryItem.itemId ?? ""}',
-                              child: Text(
-                                  libraryItem.media.metadata?.title ?? "-",
-                                  style: Theme.of(context)
-                                      .primaryTextTheme
-                                      .titleMedium!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface))),
-                          subtitle: Text(
-                              "Progress: ${((libraryItem.media.progress?.currentTime ?? 0.0) / (libraryItem.media.duration ?? 0.0) * 100).toStringAsPrecision(3)}%"),
-                        ))
-                    .toList()));
+                    .map((libraryItem) {
+              final double progress = libraryItem.media.progress == null
+                  ? 0
+                  : libraryItem.media.progress!.progress!;
+
+              return ListTile(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => BookDetails(
+                              item: libraryItem,
+                            )),
+                  );
+                },
+                leading: Hero(
+                    tag: 'bookImage${libraryItem.itemId ?? ""}',
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Image.memory(
+                          Uint8List.fromList(
+                              libraryItem.media.coverBytes ?? []),
+                          fit: BoxFit.scaleDown),
+                    )),
+                title: Hero(
+                    tag: 'bookTitle${libraryItem.itemId ?? ""}',
+                    child: Text(libraryItem.media.metadata?.title ?? "-",
+                        style: Theme.of(context)
+                            .primaryTextTheme
+                            .titleMedium!
+                            .copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onSurface))),
+                subtitle: LinearProgressIndicator(
+                  value: progress,
+                  color: progress == 1
+                      ? Colors.green
+                      : Theme.of(context).colorScheme.primary,
+                ),
+              );
+            }).toList()));
       },
       loading: () => Future.value(const CircularProgressIndicator()),
       error: (error, stackTrace) => Future.value(Text('Error: $error')),

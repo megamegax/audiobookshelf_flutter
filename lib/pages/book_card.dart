@@ -12,11 +12,7 @@ class BookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final double progress = libraryItem.media.progress == null
         ? 0
-        : libraryItem.media.progress!.isFinished
-            ? 100
-            : ((libraryItem.media.progress!.currentTime ?? 0.0) /
-                (libraryItem.media.duration ?? 0.0) *
-                100);
+        : libraryItem.media.progress!.progress!;
 
     return SizedBox(
       width: 200,
@@ -44,7 +40,7 @@ class BookCard extends StatelessWidget {
                   )),
               LinearProgressIndicator(
                 value: progress,
-                color: progress == 100
+                color: progress == 1
                     ? Colors.green
                     : Theme.of(context).colorScheme.primary,
               ),
@@ -63,7 +59,13 @@ class BookCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     )),
               ),
-              const Spacer(),
+              Text(
+                libraryItem.media.metadata?.authorName ?? "-",
+                style: Theme.of(context).primaryTextTheme.bodySmall!.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              )
             ],
           ),
         ),

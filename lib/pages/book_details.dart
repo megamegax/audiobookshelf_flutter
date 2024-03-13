@@ -8,6 +8,8 @@ class BookDetails extends ConsumerWidget {
   const BookDetails({super.key, this.item});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final double progress =
+        item?.media.progress == null ? 0 : item!.media.progress!.progress!;
     return Scaffold(
       appBar: AppBar(
         title: Hero(
@@ -43,11 +45,21 @@ class BookDetails extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    child: Image.memory(
-                        item?.media.coverBytes == null
-                            ? Uint8List.fromList([])
-                            : Uint8List.fromList(item!.media.coverBytes!),
-                        fit: BoxFit.cover),
+                    child: Column(
+                      children: [
+                        Image.memory(
+                            item?.media.coverBytes == null
+                                ? Uint8List.fromList([])
+                                : Uint8List.fromList(item!.media.coverBytes!),
+                            fit: BoxFit.cover),
+                        LinearProgressIndicator(
+                          value: progress,
+                          color: progress == 1
+                              ? Colors.green
+                              : Theme.of(context).colorScheme.primary,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
