@@ -3,6 +3,7 @@ import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
 import 'package:audiobookshelf_flutter/model/login/login_response.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/pages/bookshelf_screen.dart';
+import 'package:audiobookshelf_flutter/pages/home_screen.dart';
 import 'package:audiobookshelf_flutter/pages/init_screen.dart';
 import 'package:audiobookshelf_flutter/pages/login_screen.dart';
 import 'package:audiobookshelf_flutter/provider/credential_provider.dart';
@@ -79,11 +80,23 @@ class InitializationService {
                 await libraryService.fetchLibraries(loginResponse.user);
             List<LibraryItem> libraryItems = await libraryService
                 .fetchLibraryItems(loginResponse.user, libraries[0].id);
+            List<LibraryItem> libraryItemsWithCover = [];
+            for (int i = 0; i < libraryItems.length; i++) {
+              LibraryItem libraryItem = libraryItems[i];
+              final cover = await libraryService.fetchCover(
+                  libraryItem, loginResponse.user);
+              final mediaWithCover =
+                  libraryItem.media.copyWith(coverBytes: cover!);
+              libraryItemsWithCover
+                  .add(libraryItem.copyWith(media: mediaWithCover));
+            }
+
             libraryRepository.saveLibraries(libraries);
-            await libraryItemsRepository.saveLibraryItems(libraryItems);
+            await libraryItemsRepository
+                .saveLibraryItems(libraryItemsWithCover);
             libraryItemsRepository.saveMediaProgresses(loginResponse.user);
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const BookshelfScreen()));
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const HomeScreen()));
           });
         }
       } else {

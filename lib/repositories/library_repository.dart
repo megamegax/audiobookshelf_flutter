@@ -16,8 +16,7 @@ class LibraryRepository {
 
   LibraryRepository(this._isar);
 
-  Future<List<LibraryEntity>> getLibraryItems(
-      String libraryId, String mediaType) async {
+  Future<List<LibraryEntity>> getLibrary() async {
     final List<LibraryEntity> libraryItems =
         await _isar.libraryEntitys.where().findAll();
 

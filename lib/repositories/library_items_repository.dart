@@ -30,6 +30,16 @@ class LibraryItemsRepository {
     return libraryItems;
   }
 
+  Future<LibraryItemEntity?> getBook(String itemId) async {
+    final LibraryItemEntity? item = await _isar.libraryItemEntitys
+        .where()
+        .filter()
+        .itemIdEqualTo(itemId)
+        .findFirst();
+
+    return item;
+  }
+
   Future<List<LibraryItemEntity>> getPodcasts(String libraryId) async {
     final List<LibraryItemEntity> libraryItems = await _isar.libraryItemEntitys
         .where()
@@ -160,8 +170,10 @@ class LibraryItemsRepository {
           .filter()
           .itemIdEqualTo(element.libraryItemId)
           .findFirst();
-      if (cachedLibraryItem == null) break;
-      if (cachedLibraryItem!.media.progress == null) {
+      if (cachedLibraryItem == null) {
+        continue;
+      }
+      if (cachedLibraryItem.media.progress == null) {
         await _isar.writeTxn(() async {
           _isar.libraryItemEntitys.put(cachedLibraryItem
             ..media.progress = MediaProgressEntity(

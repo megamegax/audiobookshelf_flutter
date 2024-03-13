@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/libraries_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
@@ -7,6 +9,7 @@ import 'package:audiobookshelf_flutter/model/libraries/library_items_response.da
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/http_client_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -43,5 +46,19 @@ class LibraryService {
     final LibraryItemsResponse librariesResponse =
         LibraryItemsResponse.fromJson(responseBody);
     return librariesResponse.results;
+  }
+
+  Future<Uint8List?> fetchCover(LibraryItem item, UserModel userModel) async {
+    final token = userModel.token;
+
+    final url = Uri.parse(
+        "$serverAddress/api/items/${item.id}/cover?token=${userModel.token}");
+
+    final response =
+        await httpClient.get(url, headers: {"Authorization": "Bearer $token"});
+
+    final bytes = response.bodyBytes;
+
+    return bytes;
   }
 }

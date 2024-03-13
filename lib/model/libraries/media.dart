@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:audiobookshelf_flutter/model/libraries/meta_data.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -9,6 +11,8 @@ class Media with _$Media {
   const factory Media({
     required Metadata metadata,
     required String coverPath,
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    Uint8List? coverBytes,
     List<String>? tags,
     required int numTracks,
     required int numAudioFiles,

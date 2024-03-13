@@ -22,6 +22,8 @@ Media _$MediaFromJson(Map<String, dynamic> json) {
 mixin _$Media {
   Metadata get metadata => throw _privateConstructorUsedError;
   String get coverPath => throw _privateConstructorUsedError;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Uint8List? get coverBytes => throw _privateConstructorUsedError;
   List<String>? get tags => throw _privateConstructorUsedError;
   int get numTracks => throw _privateConstructorUsedError;
   int get numAudioFiles => throw _privateConstructorUsedError;
@@ -45,6 +47,8 @@ abstract class $MediaCopyWith<$Res> {
   $Res call(
       {Metadata metadata,
       String coverPath,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      Uint8List? coverBytes,
       List<String>? tags,
       int numTracks,
       int numAudioFiles,
@@ -73,6 +77,7 @@ class _$MediaCopyWithImpl<$Res, $Val extends Media>
   $Res call({
     Object? metadata = null,
     Object? coverPath = null,
+    Object? coverBytes = freezed,
     Object? tags = freezed,
     Object? numTracks = null,
     Object? numAudioFiles = null,
@@ -92,6 +97,10 @@ class _$MediaCopyWithImpl<$Res, $Val extends Media>
           ? _value.coverPath
           : coverPath // ignore: cast_nullable_to_non_nullable
               as String,
+      coverBytes: freezed == coverBytes
+          ? _value.coverBytes
+          : coverBytes // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
       tags: freezed == tags
           ? _value.tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -150,6 +159,8 @@ abstract class _$$MediaImplCopyWith<$Res> implements $MediaCopyWith<$Res> {
   $Res call(
       {Metadata metadata,
       String coverPath,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      Uint8List? coverBytes,
       List<String>? tags,
       int numTracks,
       int numAudioFiles,
@@ -177,6 +188,7 @@ class __$$MediaImplCopyWithImpl<$Res>
   $Res call({
     Object? metadata = null,
     Object? coverPath = null,
+    Object? coverBytes = freezed,
     Object? tags = freezed,
     Object? numTracks = null,
     Object? numAudioFiles = null,
@@ -196,6 +208,10 @@ class __$$MediaImplCopyWithImpl<$Res>
           ? _value.coverPath
           : coverPath // ignore: cast_nullable_to_non_nullable
               as String,
+      coverBytes: freezed == coverBytes
+          ? _value.coverBytes
+          : coverBytes // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
       tags: freezed == tags
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -242,6 +258,7 @@ class _$MediaImpl implements _Media {
   const _$MediaImpl(
       {required this.metadata,
       required this.coverPath,
+      @JsonKey(includeFromJson: false, includeToJson: false) this.coverBytes,
       final List<String>? tags,
       required this.numTracks,
       required this.numAudioFiles,
@@ -260,6 +277,9 @@ class _$MediaImpl implements _Media {
   final Metadata metadata;
   @override
   final String coverPath;
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final Uint8List? coverBytes;
   final List<String>? _tags;
   @override
   List<String>? get tags {
@@ -289,7 +309,7 @@ class _$MediaImpl implements _Media {
 
   @override
   String toString() {
-    return 'Media(metadata: $metadata, coverPath: $coverPath, tags: $tags, numTracks: $numTracks, numAudioFiles: $numAudioFiles, numChapters: $numChapters, numMissingParts: $numMissingParts, numInvalidAudioFiles: $numInvalidAudioFiles, duration: $duration, size: $size, ebookFileFormat: $ebookFileFormat)';
+    return 'Media(metadata: $metadata, coverPath: $coverPath, coverBytes: $coverBytes, tags: $tags, numTracks: $numTracks, numAudioFiles: $numAudioFiles, numChapters: $numChapters, numMissingParts: $numMissingParts, numInvalidAudioFiles: $numInvalidAudioFiles, duration: $duration, size: $size, ebookFileFormat: $ebookFileFormat)';
   }
 
   @override
@@ -301,6 +321,8 @@ class _$MediaImpl implements _Media {
                 other.metadata == metadata) &&
             (identical(other.coverPath, coverPath) ||
                 other.coverPath == coverPath) &&
+            const DeepCollectionEquality()
+                .equals(other.coverBytes, coverBytes) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             (identical(other.numTracks, numTracks) ||
                 other.numTracks == numTracks) &&
@@ -325,6 +347,7 @@ class _$MediaImpl implements _Media {
       runtimeType,
       metadata,
       coverPath,
+      const DeepCollectionEquality().hash(coverBytes),
       const DeepCollectionEquality().hash(_tags),
       numTracks,
       numAudioFiles,
@@ -353,6 +376,8 @@ abstract class _Media implements Media {
   const factory _Media(
       {required final Metadata metadata,
       required final String coverPath,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      final Uint8List? coverBytes,
       final List<String>? tags,
       required final int numTracks,
       required final int numAudioFiles,
@@ -369,6 +394,9 @@ abstract class _Media implements Media {
   Metadata get metadata;
   @override
   String get coverPath;
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Uint8List? get coverBytes;
   @override
   List<String>? get tags;
   @override

@@ -46,7 +46,7 @@ const ColorScheme flexSchemeLight = ColorScheme(
 
 const ColorScheme flexSchemeDark = ColorScheme(
   brightness: Brightness.dark,
-  primary: Color(0xffd4e6ff),
+  primary: Color.fromARGB(255, 244, 150, 56),
   onPrimary: Color(0xff141414),
   primaryContainer: Color(0xff19598d),
   onPrimaryContainer: Color(0xffe3edf5),

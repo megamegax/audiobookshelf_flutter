@@ -78,12 +78,12 @@ class BookDetails extends ConsumerWidget {
                             "Narrators".toUpperCase(),
                             style: Theme.of(context).textTheme.labelMedium,
                           ),
-                          Text("${item?.media.metadata?.narratorName ?? ""}")
+                          Text(item?.media.metadata?.narratorName ?? "")
                         ],
                       ),
                       const TableRow(
                         children: [
-                          SizedBox(height: 10), // A tér méretének megadása
+                          SizedBox(height: 10),
                           SizedBox(height: 10),
                         ],
                       ),
@@ -98,7 +98,7 @@ class BookDetails extends ConsumerWidget {
                       ),
                       const TableRow(
                         children: [
-                          SizedBox(height: 10), // A tér méretének megadása
+                          SizedBox(height: 10),
                           SizedBox(height: 10),
                         ],
                       ),
@@ -113,7 +113,7 @@ class BookDetails extends ConsumerWidget {
                       ),
                       const TableRow(
                         children: [
-                          SizedBox(height: 10), // A tér méretének megadása
+                          SizedBox(height: 10),
                           SizedBox(height: 10),
                         ],
                       ),
@@ -130,12 +130,15 @@ class BookDetails extends ConsumerWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Text(
-                  item?.media.metadata?.description ?? "",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.justify,
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: Text(
+                    item?.media.metadata?.description ?? "",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.justify,
+                  ),
                 ),
               ),
             ],
