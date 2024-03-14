@@ -34,7 +34,7 @@ class PersonalizedHomeEntity with _$PersonalizedHomeEntity {
   const factory PersonalizedHomeEntity({
     required SectionType id,
     required String type,
-    required List<LibraryItemEntity?> entities,
+    required List<dynamic> entities,
   }) = _PersonalizedHomeEntity;
 }
 

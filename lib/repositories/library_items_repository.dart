@@ -3,7 +3,10 @@ import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/database/media_entity.dart';
 import 'package:audiobookshelf_flutter/database/media_progress_entity.dart';
 import 'package:audiobookshelf_flutter/database/metadata_entity.dart';
+import 'package:audiobookshelf_flutter/database/series.dart';
+import 'package:audiobookshelf_flutter/database/series_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
+import 'package:audiobookshelf_flutter/model/libraries/series_item.dart';
 import 'package:audiobookshelf_flutter/model/login/media_progress.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/database_provider.dart';
@@ -212,13 +215,78 @@ class LibraryItemsRepository {
   }
 
 //todo handle series
-  Future<LibraryItemEntity?> getSerie(String itemId) async {
-    final LibraryItemEntity? item = await _isar.libraryItemEntitys
+  Future<Series?> getSeriesItem(String seriesId) async {
+    final SeriesItemEntity? series = await _isar.seriesItemEntitys
         .where()
         .filter()
-        .itemIdEqualTo(itemId)
+        .seriesIdEqualTo(seriesId)
         .findFirst();
+    if (series == null) return null;
+    return Series(
+        addedAt: series.addedAt,
+        description: series.description,
+        id: series.id,
+        name: series.name,
+        nameIgnorePrefix: series.nameIgnorePrefix,
+        updatedAt: series.updatedAt,
+        seriesId: series.seriesId!,
+        books: await Future.wait(
+            series.books.map((book) async => (await getBook(book))!)));
+  }
 
-    return item;
+  Future<List<Series>> getSeries(String libraryId) async {
+    final List<SeriesItemEntity> seriesItems = await _isar.seriesItemEntitys
+        .where()
+        .filter()
+        .seriesIdEqualTo(libraryId)
+        .findAll();
+    final series = seriesItems
+        .map((series) async => Series(
+            addedAt: series.addedAt,
+            description: series.description,
+            id: series.id,
+            name: series.name,
+            nameIgnorePrefix: series.nameIgnorePrefix,
+            updatedAt: series.updatedAt,
+            seriesId: series.seriesId!,
+            books: await Future.wait(
+                series.books.map((book) async => (await getBook(book))!))))
+        .toList();
+    return Future.wait(series);
+  }
+
+  void saveSeriesItems(List<SeriesItem> seriesItems) async {
+    for (int i = 0; i < seriesItems.length; i++) {
+      SeriesItem seriesItem = seriesItems[i];
+      SeriesItemEntity? existingSeriesItem = await _isar.seriesItemEntitys
+          .where()
+          .filter()
+          .seriesIdEqualTo(seriesItem.id)
+          .findFirst();
+
+      if (existingSeriesItem == null) {
+        _isar.writeTxn(() {
+          return _isar.seriesItemEntitys.put(SeriesItemEntity(
+              seriesId: seriesItem.id,
+              name: seriesItem.name,
+              nameIgnorePrefix: seriesItem.nameIgnorePrefix,
+              addedAt: seriesItem.addedAt,
+              updatedAt: seriesItem.updatedAt,
+              description: seriesItem.description,
+              books: seriesItem.books.map((e) => e.id).toList()));
+        });
+      } else {
+        if ((seriesItem.updatedAt ?? 0) > (existingSeriesItem.updatedAt ?? 0)) {
+          existingSeriesItem
+            ..name = seriesItem.name
+            ..nameIgnorePrefix = seriesItem.nameIgnorePrefix
+            ..addedAt = seriesItem.addedAt
+            ..updatedAt = seriesItem.updatedAt
+            ..description = seriesItem.description
+            ..books = seriesItem.books.map((e) => e.id).toList();
+          _isar.writeTxn(() => _isar.seriesItemEntitys.put(existingSeriesItem));
+        }
+      }
+    }
   }
 }

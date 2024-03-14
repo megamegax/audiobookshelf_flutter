@@ -1,6 +1,7 @@
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
+import 'package:audiobookshelf_flutter/model/libraries/series_item.dart';
 import 'package:audiobookshelf_flutter/model/login/login_response.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/pages/bookshelf_screen.dart';
@@ -79,7 +80,12 @@ class InitializationService {
             userModelNotifier.updateUserModel(loginResponse.user);
             List<Library> libraries =
                 await libraryService.fetchLibraries(loginResponse.user);
-            List<LibraryItem> libraryItems = await libraryService
+            libraryService
+                .fetchSeries(loginResponse.user, libraries[0].id)
+                .then((seriesItems) {
+              libraryItemsRepository.saveSeriesItems(seriesItems);
+            });
+            final List<LibraryItem> libraryItems = await libraryService
                 .fetchLibraryItems(loginResponse.user, libraries[0].id);
             List<LibraryItem> libraryItemsWithCover = [];
             for (int i = 0; i < libraryItems.length; i++) {

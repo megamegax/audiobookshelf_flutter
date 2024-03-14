@@ -201,7 +201,7 @@ abstract class _PersonalizedHome implements PersonalizedHome {
 mixin _$PersonalizedHomeEntity {
   SectionType get id => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
-  List<LibraryItemEntity?> get entities => throw _privateConstructorUsedError;
+  List<dynamic> get entities => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PersonalizedHomeEntityCopyWith<PersonalizedHomeEntity> get copyWith =>
@@ -214,7 +214,7 @@ abstract class $PersonalizedHomeEntityCopyWith<$Res> {
           $Res Function(PersonalizedHomeEntity) then) =
       _$PersonalizedHomeEntityCopyWithImpl<$Res, PersonalizedHomeEntity>;
   @useResult
-  $Res call({SectionType id, String type, List<LibraryItemEntity?> entities});
+  $Res call({SectionType id, String type, List<dynamic> entities});
 }
 
 /// @nodoc
@@ -247,7 +247,7 @@ class _$PersonalizedHomeEntityCopyWithImpl<$Res,
       entities: null == entities
           ? _value.entities
           : entities // ignore: cast_nullable_to_non_nullable
-              as List<LibraryItemEntity?>,
+              as List<dynamic>,
     ) as $Val);
   }
 }
@@ -261,7 +261,7 @@ abstract class _$$PersonalizedHomeEntityImplCopyWith<$Res>
       __$$PersonalizedHomeEntityImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({SectionType id, String type, List<LibraryItemEntity?> entities});
+  $Res call({SectionType id, String type, List<dynamic> entities});
 }
 
 /// @nodoc
@@ -293,7 +293,7 @@ class __$$PersonalizedHomeEntityImplCopyWithImpl<$Res>
       entities: null == entities
           ? _value._entities
           : entities // ignore: cast_nullable_to_non_nullable
-              as List<LibraryItemEntity?>,
+              as List<dynamic>,
     ));
   }
 }
@@ -304,16 +304,16 @@ class _$PersonalizedHomeEntityImpl implements _PersonalizedHomeEntity {
   const _$PersonalizedHomeEntityImpl(
       {required this.id,
       required this.type,
-      required final List<LibraryItemEntity?> entities})
+      required final List<dynamic> entities})
       : _entities = entities;
 
   @override
   final SectionType id;
   @override
   final String type;
-  final List<LibraryItemEntity?> _entities;
+  final List<dynamic> _entities;
   @override
-  List<LibraryItemEntity?> get entities {
+  List<dynamic> get entities {
     if (_entities is EqualUnmodifiableListView) return _entities;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_entities);
@@ -348,17 +348,16 @@ class _$PersonalizedHomeEntityImpl implements _PersonalizedHomeEntity {
 
 abstract class _PersonalizedHomeEntity implements PersonalizedHomeEntity {
   const factory _PersonalizedHomeEntity(
-          {required final SectionType id,
-          required final String type,
-          required final List<LibraryItemEntity?> entities}) =
-      _$PersonalizedHomeEntityImpl;
+      {required final SectionType id,
+      required final String type,
+      required final List<dynamic> entities}) = _$PersonalizedHomeEntityImpl;
 
   @override
   SectionType get id;
   @override
   String get type;
   @override
-  List<LibraryItemEntity?> get entities;
+  List<dynamic> get entities;
   @override
   @JsonKey(ignore: true)
   _$$PersonalizedHomeEntityImplCopyWith<_$PersonalizedHomeEntityImpl>

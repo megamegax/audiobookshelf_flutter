@@ -1,9 +1,11 @@
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
+import 'package:audiobookshelf_flutter/database/series.dart';
 import 'package:audiobookshelf_flutter/drawer/book_drawer.dart';
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
 import 'package:audiobookshelf_flutter/model/libraries/personalized_home.dart';
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
 import 'package:audiobookshelf_flutter/pages/book_card.dart';
+import 'package:audiobookshelf_flutter/pages/series_card.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
 import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
@@ -50,7 +52,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     return cachedBook;
                   } else {
                     final cachedSerie =
-                        (await libraryItemsRepository.getSerie(item.id));
+                        (await libraryItemsRepository.getSeriesItem(item.id));
                     return cachedSerie;
                   }
                 }).toList()))));
@@ -82,58 +84,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         builder: (context, snapshot) => snapshot.data ?? Container());
   }
 
-  List<Widget> buildToContinueListening(List<LibraryItemEntity> libraryItems) {
-    return libraryItems
-        .where((book) =>
-            book.media.progress != null &&
-            book.media.progress!.progress! > 0.0 &&
-            book.media.progress!.isFinished == false)
-        .map((libraryItem) => BookCard(libraryItem: libraryItem))
-        .toList();
-  }
-
-  List<Widget> buildSeriesToContinue(List<LibraryItemEntity> libraryItems) {
-    final List<LibraryItemEntity> sortedLibraryItems = [];
-    sortedLibraryItems.addAll(libraryItems);
-
-    final filtered = sortedLibraryItems
-        .where((book) => book.media.progress != null)
-        .toList();
-    filtered.sort((a, b) =>
-        a.media.progress!.progress!.compareTo(b.media.progress!.progress!));
-    return filtered
-        .map((libraryItem) => BookCard(libraryItem: libraryItem))
-        .toList();
-  }
-
-  List<Widget> buildToDiscover(List<LibraryItemEntity> libraryItems) {
-    final List<LibraryItemEntity> sortedLibraryItems = [];
-    sortedLibraryItems.addAll(libraryItems);
-
-    final filtered = sortedLibraryItems
-        .where((book) => book.media.progress == null)
-        .toList();
-
-    return filtered
-        .map((libraryItem) => BookCard(libraryItem: libraryItem))
-        .toList();
-  }
-
-  List<Widget> buildToListenAgain(List<LibraryItemEntity> libraryItems) {
-    final List<LibraryItemEntity> sortedLibraryItems = [];
-    sortedLibraryItems.addAll(libraryItems);
-
-    final filtered = sortedLibraryItems
-        .where((book) =>
-            book.media.progress != null &&
-            book.media.progress!.isFinished == true)
-        .toList();
-
-    return filtered
-        .map((libraryItem) => BookCard(libraryItem: libraryItem))
-        .toList();
-  }
-
   Widget buildSection(PersonalizedHomeEntity homeSection) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,9 +110,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             scrollDirection: Axis.horizontal,
             child: Row(
                 children: homeSection.entities
-                    .map((libraryItem) => libraryItem == null
-                        ? Container()
-                        : BookCard(libraryItem: libraryItem))
+                    .map((libraryItem) => libraryItem is LibraryItemEntity
+                        ? BookCard(libraryItem: libraryItem)
+                        : SeriesCard(series: libraryItem as Series))
                     .toList())),
       ],
     );
