@@ -1,4 +1,5 @@
 import 'package:audiobookshelf_flutter/database/series.dart';
+import 'package:audiobookshelf_flutter/pages/series_details.dart';
 import 'package:flutter/material.dart';
 
 class SeriesCard extends StatelessWidget {
@@ -11,7 +12,14 @@ class SeriesCard extends StatelessWidget {
       height: 300,
       child: Card(
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (context) => SeriesDetails(
+                        series: series,
+                      )),
+            );
+          },
           child: Column(
             children: [
               Padding(
