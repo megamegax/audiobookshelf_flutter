@@ -27,4 +27,19 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get labelServerAddressDescription => 'Adja meg az Audiobookshelf szerver címét';
+
+  @override
+  String get headerContinueListening => 'Hallgatás folytatása';
+
+  @override
+  String get headerContinueSeries => 'Sorozat folytatása';
+
+  @override
+  String get headerRecentSeries => 'Nemrég hozzáadott sorozatok';
+
+  @override
+  String get headerDiscover => 'Felfedezés';
+
+  @override
+  String get headerListenAgain => 'Újra hallgatás';
 }

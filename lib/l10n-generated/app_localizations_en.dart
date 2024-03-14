@@ -27,4 +27,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get labelServerAddressDescription => 'Enter the server address of Audiobookshelf';
+
+  @override
+  String get headerContinueListening => 'Continue listening';
+
+  @override
+  String get headerContinueSeries => 'Continue series';
+
+  @override
+  String get headerRecentSeries => 'Recent series';
+
+  @override
+  String get headerDiscover => 'Discover';
+
+  @override
+  String get headerListenAgain => 'Listen again';
 }

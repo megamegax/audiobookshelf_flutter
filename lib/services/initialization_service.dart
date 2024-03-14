@@ -1,3 +1,4 @@
+import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
 import 'package:audiobookshelf_flutter/model/login/login_response.dart';
@@ -83,12 +84,16 @@ class InitializationService {
             List<LibraryItem> libraryItemsWithCover = [];
             for (int i = 0; i < libraryItems.length; i++) {
               LibraryItem libraryItem = libraryItems[i];
-              final cover = await libraryService.fetchCover(
-                  libraryItem, loginResponse.user);
-              final mediaWithCover =
-                  libraryItem.media.copyWith(coverBytes: cover!);
-              libraryItemsWithCover
-                  .add(libraryItem.copyWith(media: mediaWithCover));
+              LibraryItemEntity? cachedLibraryItem =
+                  await libraryItemsRepository.getBook(libraryItem.id);
+              if (libraryItem.updatedAt > (cachedLibraryItem?.updatedAt ?? 0)) {
+                final cover = await libraryService.fetchCover(
+                    libraryItem, loginResponse.user);
+                final mediaWithCover =
+                    libraryItem.media.copyWith(coverBytes: cover!);
+                libraryItemsWithCover
+                    .add(libraryItem.copyWith(media: mediaWithCover));
+              }
             }
 
             libraryRepository.saveLibraries(libraries);

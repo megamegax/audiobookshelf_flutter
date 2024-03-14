@@ -39,5 +39,30 @@
     "@labelServerAddressDescription": {
         "description": "TextField description for the server address",
         "type": "text"
+    },
+    "headerContinueListening": "Hallgatás folytatása",
+    "@headerContinueListening": {
+        "description": "Section title at Home screen",
+        "type": "text"
+    },
+    "headerContinueSeries": "Sorozat folytatása",
+    "@headerContinueSeries": {
+        "description": "Section title at Home screen",
+        "type": "text"
+    },
+    "headerRecentSeries": "Nemrég hozzáadott sorozatok",
+    "@headerRecentSeries": {
+        "description": "Section title at Home screen",
+        "type": "text"
+    },
+    "headerDiscover": "Felfedezés",
+    "@headerDiscover": {
+        "description": "Section title at Home screen",
+        "type": "text"
+    },
+    "headerListenAgain": "Újra hallgatás",
+    "@headerListenAgain": {
+        "description": "Section title at Home screen",
+        "type": "text"
     }
 }

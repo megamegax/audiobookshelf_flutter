@@ -6,6 +6,7 @@ import 'package:audiobookshelf_flutter/model/libraries/libraries_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_items_response.dart';
+import 'package:audiobookshelf_flutter/model/libraries/personalized_home.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/http_client_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
@@ -28,11 +29,26 @@ class LibraryService {
     final token = userModel.token;
     final fetchLibrariesResponse = await httpClient
         .get(Uri.parse('$serverAddress/api/libraries?token=$token'));
+
     final responseBody = jsonDecode(fetchLibrariesResponse.body);
     final List<Library> libraries =
         LibrariesResponse.fromJson(responseBody).libraries;
 
     return libraries;
+  }
+
+  Future<List<PersonalizedHome>> fetchPersonalizedHome(
+      UserModel userModel, String libraryId) async {
+    final token = userModel.token;
+    final personalizedHomeSectionsResponse = await httpClient.get(Uri.parse(
+        '$serverAddress/api/libraries/$libraryId/personalized?token=$token'));
+
+    final List<dynamic> responseBody =
+        jsonDecode(personalizedHomeSectionsResponse.body);
+    final List<PersonalizedHome> personalizedHomeSections =
+        responseBody.map((e) => PersonalizedHome.fromJson(e)).toList();
+
+    return personalizedHomeSections;
   }
 
   Future<List<LibraryItem>> fetchLibraryItems(
@@ -51,11 +67,9 @@ class LibraryService {
   Future<Uint8List?> fetchCover(LibraryItem item, UserModel userModel) async {
     final token = userModel.token;
 
-    final url = Uri.parse(
-        "$serverAddress/api/items/${item.id}/cover?token=${userModel.token}");
-
-    final response =
-        await httpClient.get(url, headers: {"Authorization": "Bearer $token"});
+    final response = await httpClient.get(
+        Uri.parse("$serverAddress/api/items/${item.id}/cover"),
+        headers: {"Authorization": "Bearer $token"});
 
     final bytes = response.bodyBytes;
 

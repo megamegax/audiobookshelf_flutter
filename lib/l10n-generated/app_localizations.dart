@@ -140,6 +140,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter the server address of Audiobookshelf'**
   String get labelServerAddressDescription;
+
+  /// Section title at Home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Continue listening'**
+  String get headerContinueListening;
+
+  /// Section title at Home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Continue series'**
+  String get headerContinueSeries;
+
+  /// Section title at Home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Recent series'**
+  String get headerRecentSeries;
+
+  /// Section title at Home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Discover'**
+  String get headerDiscover;
+
+  /// Section title at Home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Listen again'**
+  String get headerListenAgain;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

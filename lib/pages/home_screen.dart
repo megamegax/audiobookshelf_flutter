@@ -1,16 +1,14 @@
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/drawer/book_drawer.dart';
+import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
+import 'package:audiobookshelf_flutter/model/libraries/personalized_home.dart';
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
 import 'package:audiobookshelf_flutter/pages/book_card.dart';
-import 'package:audiobookshelf_flutter/pages/book_details.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
 import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -29,14 +27,33 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final libraryItemsRepository = ref.read(libraryItemsRepositoryProvider);
     final libraryRepository = ref.read(libraryRepositoryProvider.future);
+    final libraryService = ref.read(libraryServiceProvider);
+    final userModel = ref.read(userModelNotifierProvider);
     final ServerSettings? serverSettings =
         ref.read(serverSettingsNotifierProvider);
     final Future<Widget> future = libraryItemsRepository.when(
       data: (libraryItemsRepository) async {
         final libraryId =
             (await (await libraryRepository).getLibrary())[0].libraryId;
-        final List<LibraryItemEntity> libraryItems =
-            await libraryItemsRepository.getBooks(libraryId!);
+
+        final List<PersonalizedHome> personalizedHomeSections =
+            await libraryService.fetchPersonalizedHome(userModel!, libraryId!);
+        final homeSections = await Future.wait(personalizedHomeSections.map(
+            (section) async => PersonalizedHomeEntity(
+                id: section.id,
+                type: section.type,
+                entities: await Future.wait(
+                    section.entities.map((PersonalizedEntity item) async {
+                  if (section.type == "book") {
+                    final cachedBook =
+                        (await libraryItemsRepository.getBook(item.id));
+                    return cachedBook;
+                  } else {
+                    final cachedSerie =
+                        (await libraryItemsRepository.getSerie(item.id));
+                    return cachedSerie;
+                  }
+                }).toList()))));
 
         return Scaffold(
             appBar: AppBar(
@@ -50,62 +67,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "Hallgatás folytatása",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child:
-                        Row(children: buildToContinueListening(libraryItems)),
-                  ),
                   const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "Sorozat folytatása",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child:
-                          Row(children: buildSeriesToContinue(libraryItems))),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "Nemrég hozzáadott sorozatok",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(children: buildRecentSeries(libraryItems))),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "Felfedezés",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(children: buildToDiscover(libraryItems))),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "Hallgasd újra",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(children: buildToListenAgain(libraryItems))),
+                  ...homeSections
+                      .map((homeSection) => buildSection(homeSection)),
                 ],
               ),
             ));
@@ -170,15 +134,37 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         .toList();
   }
 
-//todo recently added series not recently listened
-  List<Widget> buildRecentSeries(List<LibraryItemEntity> libraryItems) {
-    final List<LibraryItemEntity> sortedLibraryItems = [];
-    sortedLibraryItems.addAll(
-        libraryItems.where((book) => book.media.progress != null).toList());
-    sortedLibraryItems.sort((a, b) =>
-        a.media.progress!.lastUpdate!.compareTo(b.media.progress!.lastUpdate!));
-
-    final filtered = sortedLibraryItems.last;
-    return [Text(filtered.media.metadata!.seriesName!)];
+  Widget buildSection(PersonalizedHomeEntity homeSection) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            switch (homeSection.id) {
+              SectionType.continueListening =>
+                AppLocalizations.of(context)!.headerContinueListening,
+              SectionType.continueSeries =>
+                AppLocalizations.of(context)!.headerContinueSeries,
+              SectionType.recentSeries =>
+                AppLocalizations.of(context)!.headerRecentSeries,
+              SectionType.discover =>
+                AppLocalizations.of(context)!.headerDiscover,
+              SectionType.listenAgain =>
+                AppLocalizations.of(context)!.headerListenAgain,
+            },
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+                children: homeSection.entities
+                    .map((libraryItem) => libraryItem == null
+                        ? Container()
+                        : BookCard(libraryItem: libraryItem))
+                    .toList())),
+      ],
+    );
   }
 }

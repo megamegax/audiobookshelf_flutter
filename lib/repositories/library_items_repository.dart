@@ -210,4 +210,15 @@ class LibraryItemsRepository {
       }
     }
   }
+
+//todo handle series
+  Future<LibraryItemEntity?> getSerie(String itemId) async {
+    final LibraryItemEntity? item = await _isar.libraryItemEntitys
+        .where()
+        .filter()
+        .itemIdEqualTo(itemId)
+        .findFirst();
+
+    return item;
+  }
 }
