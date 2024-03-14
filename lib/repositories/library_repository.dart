@@ -2,7 +2,6 @@ import 'package:audiobookshelf_flutter/database/folder_entity.dart';
 import 'package:audiobookshelf_flutter/database/library_entity.dart';
 import 'package:audiobookshelf_flutter/database/library_settings_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
-import 'package:audiobookshelf_flutter/model/libraries/series_item.dart';
 import 'package:audiobookshelf_flutter/provider/database_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';

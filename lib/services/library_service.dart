@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/libraries_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';

@@ -1,10 +1,8 @@
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
-import 'package:audiobookshelf_flutter/model/libraries/series_item.dart';
 import 'package:audiobookshelf_flutter/model/login/login_response.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
-import 'package:audiobookshelf_flutter/pages/bookshelf_screen.dart';
 import 'package:audiobookshelf_flutter/pages/home_screen.dart';
 import 'package:audiobookshelf_flutter/pages/init_screen.dart';
 import 'package:audiobookshelf_flutter/pages/login_screen.dart';

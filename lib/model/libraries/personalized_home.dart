@@ -1,4 +1,3 @@
-import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'personalized_home.freezed.dart';

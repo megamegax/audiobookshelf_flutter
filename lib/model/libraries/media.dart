@@ -11,6 +11,7 @@ class Media with _$Media {
   const factory Media({
     required Metadata metadata,
     required String coverPath,
+    // ignore: invalid_annotation_target
     @JsonKey(includeFromJson: false, includeToJson: false)
     Uint8List? coverBytes,
     List<String>? tags,

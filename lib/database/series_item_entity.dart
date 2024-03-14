@@ -1,4 +1,3 @@
-import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:isar/isar.dart';
 
 part 'series_item_entity.g.dart';

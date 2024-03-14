@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
-import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
 import 'package:audiobookshelf_flutter/pages/book_details.dart';
 import 'package:flutter/material.dart';
 
