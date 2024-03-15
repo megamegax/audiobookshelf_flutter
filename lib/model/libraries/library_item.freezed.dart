@@ -36,7 +36,7 @@ mixin _$LibraryItem {
   bool get isInvalid => throw _privateConstructorUsedError;
   String get mediaType => throw _privateConstructorUsedError;
   Media get media => throw _privateConstructorUsedError;
-  int get numFiles => throw _privateConstructorUsedError;
+  int? get numFiles => throw _privateConstructorUsedError;
   int get size => throw _privateConstructorUsedError;
   CollapsedSeries? get collapsedSeries => throw _privateConstructorUsedError;
 
@@ -69,7 +69,7 @@ abstract class $LibraryItemCopyWith<$Res> {
       bool isInvalid,
       String mediaType,
       Media media,
-      int numFiles,
+      int? numFiles,
       int size,
       CollapsedSeries? collapsedSeries});
 
@@ -106,7 +106,7 @@ class _$LibraryItemCopyWithImpl<$Res, $Val extends LibraryItem>
     Object? isInvalid = null,
     Object? mediaType = null,
     Object? media = null,
-    Object? numFiles = null,
+    Object? numFiles = freezed,
     Object? size = null,
     Object? collapsedSeries = freezed,
   }) {
@@ -175,10 +175,10 @@ class _$LibraryItemCopyWithImpl<$Res, $Val extends LibraryItem>
           ? _value.media
           : media // ignore: cast_nullable_to_non_nullable
               as Media,
-      numFiles: null == numFiles
+      numFiles: freezed == numFiles
           ? _value.numFiles
           : numFiles // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       size: null == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
@@ -236,7 +236,7 @@ abstract class _$$LibraryItemImplCopyWith<$Res>
       bool isInvalid,
       String mediaType,
       Media media,
-      int numFiles,
+      int? numFiles,
       int size,
       CollapsedSeries? collapsedSeries});
 
@@ -273,7 +273,7 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
     Object? isInvalid = null,
     Object? mediaType = null,
     Object? media = null,
-    Object? numFiles = null,
+    Object? numFiles = freezed,
     Object? size = null,
     Object? collapsedSeries = freezed,
   }) {
@@ -342,10 +342,10 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
           ? _value.media
           : media // ignore: cast_nullable_to_non_nullable
               as Media,
-      numFiles: null == numFiles
+      numFiles: freezed == numFiles
           ? _value.numFiles
           : numFiles // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       size: null == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
@@ -418,7 +418,7 @@ class _$LibraryItemImpl implements _LibraryItem {
   @override
   final Media media;
   @override
-  final int numFiles;
+  final int? numFiles;
   @override
   final int size;
   @override
@@ -521,7 +521,7 @@ abstract class _LibraryItem implements LibraryItem {
       required final bool isInvalid,
       required final String mediaType,
       required final Media media,
-      required final int numFiles,
+      required final int? numFiles,
       required final int size,
       required final CollapsedSeries? collapsedSeries}) = _$LibraryItemImpl;
 
@@ -561,7 +561,7 @@ abstract class _LibraryItem implements LibraryItem {
   @override
   Media get media;
   @override
-  int get numFiles;
+  int? get numFiles;
   @override
   int get size;
   @override

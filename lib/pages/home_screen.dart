@@ -4,7 +4,9 @@ import 'package:audiobookshelf_flutter/drawer/book_drawer.dart';
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
 import 'package:audiobookshelf_flutter/model/libraries/personalized_home.dart';
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/widgets/book_card.dart';
+import 'package:audiobookshelf_flutter/widgets/player.dart';
 import 'package:audiobookshelf_flutter/widgets/series_card.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
@@ -27,6 +29,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final _audioPlayer = ref.read(audioPlayerProvider);
     final libraryItemsRepository = ref.read(libraryItemsRepositoryProvider);
     final libraryRepository = ref.read(libraryRepositoryProvider.future);
     final libraryService = ref.read(libraryServiceProvider);
@@ -58,6 +61,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 }).toList()))));
 
         return Scaffold(
+            bottomSheet: _audioPlayer.audioSource != null
+                ? Player(source: _audioPlayer.audioSource!)
+                : null,
             appBar: AppBar(
               title: const Text('Home'),
             ),
@@ -65,14 +71,18 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               selectedItem: SelectedItem.home,
               serverSettings: serverSettings,
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  ...homeSections
-                      .map((homeSection) => buildSection(homeSection)),
-                ],
+            body: Padding(
+              padding: EdgeInsets.only(
+                  bottom: _audioPlayer.audioSource != null ? 100.0 : 0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    ...homeSections
+                        .map((homeSection) => buildSection(homeSection)),
+                  ],
+                ),
               ),
             ));
       },

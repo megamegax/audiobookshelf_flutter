@@ -24,7 +24,7 @@ class LibraryItem with _$LibraryItem {
     required bool isInvalid,
     required String mediaType,
     required Media media,
-    required int numFiles,
+    required int? numFiles,
     required int size,
     required CollapsedSeries? collapsedSeries,
   }) = _LibraryItem;

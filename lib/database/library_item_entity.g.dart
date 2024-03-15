@@ -164,12 +164,7 @@ int _libraryItemEntityEstimateSize(
   }
   bytesCount += 3 + object.folderId.length * 3;
   bytesCount += 3 + object.ino.length * 3;
-  {
-    final value = object.itemId;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.itemId.length * 3;
   bytesCount += 3 + object.libraryId.length * 3;
   bytesCount += 3 +
       MediaEntitySchema.estimateSize(
@@ -237,7 +232,7 @@ LibraryItemEntity _libraryItemEntityDeserialize(
     isFile: reader.readBool(offsets[6]),
     isInvalid: reader.readBool(offsets[7]),
     isMissing: reader.readBool(offsets[8]),
-    itemId: reader.readStringOrNull(offsets[9]),
+    itemId: reader.readString(offsets[9]),
     libraryId: reader.readString(offsets[10]),
     media: reader.readObjectOrNull<MediaEntity>(
           offsets[11],
@@ -287,7 +282,7 @@ P _libraryItemEntityDeserializeProp<P>(
     case 8:
       return (reader.readBool(offset)) as P;
     case 9:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 10:
       return (reader.readString(offset)) as P;
     case 11:
@@ -410,29 +405,7 @@ extension LibraryItemEntityQueryWhere
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterWhereClause>
-      itemIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'itemId',
-        value: [null],
-      ));
-    });
-  }
-
-  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterWhereClause>
-      itemIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'itemId',
-        lower: [null],
-        includeLower: false,
-        upper: [],
-      ));
-    });
-  }
-
-  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterWhereClause>
-      itemIdEqualTo(String? itemId) {
+      itemIdEqualTo(String itemId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'itemId',
@@ -442,7 +415,7 @@ extension LibraryItemEntityQueryWhere
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterWhereClause>
-      itemIdNotEqualTo(String? itemId) {
+      itemIdNotEqualTo(String itemId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -1024,26 +997,8 @@ extension LibraryItemEntityQueryFilter
   }
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
-      itemIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'itemId',
-      ));
-    });
-  }
-
-  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
-      itemIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'itemId',
-      ));
-    });
-  }
-
-  QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       itemIdEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1057,7 +1012,7 @@ extension LibraryItemEntityQueryFilter
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       itemIdGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1073,7 +1028,7 @@ extension LibraryItemEntityQueryFilter
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       itemIdLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1089,8 +1044,8 @@ extension LibraryItemEntityQueryFilter
 
   QueryBuilder<LibraryItemEntity, LibraryItemEntity, QAfterFilterCondition>
       itemIdBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -2662,7 +2617,7 @@ extension LibraryItemEntityQueryProperty
     });
   }
 
-  QueryBuilder<LibraryItemEntity, String?, QQueryOperations> itemIdProperty() {
+  QueryBuilder<LibraryItemEntity, String, QQueryOperations> itemIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'itemId');
     });

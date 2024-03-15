@@ -21,15 +21,16 @@ Media _$MediaFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Media {
   Metadata get metadata => throw _privateConstructorUsedError;
-  String get coverPath => throw _privateConstructorUsedError;
+  String get coverPath =>
+      throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(includeFromJson: false, includeToJson: false)
   Uint8List? get coverBytes => throw _privateConstructorUsedError;
   List<String>? get tags => throw _privateConstructorUsedError;
-  int get numTracks => throw _privateConstructorUsedError;
-  int get numAudioFiles => throw _privateConstructorUsedError;
-  int get numChapters => throw _privateConstructorUsedError;
-  int get numMissingParts => throw _privateConstructorUsedError;
-  int get numInvalidAudioFiles => throw _privateConstructorUsedError;
+  int? get numTracks => throw _privateConstructorUsedError;
+  int? get numAudioFiles => throw _privateConstructorUsedError;
+  int? get numChapters => throw _privateConstructorUsedError;
+  int? get numMissingParts => throw _privateConstructorUsedError;
+  int? get numInvalidAudioFiles => throw _privateConstructorUsedError;
   double get duration => throw _privateConstructorUsedError;
   int get size => throw _privateConstructorUsedError;
   String? get ebookFileFormat => throw _privateConstructorUsedError;
@@ -50,11 +51,11 @@ abstract class $MediaCopyWith<$Res> {
       @JsonKey(includeFromJson: false, includeToJson: false)
       Uint8List? coverBytes,
       List<String>? tags,
-      int numTracks,
-      int numAudioFiles,
-      int numChapters,
-      int numMissingParts,
-      int numInvalidAudioFiles,
+      int? numTracks,
+      int? numAudioFiles,
+      int? numChapters,
+      int? numMissingParts,
+      int? numInvalidAudioFiles,
       double duration,
       int size,
       String? ebookFileFormat});
@@ -79,11 +80,11 @@ class _$MediaCopyWithImpl<$Res, $Val extends Media>
     Object? coverPath = null,
     Object? coverBytes = freezed,
     Object? tags = freezed,
-    Object? numTracks = null,
-    Object? numAudioFiles = null,
-    Object? numChapters = null,
-    Object? numMissingParts = null,
-    Object? numInvalidAudioFiles = null,
+    Object? numTracks = freezed,
+    Object? numAudioFiles = freezed,
+    Object? numChapters = freezed,
+    Object? numMissingParts = freezed,
+    Object? numInvalidAudioFiles = freezed,
     Object? duration = null,
     Object? size = null,
     Object? ebookFileFormat = freezed,
@@ -105,26 +106,26 @@ class _$MediaCopyWithImpl<$Res, $Val extends Media>
           ? _value.tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      numTracks: null == numTracks
+      numTracks: freezed == numTracks
           ? _value.numTracks
           : numTracks // ignore: cast_nullable_to_non_nullable
-              as int,
-      numAudioFiles: null == numAudioFiles
+              as int?,
+      numAudioFiles: freezed == numAudioFiles
           ? _value.numAudioFiles
           : numAudioFiles // ignore: cast_nullable_to_non_nullable
-              as int,
-      numChapters: null == numChapters
+              as int?,
+      numChapters: freezed == numChapters
           ? _value.numChapters
           : numChapters // ignore: cast_nullable_to_non_nullable
-              as int,
-      numMissingParts: null == numMissingParts
+              as int?,
+      numMissingParts: freezed == numMissingParts
           ? _value.numMissingParts
           : numMissingParts // ignore: cast_nullable_to_non_nullable
-              as int,
-      numInvalidAudioFiles: null == numInvalidAudioFiles
+              as int?,
+      numInvalidAudioFiles: freezed == numInvalidAudioFiles
           ? _value.numInvalidAudioFiles
           : numInvalidAudioFiles // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       duration: null == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
@@ -162,11 +163,11 @@ abstract class _$$MediaImplCopyWith<$Res> implements $MediaCopyWith<$Res> {
       @JsonKey(includeFromJson: false, includeToJson: false)
       Uint8List? coverBytes,
       List<String>? tags,
-      int numTracks,
-      int numAudioFiles,
-      int numChapters,
-      int numMissingParts,
-      int numInvalidAudioFiles,
+      int? numTracks,
+      int? numAudioFiles,
+      int? numChapters,
+      int? numMissingParts,
+      int? numInvalidAudioFiles,
       double duration,
       int size,
       String? ebookFileFormat});
@@ -190,11 +191,11 @@ class __$$MediaImplCopyWithImpl<$Res>
     Object? coverPath = null,
     Object? coverBytes = freezed,
     Object? tags = freezed,
-    Object? numTracks = null,
-    Object? numAudioFiles = null,
-    Object? numChapters = null,
-    Object? numMissingParts = null,
-    Object? numInvalidAudioFiles = null,
+    Object? numTracks = freezed,
+    Object? numAudioFiles = freezed,
+    Object? numChapters = freezed,
+    Object? numMissingParts = freezed,
+    Object? numInvalidAudioFiles = freezed,
     Object? duration = null,
     Object? size = null,
     Object? ebookFileFormat = freezed,
@@ -216,26 +217,26 @@ class __$$MediaImplCopyWithImpl<$Res>
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      numTracks: null == numTracks
+      numTracks: freezed == numTracks
           ? _value.numTracks
           : numTracks // ignore: cast_nullable_to_non_nullable
-              as int,
-      numAudioFiles: null == numAudioFiles
+              as int?,
+      numAudioFiles: freezed == numAudioFiles
           ? _value.numAudioFiles
           : numAudioFiles // ignore: cast_nullable_to_non_nullable
-              as int,
-      numChapters: null == numChapters
+              as int?,
+      numChapters: freezed == numChapters
           ? _value.numChapters
           : numChapters // ignore: cast_nullable_to_non_nullable
-              as int,
-      numMissingParts: null == numMissingParts
+              as int?,
+      numMissingParts: freezed == numMissingParts
           ? _value.numMissingParts
           : numMissingParts // ignore: cast_nullable_to_non_nullable
-              as int,
-      numInvalidAudioFiles: null == numInvalidAudioFiles
+              as int?,
+      numInvalidAudioFiles: freezed == numInvalidAudioFiles
           ? _value.numInvalidAudioFiles
           : numInvalidAudioFiles // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       duration: null == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
@@ -277,6 +278,7 @@ class _$MediaImpl implements _Media {
   final Metadata metadata;
   @override
   final String coverPath;
+// ignore: invalid_annotation_target
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   final Uint8List? coverBytes;
@@ -291,15 +293,15 @@ class _$MediaImpl implements _Media {
   }
 
   @override
-  final int numTracks;
+  final int? numTracks;
   @override
-  final int numAudioFiles;
+  final int? numAudioFiles;
   @override
-  final int numChapters;
+  final int? numChapters;
   @override
-  final int numMissingParts;
+  final int? numMissingParts;
   @override
-  final int numInvalidAudioFiles;
+  final int? numInvalidAudioFiles;
   @override
   final double duration;
   @override
@@ -379,11 +381,11 @@ abstract class _Media implements Media {
       @JsonKey(includeFromJson: false, includeToJson: false)
       final Uint8List? coverBytes,
       final List<String>? tags,
-      required final int numTracks,
-      required final int numAudioFiles,
-      required final int numChapters,
-      required final int numMissingParts,
-      required final int numInvalidAudioFiles,
+      required final int? numTracks,
+      required final int? numAudioFiles,
+      required final int? numChapters,
+      required final int? numMissingParts,
+      required final int? numInvalidAudioFiles,
       required final double duration,
       required final int size,
       final String? ebookFileFormat}) = _$MediaImpl;
@@ -394,21 +396,21 @@ abstract class _Media implements Media {
   Metadata get metadata;
   @override
   String get coverPath;
-  @override
+  @override // ignore: invalid_annotation_target
   @JsonKey(includeFromJson: false, includeToJson: false)
   Uint8List? get coverBytes;
   @override
   List<String>? get tags;
   @override
-  int get numTracks;
+  int? get numTracks;
   @override
-  int get numAudioFiles;
+  int? get numAudioFiles;
   @override
-  int get numChapters;
+  int? get numChapters;
   @override
-  int get numMissingParts;
+  int? get numMissingParts;
   @override
-  int get numInvalidAudioFiles;
+  int? get numInvalidAudioFiles;
   @override
   double get duration;
   @override

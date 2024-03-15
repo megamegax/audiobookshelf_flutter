@@ -10,7 +10,7 @@ part 'library_item_entity.g.dart';
 class LibraryItemEntity {
   Id id = Isar.autoIncrement;
   @Index()
-  String? itemId;
+  String itemId;
   String ino;
   String libraryId;
   String folderId;

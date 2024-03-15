@@ -24,7 +24,7 @@ _$LibraryItemImpl _$$LibraryItemImplFromJson(Map<String, dynamic> json) =>
       isInvalid: json['isInvalid'] as bool,
       mediaType: json['mediaType'] as String,
       media: Media.fromJson(json['media'] as Map<String, dynamic>),
-      numFiles: json['numFiles'] as int,
+      numFiles: json['numFiles'] as int?,
       size: json['size'] as int,
       collapsedSeries: json['collapsedSeries'] == null
           ? null

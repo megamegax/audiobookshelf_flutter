@@ -77,7 +77,7 @@ class LibraryItemsRepository {
             ..birthtimeMs = fetchedLibrary.birthtimeMs
             ..ctimeMs = fetchedLibrary.ctimeMs
             ..mtimeMs = fetchedLibrary.mtimeMs
-            ..numFiles = fetchedLibrary.numFiles
+            ..numFiles = fetchedLibrary.numFiles ?? 0
             ..size = fetchedLibrary.size
             ..isInvalid = fetchedLibrary.isInvalid
             ..mediaType = fetchedLibrary.mediaType
@@ -147,7 +147,7 @@ class LibraryItemsRepository {
                   size: fetchedLibrary.media.size,
                   tags: fetchedLibrary.media.tags,
                   progress: null),
-              numFiles: fetchedLibrary.numFiles,
+              numFiles: fetchedLibrary.numFiles ?? 0,
               size: fetchedLibrary.size,
               collapsedSeries: fetchedLibrary.collapsedSeries == null
                   ? null
@@ -171,7 +171,7 @@ class LibraryItemsRepository {
           .libraryItemEntitys
           .where()
           .filter()
-          .itemIdEqualTo(element.libraryItemId)
+          .itemIdEqualTo(element.libraryItemId!)
           .findFirst();
       if (cachedLibraryItem == null) {
         continue;

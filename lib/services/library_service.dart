@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/libraries_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_items_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/personalized_home.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/device_info.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/play_item_request_payload.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/playback_session.dart';
 import 'package:audiobookshelf_flutter/model/libraries/series_item.dart';
 import 'package:audiobookshelf_flutter/model/libraries/series_response.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
@@ -36,6 +40,29 @@ class LibraryService {
         LibrariesResponse.fromJson(responseBody).libraries;
 
     return libraries;
+  }
+
+  Future<PlaybackSession> playBook(
+      UserModel userModel, LibraryItemEntity libraryItem) async {
+    final token = userModel.token;
+    final personalizedHomeSectionsResponse = await httpClient.post(
+        Uri.parse(
+            '$serverAddress/api/items/${libraryItem.itemId}/play?token=$token'),
+        body: jsonEncode(PlayItemRequestPayload(
+            itemId: libraryItem.itemId,
+            mediaType: libraryItem.mediaType,
+            mediaPlayer: "web",
+            forceDirectPlay: false,
+            forceTranscode: true,
+            deviceInfo: DeviceInfo(
+                clientVersion: "0.1",
+                sdkVersion: 10,
+                manufacturer: "11",
+                model: "Pixel 4a",
+                deviceId: "1234"))));
+    PlaybackSession playbackSession = PlaybackSession.fromJson(
+        jsonDecode(personalizedHomeSectionsResponse.body));
+    return playbackSession;
   }
 
   Future<List<PersonalizedHome>> fetchPersonalizedHome(
