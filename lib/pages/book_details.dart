@@ -84,18 +84,8 @@ class BookDetailsState extends ConsumerState<BookDetails> {
                   height: 204,
                   child: Hero(
                     tag: 'bookImage${widget.item.itemId}',
-                    child: Container(
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
-                      ),
+                    child: Card(
+                      elevation: 4,
                       child: Column(
                         children: [
                           Image.memory(coverBytes, fit: BoxFit.cover),
