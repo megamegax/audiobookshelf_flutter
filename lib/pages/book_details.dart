@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
@@ -6,6 +7,7 @@ import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
+import 'package:audiobookshelf_flutter/services/player_service.dart';
 import 'package:audiobookshelf_flutter/widgets/player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -28,20 +30,32 @@ class BookDetailsState extends ConsumerState<BookDetails> {
   late AudioPlayer _audioPlayer;
   late UserModel userModel;
   late LibraryService libraryService;
+  late PlayerService playerService;
   double progress = 0;
   Uint8List coverBytes = Uint8List.fromList([]);
   bool playerPrepared = false;
   late StreamSubscription subscription;
+
   @override
   void initState() {
     _audioPlayer = ref.read(audioPlayerProvider);
     userModel = ref.read(userModelNotifierProvider)!;
     libraryService = ref.read(libraryServiceProvider);
+    playerService = ref.read(playerServiceProvider);
     progress = widget.item.media.progress == null
         ? 0
         : widget.item.media.progress!.progress!;
     coverBytes = Uint8List.fromList(widget.item.media.coverBytes!);
-    preparePlayer();
+    subscription = _audioPlayer.positionStream.listen((event) {
+      setState(() {
+        progress = event.inMilliseconds / _audioPlayer.duration!.inMilliseconds;
+      });
+    });
+    playerService.preparePlayer(widget.item, onPrepared: () {
+      setState(() {
+        playerPrepared = true;
+      });
+    });
 
     super.initState();
   }
@@ -188,7 +202,12 @@ class BookDetailsState extends ConsumerState<BookDetails> {
                       if (_audioPlayer.playing) {
                         setState(() {
                           _audioPlayer.pause();
-                          preparePlayer(autoStart: true);
+                          playerService.preparePlayer(widget.item,
+                              autoStart: true, onPrepared: () {
+                            setState(() {
+                              playerPrepared = true;
+                            });
+                          });
                         });
                       } else {
                         setState(() {
@@ -230,49 +249,6 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     );
   }
 
-  preparePlayer({bool autoStart = false}) async {
-    if (_audioPlayer.playing) {
-      final tag = _audioPlayer.audioSource!.sequence[0].tag as MediaItem;
-      if (tag.id == widget.item.itemId.toString()) {
-        setState(() {
-          playerPrepared = true;
-        });
-      } else {
-        return;
-      }
-      return;
-    }
-    final serverAddress = await ref.read(serverAddressLoaderProvider.future);
-    final playbackSession =
-        await libraryService.playBook(userModel, widget.item);
-    print(
-        "$serverAddress${playbackSession.audioTracks[0].contentUrl!}?token=${userModel.token}");
-    await _audioPlayer.setAudioSource(AudioSource.uri(
-      Uri.parse(
-          "$serverAddress${playbackSession.audioTracks[0].contentUrl!}?token=${userModel.token}"),
-      tag: MediaItem(
-          id: widget.item.itemId.toString(),
-          album: widget.item.media.metadata?.seriesName,
-          title: widget.item.media.metadata?.title ?? "-",
-          displayDescription: widget.item.media.metadata?.authorName ?? "-",
-          extras: {"coverBytes": coverBytes, "item": widget.item},
-          duration:
-              Duration(seconds: widget.item.media.duration?.toInt() ?? 0)),
-    ));
-    setState(() {
-      playerPrepared = true;
-    });
-
-    subscription = _audioPlayer.positionStream.listen((event) {
-      setState(() {
-        progress = event.inMilliseconds / _audioPlayer.duration!.inMilliseconds;
-      });
-    });
-    if (autoStart) {
-      _audioPlayer.play();
-    }
-  }
-
   String sizeToReadable(int sizeInBytes) {
     String mbSize = "${(sizeInBytes / 1024 / 1024).toStringAsFixed(2)} MB";
     if ((sizeInBytes / 1024 / 1024) >= 1024) {
@@ -291,17 +267,3 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     return sDuration;
   }
 }
-
-class StreamSocket {
-  final _socketResponse = StreamController<String>();
-
-  void Function(String) get addResponse => _socketResponse.sink.add;
-
-  Stream<String> get getResponse => _socketResponse.stream;
-
-  void dispose() {
-    _socketResponse.close();
-  }
-}
-
-StreamSocket streamSocket = StreamSocket();

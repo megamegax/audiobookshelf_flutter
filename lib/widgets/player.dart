@@ -54,7 +54,7 @@ class _PlayerState extends ConsumerState<Player> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100,
+      height: 136,
       child: Card(
         child: Padding(
           padding: const EdgeInsets.only(left: 16.0, top: 8),
@@ -111,7 +111,13 @@ class _PlayerState extends ConsumerState<Player> {
                       ),
                       onPressed: () async {
                         setState(() {
-                          _audioPlayer.seek(const Duration(seconds: -10));
+                          if (_audioPlayer.position.inSeconds >= 10) {
+                            _audioPlayer.seek(Duration(
+                                seconds:
+                                    (_audioPlayer.position.inSeconds - 10)));
+                          } else {
+                            _audioPlayer.seek(const Duration(seconds: 0));
+                          }
                         });
                       },
                       child: Icon(Icons.arrow_back_outlined,
@@ -142,7 +148,15 @@ class _PlayerState extends ConsumerState<Player> {
                       ),
                       onPressed: () async {
                         setState(() {
-                          _audioPlayer.seek(const Duration(seconds: 10));
+                          if (_audioPlayer.position.inSeconds + 10 <=
+                              _audioPlayer.duration!.inSeconds) {
+                            _audioPlayer.seek(Duration(
+                                seconds:
+                                    (_audioPlayer.position.inSeconds + 10)));
+                          } else {
+                            _audioPlayer.seek(Duration(
+                                seconds: _audioPlayer.duration!.inSeconds));
+                          }
                         });
                       },
                       child: Icon(Icons.arrow_forward_outlined,
@@ -152,17 +166,25 @@ class _PlayerState extends ConsumerState<Player> {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Text(durationToReadable(Duration(
-                      seconds: (_libraryItem.media.progress?.currentTime ?? 0)
-                          .toInt()))),
+                  Text(durationToReadable(_audioPlayer.position)),
                   const Spacer(),
                   Text(
-                      "-${durationToReadable(Duration(seconds: (_mediaItem.duration ?? Duration.zero).inSeconds - (_libraryItem.media.progress?.currentTime ?? 0).round()))}"),
+                      "-${durationToReadable(Duration(seconds: (_mediaItem.duration ?? Duration.zero).inSeconds - (_audioPlayer.position.inSeconds).round()))}"),
                   const SizedBox(width: 16),
                 ],
               ),
-              const SizedBox(height: 8),
-              LinearProgressIndicator(value: progress),
+              Slider(
+                value: progress.isNaN ? 0.0 : progress,
+                onChanged: (double value) {
+                  setState(() {
+                    progress = value;
+                    _audioPlayer.seek(Duration(
+                        milliseconds:
+                            (value * _audioPlayer.duration!.inMilliseconds)
+                                .round()));
+                  });
+                },
+              ),
             ],
           ),
         ),
