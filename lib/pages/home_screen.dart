@@ -59,8 +59,23 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     return cachedSerie;
                   }
                 }).toList()))));
-
+        bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+        Color modifiedSurfaceColor;
+        if (isDarkMode) {
+          // Sötét mód - világosít
+          modifiedSurfaceColor = Color.alphaBlend(
+            Colors.white.withOpacity(0.1), // Világosítás mértéke
+            Theme.of(context).colorScheme.surface,
+          );
+        } else {
+          // Világos mód - sötétít
+          modifiedSurfaceColor = Color.alphaBlend(
+            Colors.black.withOpacity(0.1), // Sötétítés mértéke
+            Theme.of(context).colorScheme.surface,
+          );
+        }
         return Scaffold(
+            backgroundColor: modifiedSurfaceColor,
             bottomSheet: _audioPlayer.audioSource != null
                 ? Player(source: _audioPlayer.audioSource!)
                 : null,

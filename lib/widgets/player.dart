@@ -37,8 +37,7 @@ class _PlayerState extends ConsumerState<Player> {
     });
     subscription = _audioPlayer.positionStream.listen((event) {
       setState(() {
-        progress =
-            event.inMilliseconds / (_audioPlayer.duration?.inMilliseconds ?? 1);
+        progress = event.inSeconds / (_audioPlayer.duration?.inSeconds ?? 1);
       });
     });
     super.initState();
@@ -134,6 +133,11 @@ class _PlayerState extends ConsumerState<Player> {
                           });
                         } else {
                           setState(() {
+                            _audioPlayer.seek(Duration(
+                                seconds: _libraryItem
+                                        .media.progress?.currentTime
+                                        ?.toInt() ??
+                                    0));
                             _audioPlayer.play();
                           });
                         }
@@ -174,14 +178,15 @@ class _PlayerState extends ConsumerState<Player> {
                 ],
               ),
               Slider(
+                min: 0.0,
+                // max: _libraryItem.media.duration ?? 1,
                 value: progress.isNaN ? 0.0 : progress,
                 onChanged: (double value) {
                   setState(() {
                     progress = value;
                     _audioPlayer.seek(Duration(
-                        milliseconds:
-                            (value * _audioPlayer.duration!.inMilliseconds)
-                                .round()));
+                        seconds: (value * _audioPlayer.duration!.inSeconds)
+                            .floor()));
                   });
                 },
               ),

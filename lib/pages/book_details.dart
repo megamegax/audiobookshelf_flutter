@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:loading_btn/loading_btn.dart';
 
 class BookDetails extends ConsumerStatefulWidget {
   final LibraryItemEntity item;
@@ -34,6 +35,7 @@ class BookDetailsState extends ConsumerState<BookDetails> {
   double progress = 0;
   Uint8List coverBytes = Uint8List.fromList([]);
   bool playerPrepared = false;
+  bool playerLoading = false;
   late StreamSubscription subscription;
 
   @override
@@ -51,11 +53,6 @@ class BookDetailsState extends ConsumerState<BookDetails> {
         progress = event.inMilliseconds / _audioPlayer.duration!.inMilliseconds;
       });
     });
-    playerService.preparePlayer(widget.item, onPrepared: () {
-      setState(() {
-        playerPrepared = true;
-      });
-    });
 
     super.initState();
   }
@@ -68,6 +65,21 @@ class BookDetailsState extends ConsumerState<BookDetails> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    Color modifiedSurfaceColor;
+    if (isDarkMode) {
+      // Sötét mód - világosít
+      modifiedSurfaceColor = Color.alphaBlend(
+        Colors.white.withOpacity(0.1), // Világosítás mértéke
+        Theme.of(context).colorScheme.surface,
+      );
+    } else {
+      // Világos mód - sötétít
+      modifiedSurfaceColor = Color.alphaBlend(
+        Colors.black.withOpacity(0.1), // Sötétítés mértéke
+        Theme.of(context).colorScheme.surface,
+      );
+    }
     return Scaffold(
       bottomSheet: _audioPlayer.audioSource != null
           ? Player(source: _audioPlayer.audioSource!)
@@ -83,165 +95,203 @@ class BookDetailsState extends ConsumerState<BookDetails> {
                         .titleMedium
                         ?.copyWith(color: Colors.white)))),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-              bottom: _audioPlayer.audioSource != null ? 100.0 : 0),
+      body: Container(
+        color: modifiedSurfaceColor,
+        child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 200,
-                  height: 204,
-                  child: Hero(
-                    tag: 'bookImage${widget.item.itemId}',
-                    child: Card(
-                      elevation: 4,
-                      child: Column(
+            padding: EdgeInsets.only(
+                bottom: _audioPlayer.audioSource != null ? 100.0 : 0),
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 200,
+                    height: 204,
+                    child: Hero(
+                      tag: 'bookImage${widget.item.itemId}',
+                      child: Card(
+                        elevation: 4,
+                        child: Column(
+                          children: [
+                            Image.memory(coverBytes, fit: BoxFit.cover),
+                            LinearProgressIndicator(
+                              value: progress,
+                              color: progress == 1
+                                  ? Colors.green
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(widget.item.media.metadata?.seriesName ?? "",
+                          style: Theme.of(context).textTheme.titleMedium),
+                      Text(
+                          "by ${widget.item.media.metadata?.authorName ?? ""}"),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: SizedBox(
+                      width: 350,
+                      child: Table(
+                        columnWidths: const {
+                          0: FractionColumnWidth(0.3),
+                          1: FractionColumnWidth(0.7)
+                        },
+                        border: TableBorder.all(color: Colors.transparent),
                         children: [
-                          Image.memory(coverBytes, fit: BoxFit.cover),
-                          LinearProgressIndicator(
-                            value: progress,
-                            color: progress == 1
-                                ? Colors.green
-                                : Theme.of(context).colorScheme.primary,
+                          TableRow(
+                            children: [
+                              Text(
+                                "Narrators".toUpperCase(),
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                              Text(widget.item.media.metadata?.narratorName ??
+                                  "")
+                            ],
+                          ),
+                          const TableRow(
+                            children: [
+                              SizedBox(height: 10),
+                              SizedBox(height: 10),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              Text(
+                                "Genres".toUpperCase(),
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                              Text(widget.item.media.metadata?.genres
+                                      ?.join(",") ??
+                                  ""),
+                            ],
+                          ),
+                          const TableRow(
+                            children: [
+                              SizedBox(height: 10),
+                              SizedBox(height: 10),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              Text(
+                                "Duration".toUpperCase(),
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                              Text(durationToReadable(
+                                  widget.item.media.duration ?? 0)),
+                            ],
+                          ),
+                          const TableRow(
+                            children: [
+                              SizedBox(height: 10),
+                              SizedBox(height: 10),
+                            ],
+                          ),
+                          TableRow(
+                            children: [
+                              Text(
+                                "Size".toUpperCase(),
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                              Text(sizeToReadable(widget.item.media.size ?? 0)),
+                            ],
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(widget.item.media.metadata?.seriesName ?? "",
-                        style: Theme.of(context).textTheme.titleMedium),
-                    Text("by ${widget.item.media.metadata?.authorName ?? ""}"),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: SizedBox(
-                    width: 350,
-                    child: Table(
-                      columnWidths: const {
-                        0: FractionColumnWidth(0.3),
-                        1: FractionColumnWidth(0.7)
-                      },
-                      border: TableBorder.all(color: Colors.transparent),
-                      children: [
-                        TableRow(
-                          children: [
-                            Text(
-                              "Narrators".toUpperCase(),
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                            Text(widget.item.media.metadata?.narratorName ?? "")
-                          ],
-                        ),
-                        const TableRow(
-                          children: [
-                            SizedBox(height: 10),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Text(
-                              "Genres".toUpperCase(),
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                            Text(
-                                widget.item.media.metadata?.genres?.join(",") ??
-                                    ""),
-                          ],
-                        ),
-                        const TableRow(
-                          children: [
-                            SizedBox(height: 10),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Text(
-                              "Duration".toUpperCase(),
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                            Text(durationToReadable(
-                                widget.item.media.duration ?? 0)),
-                          ],
-                        ),
-                        const TableRow(
-                          children: [
-                            SizedBox(height: 10),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                        TableRow(
-                          children: [
-                            Text(
-                              "Size".toUpperCase(),
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                            Text(sizeToReadable(widget.item.media.size ?? 0)),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                    onPressed: () async {
-                      if (_audioPlayer.playing) {
-                        setState(() {
-                          _audioPlayer.pause();
-                          playerService.preparePlayer(widget.item,
-                              autoStart: true, onPrepared: () {
-                            setState(() {
-                              playerPrepared = true;
-                            });
+                  const SizedBox(height: 20),
+                  LoadingBtn(
+                      color: Theme.of(context).colorScheme.primary,
+                      height: 50,
+                      width: 200,
+                      onTap: (startLoading, stopLoading, btnState) async {
+                        if (_audioPlayer.playing) {
+                          setState(() {
+                            _audioPlayer.pause();
+                            if (playerService.currentItem() != widget.item) {
+                              if (btnState == ButtonState.idle) {
+                                startLoading();
+                              }
+                              playerService.preparePlayer(widget.item,
+                                  autoStart: true, onPrepared: () {
+                                setState(() {
+                                  if (btnState == ButtonState.busy) {
+                                    stopLoading();
+                                  }
+                                  playerPrepared = true;
+                                });
+                              });
+                            }
                           });
-                        });
-                      } else {
-                        setState(() {
-                          _audioPlayer.play();
-                        });
-                      }
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                            playerPrepared && _audioPlayer.playing
-                                ? Icons.pause
-                                : Icons.play_arrow,
-                            color: Colors.white),
-                        const Text("Streaming",
-                            style: TextStyle(color: Colors.white)),
-                      ],
-                    )),
-                SizedBox(
-                    height: 20,
-                    child: LinearProgressIndicator(value: progress)),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      widget.item.media.metadata?.description ?? "",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.justify,
+                        } else {
+                          if (playerService.currentItem() != widget.item) {
+                            setState(() {
+                              if (btnState == ButtonState.idle) {
+                                startLoading();
+                              }
+                              playerService.preparePlayer(widget.item,
+                                  autoStart: true, onPrepared: () {
+                                setState(() {
+                                  stopLoading();
+                                  playerPrepared = true;
+                                });
+                              });
+                            });
+                          }
+                        }
+                      },
+                      animate: true,
+                      loader: const SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                              playerPrepared && _audioPlayer.playing
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
+                              color: Colors.white),
+                          const Text("Streaming",
+                              style: TextStyle(color: Colors.white)),
+                        ],
+                      )),
+                  //  SizedBox(
+                  //      height: 20,
+                  //      child: LinearProgressIndicator(value: progress)),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Text(
+                        widget.item.media.metadata?.description ?? "",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        textAlign: TextAlign.justify,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

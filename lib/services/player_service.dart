@@ -30,6 +30,7 @@ class PlayerService {
   final LibraryService libraryService;
   final String serverAddress;
   late double _startTime;
+  LibraryItemEntity? _libraryItem;
   final UserModel userModel;
   PlayerService(
       {required this.audioPlayer,
@@ -43,6 +44,7 @@ class PlayerService {
 
   preparePlayer(LibraryItemEntity libraryItem,
       {bool autoStart = false, Function? onPrepared}) async {
+    _libraryItem = libraryItem;
     if (audioPlayer.playing) {
       final tag = audioPlayer.audioSource!.sequence[0].tag as MediaItem;
       if (tag.id == libraryItem.itemId.toString()) {
@@ -72,11 +74,17 @@ class PlayerService {
           duration:
               Duration(seconds: libraryItem.media.duration?.toInt() ?? 0)),
     ));
+    final position = Duration(
+        seconds: libraryItem.media.progress?.currentTime?.toInt() ?? 0);
     onPrepared?.call();
-
+    audioPlayer.seek(position);
     if (autoStart) {
       audioPlayer.play();
     }
+  }
+
+  LibraryItemEntity? currentItem() {
+    return _libraryItem;
   }
 
   int currentTrackIndex() {
