@@ -120,8 +120,8 @@ class _PlayerState extends ConsumerState<Player> {
                           } else {
                             _audioPlayer.seek(const Duration(seconds: 0));
                           }
-                          _playerService.updateMediaProgress();
                         });
+                        _playerService.updateMediaProgress();
                       },
                       child: Icon(Icons.arrow_back_outlined,
                           color: Theme.of(context).colorScheme.onSurface)),
@@ -166,6 +166,7 @@ class _PlayerState extends ConsumerState<Player> {
                                 seconds: _audioPlayer.duration!.inSeconds));
                           }
                         });
+                        _playerService.updateMediaProgress();
                       },
                       child: Icon(Icons.arrow_forward_outlined,
                           color: Theme.of(context).colorScheme.onSurface))
