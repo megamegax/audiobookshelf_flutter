@@ -115,4 +115,41 @@ class LibraryService {
 
     return bytes;
   }
+
+  Future<void> sendProgressSync(UserModel userModel, String sessionId,
+      Map<String, dynamic> syncData) async {
+    final token = userModel.token;
+
+    final response = await httpClient.post(
+      Uri.parse('$serverAddress/api/session/$sessionId/sync'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      },
+      body: jsonEncode(syncData),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to sync progress');
+    }
+  }
+
+  Future<void> updateMediaProgress(UserModel userModel, String libraryItemId,
+      {required Map<String, dynamic> updatePayload}) async {
+    final token = userModel.token;
+
+    final response = await httpClient.patch(
+      Uri.parse('$serverAddress/api/me/progress/$libraryItemId'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      },
+      body: jsonEncode(updatePayload),
+    );
+
+    if (response.statusCode != 200) {
+      print(response.body);
+      throw Exception('Failed to update media progress');
+    }
+  }
 }

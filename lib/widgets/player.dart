@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
+import 'package:audiobookshelf_flutter/services/player_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -24,11 +25,13 @@ class _PlayerState extends ConsumerState<Player> {
   double progress = 0;
   late StreamSubscription subscription;
   late StreamSubscription metaSubscription;
+  late PlayerService _playerService;
   @override
   void initState() {
     _mediaItem = widget.source.sequence[0].tag as MediaItem;
     _libraryItem = _mediaItem.extras!['item'] as LibraryItemEntity;
     _audioPlayer = ref.read(audioPlayerProvider);
+    _playerService = ref.read(playerServiceProvider);
     metaSubscription = _audioPlayer.playerStateStream.listen((event) {
       setState(() {
         _mediaItem = widget.source.sequence[0].tag as MediaItem;
@@ -117,6 +120,7 @@ class _PlayerState extends ConsumerState<Player> {
                           } else {
                             _audioPlayer.seek(const Duration(seconds: 0));
                           }
+                          _playerService.updateMediaProgress();
                         });
                       },
                       child: Icon(Icons.arrow_back_outlined,
@@ -187,6 +191,7 @@ class _PlayerState extends ConsumerState<Player> {
                     _audioPlayer.seek(Duration(
                         seconds: (value * _audioPlayer.duration!.inSeconds)
                             .floor()));
+                    _playerService.updateMediaProgress();
                   });
                 },
               ),

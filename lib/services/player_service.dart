@@ -3,10 +3,13 @@ import 'dart:math';
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/audio_track.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/playback_session.dart';
+import 'package:audiobookshelf_flutter/model/login/media_progress.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
+import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
+import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,11 +20,15 @@ final playerServiceProvider = Provider<PlayerService>((ref) {
   final audioPlayer = ref.read(audioPlayerProvider);
   final serverAddress = ref.read(serverAddressProvider);
   final userModel = ref.read(userModelNotifierProvider)!;
+  final libraryItemsRepository =
+      ref.read(libraryItemsRepositoryProvider.future);
+
   return PlayerService(
       audioPlayer: audioPlayer,
       serverAddress: serverAddress,
       libraryService: ref.read(libraryServiceProvider),
-      userModel: userModel);
+      userModel: userModel,
+      libraryItemsRepository: libraryItemsRepository);
 });
 
 class PlayerService {
@@ -32,11 +39,13 @@ class PlayerService {
   late double _startTime;
   LibraryItemEntity? _libraryItem;
   final UserModel userModel;
+  Future<LibraryItemsRepository> libraryItemsRepository;
   PlayerService(
       {required this.audioPlayer,
       required this.serverAddress,
       required this.libraryService,
-      required this.userModel});
+      required this.userModel,
+      required this.libraryItemsRepository});
   void init(PlaybackSession playbackSession, double startTime) {
     _playbackSession = playbackSession;
     _startTime = startTime;
@@ -119,5 +128,41 @@ class PlayerService {
 
   AudioTrack? currentTrack() {
     return _playbackSession.audioTracks[currentTrackIndex()];
+  }
+
+  Future<void> sendProgressSync() async {
+    final currentTime = overallCurrentTime();
+    final syncData = {
+      "currentTime": currentTime,
+      "duration": totalDuration(),
+    };
+    await libraryService.sendProgressSync(
+        userModel, _playbackSession.id, syncData);
+  }
+
+  Future<void> updateMediaProgress() async {
+    final currentTime = overallCurrentTime();
+    final updatePayload = {
+      "currentTime": currentTime,
+      "progress": currentTime / _libraryItem!.media.duration!,
+      "lastUpdate": DateTime.now().millisecondsSinceEpoch
+    };
+    await libraryService.updateMediaProgress(userModel, _libraryItem!.itemId,
+        updatePayload: updatePayload);
+    final List<MediaProgress>? mediaProgress =
+        userModel.mediaProgress?.map((MediaProgress element) {
+      MediaProgress? updatedElement;
+      if (element.libraryItemId == _libraryItem!.itemId) {
+        updatedElement = element.copyWith(
+            currentTime: currentTime,
+            progress: currentTime / _libraryItem!.media.duration!,
+            lastUpdate: DateTime.now().millisecondsSinceEpoch);
+      } else {
+        updatedElement = element;
+      }
+      return updatedElement;
+    }).toList();
+    final updatedUserModel = userModel.copyWith(mediaProgress: mediaProgress);
+    (await libraryItemsRepository).saveMediaProgresses(updatedUserModel);
   }
 }
