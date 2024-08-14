@@ -134,7 +134,8 @@ class PlayerService {
     final currentTime = overallCurrentTime();
     final syncData = {
       "currentTime": currentTime,
-      "duration": totalDuration(),
+      "progress": currentTime / _libraryItem!.media.duration!,
+      "lastUpdate": DateTime.now().millisecondsSinceEpoch,
     };
     await libraryService.sendProgressSync(
         userModel, _playbackSession.id, syncData);

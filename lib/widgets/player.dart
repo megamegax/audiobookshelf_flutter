@@ -42,6 +42,9 @@ class _PlayerState extends ConsumerState<Player> {
       setState(() {
         progress = event.inSeconds / (_audioPlayer.duration?.inSeconds ?? 1);
       });
+      if (event.inSeconds % 15 == 0) {
+        ref.read(playerServiceProvider).sendProgressSync();
+      }
     });
     super.initState();
   }
@@ -135,13 +138,14 @@ class _PlayerState extends ConsumerState<Player> {
                           setState(() {
                             _audioPlayer.pause();
                           });
+                          _playerService.updateMediaProgress();
                         } else {
                           setState(() {
-                            _audioPlayer.seek(Duration(
+                            /* _audioPlayer.seek(Duration(
                                 seconds: _libraryItem
                                         .media.progress?.currentTime
                                         ?.toInt() ??
-                                    0));
+                                    0));*/
                             _audioPlayer.play();
                           });
                         }
