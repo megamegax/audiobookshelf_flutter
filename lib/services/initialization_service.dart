@@ -90,7 +90,7 @@ class InitializationService {
               LibraryItem libraryItem = libraryItems[i];
               LibraryItemEntity? cachedLibraryItem =
                   await libraryItemsRepository.getBook(libraryItem.id);
-              if (libraryItem.updatedAt > (cachedLibraryItem?.updatedAt ?? 0)) {
+              if (cachedLibraryItem?.media.coverBytes == null || libraryItem.updatedAt > (cachedLibraryItem?.updatedAt ?? 0)) {
                 final cover = await libraryService.fetchCover(
                     libraryItem, loginResponse.user);
                 final mediaWithCover =

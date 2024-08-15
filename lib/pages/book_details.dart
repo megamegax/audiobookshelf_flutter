@@ -50,7 +50,7 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     coverBytes = Uint8List.fromList(widget.item.media.coverBytes!);
     subscription = _audioPlayer.positionStream.listen((event) {
       setState(() {
-        progress = event.inSeconds / _audioPlayer.duration!.inSeconds;
+        progress = event.inSeconds / (_audioPlayer.duration?.inSeconds ?? 1);
       });
     });
 

@@ -11,6 +11,18 @@
             "type": "dart"
         },
         {
+            "name": "audiobookshelf_flutter (MegaX Phone)",
+            "request": "launch",
+            "deviceId": "00008110-001E5D2801B8801E",
+            "type": "dart"
+        },
+                {
+            "name": "audiobookshelf_flutter (iOS Simulator)",
+            "request": "launch",
+            "deviceId": "343B4EEF-A7AE-4D61-A8FC-4BD81A08B6EE",
+            "type": "dart"
+        },
+        {
             "name": "audiobookshelf_flutter (profile mode)",
             "request": "launch",
             "type": "dart",

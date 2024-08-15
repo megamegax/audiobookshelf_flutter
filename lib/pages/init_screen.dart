@@ -1,5 +1,6 @@
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
+import 'package:audiobookshelf_flutter/pages/login_screen.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:flutter/foundation.dart';
@@ -18,7 +19,7 @@ class InitScreen extends ConsumerStatefulWidget {
 }
 
 class InitScreenState extends ConsumerState<InitScreen> {
-  late String serverAddress;
+  String serverAddress = "";
   late TextEditingController controller;
   @override
   void initState() {
@@ -57,14 +58,17 @@ class InitScreenState extends ConsumerState<InitScreen> {
             ElevatedButton(
               onPressed: () async {
                 final address = controller.text;
+                serverAddress = address;
                 if (address.isNotEmpty) {
                   await saveServerAddress(ref, address);
                   if (kDebugMode) {
-                    print('Server address saved: $serverAddress');
+                    print('Server address saved: ${controller.text}');
                   }
                   ref
                       .read(loginStateProvider.notifier)
                       .updateState(const LoginState.login());
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const LoginScreen()));
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

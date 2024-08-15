@@ -64,7 +64,8 @@ class LibraryItemsRepository {
           .findFirst();
       if (cachedLibraryItem != null) {
         if (cachedLibraryItem.updatedAt != null &&
-            fetchedLibrary.updatedAt > (cachedLibraryItem.updatedAt!)) {
+            (cachedLibraryItem.media.coverBytes == null ||
+                fetchedLibrary.updatedAt > (cachedLibraryItem.updatedAt!))) {
           cachedLibraryItem
             ..birthtimeMs = fetchedLibrary.birthtimeMs
             ..ctimeMs = fetchedLibrary.ctimeMs
@@ -73,7 +74,36 @@ class LibraryItemsRepository {
             ..isFile = fetchedLibrary.isFile
             ..isMissing = fetchedLibrary.isMissing
             ..updatedAt = fetchedLibrary.updatedAt
-            ..media = cachedLibraryItem.media
+            ..media = MediaEntity(
+                coverBytes: fetchedLibrary.media.coverBytes,
+                coverPath: fetchedLibrary.media.coverPath,
+                duration: fetchedLibrary.media.duration,
+                ebookFileFormat: fetchedLibrary.media.ebookFileFormat,
+                metadata: MetadataEntity(
+                    title: fetchedLibrary.media.metadata.title,
+                    authorName: fetchedLibrary.media.metadata.authorName,
+                    seriesName: fetchedLibrary.media.metadata.seriesName,
+                    asin: fetchedLibrary.media.metadata.asin,
+                    description: fetchedLibrary.media.metadata.description,
+                    genres: fetchedLibrary.media.metadata.genres,
+                    isbn: fetchedLibrary.media.metadata.isbn,
+                    language: fetchedLibrary.media.metadata.language,
+                    narratorName: fetchedLibrary.media.metadata.narratorName,
+                    publishedDate: fetchedLibrary.media.metadata.publishedDate,
+                    publishedYear: fetchedLibrary.media.metadata.publishedYear,
+                    publisher: fetchedLibrary.media.metadata.publisher,
+                    subtitle: fetchedLibrary.media.metadata.subtitle,
+                    titleIgnorePrefix:
+                        fetchedLibrary.media.metadata.titleIgnorePrefix,
+                    explicit: fetchedLibrary.media.metadata.explicit),
+                numAudioFiles: fetchedLibrary.media.numAudioFiles,
+                numChapters: fetchedLibrary.media.numChapters,
+                numInvalidAudioFiles: fetchedLibrary.media.numInvalidAudioFiles,
+                numMissingParts: fetchedLibrary.media.numMissingParts,
+                numTracks: fetchedLibrary.media.numTracks,
+                size: fetchedLibrary.media.size,
+                tags: fetchedLibrary.media.tags,
+                progress: null)
             ..birthtimeMs = fetchedLibrary.birthtimeMs
             ..ctimeMs = fetchedLibrary.ctimeMs
             ..mtimeMs = fetchedLibrary.mtimeMs
@@ -95,6 +125,7 @@ class LibraryItemsRepository {
                         fetchedLibrary.collapsedSeries!.nameIgnorePrefix,
                     id: cachedLibraryItem.collapsedSeries!.id ?? "0",
                   );
+          _isar.writeTxn(() => _isar.libraryItemEntitys.put(cachedLibraryItem));
         }
       } else {
         _isar.writeTxn(() {

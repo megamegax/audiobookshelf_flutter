@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
@@ -59,7 +60,7 @@ class _PlayerState extends ConsumerState<Player> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 136,
+      height: Platform.isIOS ? 160 : 134,
       child: Card(
         child: Padding(
           padding: const EdgeInsets.only(left: 16.0, top: 8),
@@ -200,6 +201,7 @@ class _PlayerState extends ConsumerState<Player> {
                   });
                 },
               ),
+              const SizedBox(height: 0),
             ],
           ),
         ),
