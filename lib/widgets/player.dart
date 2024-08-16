@@ -60,7 +60,7 @@ class _PlayerState extends ConsumerState<Player> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: Platform.isIOS ? 160 : 134,
+      height: Platform.isIOS ? 160 : 136,
       child: Card(
         child: Padding(
           padding: const EdgeInsets.only(left: 16.0, top: 8),

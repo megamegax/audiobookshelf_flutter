@@ -81,6 +81,7 @@ class BookDetailsState extends ConsumerState<BookDetails> {
       );
     }
     return Scaffold(
+      backgroundColor: modifiedSurfaceColor,
       bottomSheet: _audioPlayer.audioSource != null
           ? Player(source: _audioPlayer.audioSource!)
           : null,
@@ -95,203 +96,200 @@ class BookDetailsState extends ConsumerState<BookDetails> {
                         .titleMedium
                         ?.copyWith(color: Colors.white)))),
       ),
-      body: Container(
-        color: modifiedSurfaceColor,
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+              bottom: _audioPlayer.audioSource != null ? 100.0 : 0),
           child: Padding(
-            padding: EdgeInsets.only(
-                bottom: _audioPlayer.audioSource != null ? 100.0 : 0),
-            child: Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 200,
-                    height: 204,
-                    child: Hero(
-                      tag: 'bookImage${widget.item.itemId}',
-                      child: Card(
-                        elevation: 4,
-                        child: Column(
-                          children: [
-                            Image.memory(coverBytes, fit: BoxFit.cover),
-                            LinearProgressIndicator(
-                              value: progress,
-                              color: progress == 1
-                                  ? Colors.green
-                                  : Theme.of(context).colorScheme.primary,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(widget.item.media.metadata?.seriesName ?? "",
-                          style: Theme.of(context).textTheme.titleMedium),
-                      Text(
-                          "by ${widget.item.media.metadata?.authorName ?? ""}"),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: SizedBox(
-                      width: 350,
-                      child: Table(
-                        columnWidths: const {
-                          0: FractionColumnWidth(0.3),
-                          1: FractionColumnWidth(0.7)
-                        },
-                        border: TableBorder.all(color: Colors.transparent),
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 200,
+                  height: 204,
+                  child: Hero(
+                    tag: 'bookImage${widget.item.itemId}',
+                    child: Card(
+                      elevation: 4,
+                      child: Column(
                         children: [
-                          TableRow(
-                            children: [
-                              Text(
-                                "Narrators".toUpperCase(),
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                              Text(widget.item.media.metadata?.narratorName ??
-                                  "")
-                            ],
-                          ),
-                          const TableRow(
-                            children: [
-                              SizedBox(height: 10),
-                              SizedBox(height: 10),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Text(
-                                "Genres".toUpperCase(),
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                              Text(widget.item.media.metadata?.genres
-                                      ?.join(",") ??
-                                  ""),
-                            ],
-                          ),
-                          const TableRow(
-                            children: [
-                              SizedBox(height: 10),
-                              SizedBox(height: 10),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Text(
-                                "Duration".toUpperCase(),
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                              Text(durationToReadable(
-                                  widget.item.media.duration ?? 0)),
-                            ],
-                          ),
-                          const TableRow(
-                            children: [
-                              SizedBox(height: 10),
-                              SizedBox(height: 10),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Text(
-                                "Size".toUpperCase(),
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                              Text(sizeToReadable(widget.item.media.size ?? 0)),
-                            ],
+                          Image.memory(coverBytes, fit: BoxFit.cover),
+                          LinearProgressIndicator(
+                            value: widget.item.media.progress?.progress ??
+                                0, //progress,
+                            color: progress == 1
+                                ? Colors.green
+                                : Theme.of(context).colorScheme.primary,
                           ),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  LoadingBtn(
-                      color: Theme.of(context).colorScheme.primary,
-                      height: 50,
-                      width: 200,
-                      onTap: (startLoading, stopLoading, btnState) async {
-                        if (_audioPlayer.playing) {
-                          setState(() {
-                            _audioPlayer.pause();
-                            if (playerService.currentItem() != widget.item) {
-                              if (btnState == ButtonState.idle) {
-                                startLoading();
-                              }
-                              playerService.preparePlayer(widget.item,
-                                  autoStart: true, onPrepared: () {
-                                setState(() {
-                                  if (btnState == ButtonState.busy) {
-                                    stopLoading();
-                                  }
-                                  playerPrepared = true;
-                                });
-                              });
-                            }
-                          });
-                        } else {
+                ),
+                const SizedBox(height: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(widget.item.media.metadata?.seriesName ?? "",
+                        style: Theme.of(context).textTheme.titleMedium),
+                    Text("by ${widget.item.media.metadata?.authorName ?? ""}"),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: SizedBox(
+                    width: 350,
+                    child: Table(
+                      columnWidths: const {
+                        0: FractionColumnWidth(0.3),
+                        1: FractionColumnWidth(0.7)
+                      },
+                      border: TableBorder.all(color: Colors.transparent),
+                      children: [
+                        TableRow(
+                          children: [
+                            Text(
+                              "Narrators".toUpperCase(),
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            Text(widget.item.media.metadata?.narratorName ?? "")
+                          ],
+                        ),
+                        const TableRow(
+                          children: [
+                            SizedBox(height: 10),
+                            SizedBox(height: 10),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              "Genres".toUpperCase(),
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            Text(
+                                widget.item.media.metadata?.genres?.join(",") ??
+                                    ""),
+                          ],
+                        ),
+                        const TableRow(
+                          children: [
+                            SizedBox(height: 10),
+                            SizedBox(height: 10),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              "Duration".toUpperCase(),
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            Text(durationToReadable(
+                                widget.item.media.duration ?? 0)),
+                          ],
+                        ),
+                        const TableRow(
+                          children: [
+                            SizedBox(height: 10),
+                            SizedBox(height: 10),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              "Size".toUpperCase(),
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            Text(sizeToReadable(widget.item.media.size ?? 0)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                LoadingBtn(
+                    color: Theme.of(context).colorScheme.primary,
+                    height: 50,
+                    width: 200,
+                    onTap: (startLoading, stopLoading, btnState) async {
+                      if (_audioPlayer.playing) {
+                        setState(() {
+                          _audioPlayer.pause();
                           if (playerService.currentItem() != widget.item) {
-                            setState(() {
-                              if (btnState == ButtonState.idle) {
-                                startLoading();
-                              }
-                              playerService.preparePlayer(widget.item,
-                                  autoStart: true, onPrepared: () {
-                                setState(() {
+                            if (btnState == ButtonState.idle) {
+                              startLoading();
+                            }
+                            playerService.preparePlayer(widget.item,
+                                autoStart: true, onPrepared: () {
+                              setState(() {
+                                if (btnState == ButtonState.busy) {
                                   stopLoading();
-                                  playerPrepared = true;
-                                });
+                                }
+                                playerPrepared = true;
                               });
                             });
                           }
+                        });
+                      } else {
+                        if (playerService.currentItem() != widget.item) {
+                          setState(() {
+                            if (btnState == ButtonState.idle) {
+                              startLoading();
+                            }
+                            playerService.preparePlayer(widget.item,
+                                autoStart: true, onPrepared: () {
+                              setState(() {
+                                stopLoading();
+                                playerPrepared = true;
+                              });
+                            });
+                          });
                         }
-                      },
-                      animate: true,
-                      loader: const SizedBox(
-                        height: 40,
-                        width: 40,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                          ),
+                      }
+                    },
+                    animate: true,
+                    loader: const SizedBox(
+                      height: 40,
+                      width: 40,
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
                         ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                              playerPrepared && _audioPlayer.playing
-                                  ? Icons.pause
-                                  : Icons.play_arrow,
-                              color: Colors.white),
-                          const Text("Streaming",
-                              style: TextStyle(color: Colors.white)),
-                        ],
-                      )),
-                  //  SizedBox(
-                  //      height: 20,
-                  //      child: LinearProgressIndicator(value: progress)),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Text(
-                        widget.item.media.metadata?.description ?? "",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        textAlign: TextAlign.justify,
-                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                            playerPrepared && _audioPlayer.playing
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                            color: Colors.white),
+                        const Text("Streaming",
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    )),
+                //  SizedBox(
+                //      height: 20,
+                //      child: LinearProgressIndicator(value: progress)),
+                SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Text(
+                      widget.item.media.metadata?.description ?? "",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.justify,
                     ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: _audioPlayer.audioSource != null ? 150 : 50)
+              ],
             ),
           ),
         ),

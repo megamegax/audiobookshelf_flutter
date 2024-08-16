@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/database/series.dart';
 import 'package:audiobookshelf_flutter/drawer/book_drawer.dart';
@@ -14,6 +16,7 @@ import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -26,10 +29,26 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
   String searchQuery = '';
+  bool showPlayer = false;
+  late AudioPlayer _audioPlayer;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final _audioPlayer = ref.read(audioPlayerProvider);
+    _audioPlayer = ref.watch(audioPlayerProvider);
+
+    if (_audioPlayer.audioSource != null) {
+      setState(() {
+        showPlayer = true;
+      });
+    } else {
+      showPlayer = false;
+    }
+
     final libraryItemsRepository = ref.read(libraryItemsRepositoryProvider);
     final libraryRepository = ref.read(libraryRepositoryProvider.future);
     final libraryService = ref.read(libraryServiceProvider);
@@ -76,11 +95,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         }
         return Scaffold(
             backgroundColor: modifiedSurfaceColor,
-            bottomSheet: _audioPlayer.audioSource != null
-                ? Player(source: _audioPlayer.audioSource!)
-                : null,
+            bottomSheet:
+                showPlayer ? Player(source: _audioPlayer.audioSource!) : null,
             appBar: AppBar(
-              title: const Text('Home'),
+              title: const Text('Audiobookshelf - Flutter'),
             ),
             drawer: BookDrawer(
               selectedItem: SelectedItem.home,
@@ -107,6 +125,11 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     return FutureBuilder<Widget>(
         future: future,
         builder: (context, snapshot) => snapshot.data ?? Container());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Widget buildSection(PersonalizedHomeEntity homeSection) {
