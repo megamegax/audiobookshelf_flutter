@@ -13,6 +13,7 @@ import 'package:audiobookshelf_flutter/repositories/library_items_repository.dar
 import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:audiobookshelf_flutter/services/login_service.dart';
+import 'package:audiobookshelf_flutter/widgets/player_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -90,7 +91,8 @@ class InitializationService {
               LibraryItem libraryItem = libraryItems[i];
               LibraryItemEntity? cachedLibraryItem =
                   await libraryItemsRepository.getBook(libraryItem.id);
-              if (cachedLibraryItem?.media.coverBytes == null || libraryItem.updatedAt > (cachedLibraryItem?.updatedAt ?? 0)) {
+              if (cachedLibraryItem?.media.coverBytes == null ||
+                  libraryItem.updatedAt > (cachedLibraryItem?.updatedAt ?? 0)) {
                 final cover = await libraryService.fetchCover(
                     libraryItem, loginResponse.user);
                 final mediaWithCover =
@@ -104,17 +106,17 @@ class InitializationService {
             await libraryItemsRepository
                 .saveLibraryItems(libraryItemsWithCover);
             libraryItemsRepository.saveMediaProgresses(loginResponse.user);
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const HomeScreen()));
+            Navigator.of(context)
+                .pushReplacement(FadePageRoute(page: const HomeScreen()));
           });
         }
       } else {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LoginScreen()));
+        Navigator.of(context)
+            .pushReplacement(FadePageRoute(page: const LoginScreen()));
       }
     } else {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const InitScreen()));
+      Navigator.of(context)
+          .pushReplacement(FadePageRoute(page: const InitScreen()));
     }
   }
 }

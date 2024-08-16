@@ -70,7 +70,7 @@ class _PlayerState extends ConsumerState<Player> {
             hoverColor: Colors.transparent,
             onTap: () {
               Navigator.of(context).push(
-                PlayerPageRoute(
+                FadePageRoute(
                     page: PlayerOverlay(_audioPlayer, _mediaItem, _libraryItem,
                         _playerService)),
               );
