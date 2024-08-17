@@ -8,7 +8,7 @@ part of 'book_chapter.dart';
 
 _$BookChapterImpl _$$BookChapterImplFromJson(Map<String, dynamic> json) =>
     _$BookChapterImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       start: (json['start'] as num).toDouble(),
       end: (json['end'] as num).toDouble(),
       title: json['title'] as String,

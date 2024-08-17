@@ -22,8 +22,8 @@ _$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
       bookmarks: json['bookmarks'] as List<dynamic>?,
       isActive: json['isActive'] as bool?,
       isLocked: json['isLocked'] as bool?,
-      lastSeen: json['lastSeen'] as int?,
-      createdAt: json['createdAt'] as int?,
+      lastSeen: (json['lastSeen'] as num?)?.toInt(),
+      createdAt: (json['createdAt'] as num?)?.toInt(),
       permissions: json['permissions'] == null
           ? null
           : Permissions.fromJson(json['permissions'] as Map<String, dynamic>),

@@ -23,10 +23,10 @@ _$PlaybackSessionImpl _$$PlaybackSessionImplFromJson(
       displayAuthor: json['displayAuthor'] as String?,
       coverPath: json['coverPath'] as String?,
       duration: (json['duration'] as num).toDouble(),
-      playMethod: json['playMethod'] as int,
-      startedAt: json['startedAt'] as int,
-      updatedAt: json['updatedAt'] as int,
-      timeListening: json['timeListening'] as int,
+      playMethod: (json['playMethod'] as num).toInt(),
+      startedAt: (json['startedAt'] as num).toInt(),
+      updatedAt: (json['updatedAt'] as num).toInt(),
+      timeListening: (json['timeListening'] as num).toInt(),
       audioTracks: (json['audioTracks'] as List<dynamic>)
           .map((e) => AudioTrack.fromJson(e as Map<String, dynamic>))
           .toList(),

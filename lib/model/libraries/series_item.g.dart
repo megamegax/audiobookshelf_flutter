@@ -11,8 +11,8 @@ _$SeriesItemImpl _$$SeriesItemImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       name: json['name'] as String,
       nameIgnorePrefix: json['nameIgnorePrefix'] as String,
-      addedAt: json['addedAt'] as int,
-      updatedAt: json['updatedAt'] as int?,
+      addedAt: (json['addedAt'] as num).toInt(),
+      updatedAt: (json['updatedAt'] as num?)?.toInt(),
       description: json['description'] as String?,
       books: (json['books'] as List<dynamic>)
           .map((e) => SeriesBook.fromJson(e as Map<String, dynamic>))

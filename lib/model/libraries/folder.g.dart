@@ -10,7 +10,7 @@ _$FolderImpl _$$FolderImplFromJson(Map<String, dynamic> json) => _$FolderImpl(
       id: json['id'] as String,
       fullPath: json['fullPath'] as String,
       libraryId: json['libraryId'] as String,
-      addedAt: json['addedAt'] as int,
+      addedAt: (json['addedAt'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$FolderImplToJson(_$FolderImpl instance) =>

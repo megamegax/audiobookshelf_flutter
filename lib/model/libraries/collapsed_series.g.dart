@@ -12,7 +12,7 @@ _$CollapsedSeriesImpl _$$CollapsedSeriesImplFromJson(
       id: json['id'] as String,
       name: json['name'] as String,
       nameIgnorePrefix: json['nameIgnorePrefix'] as String,
-      numBooks: json['numBooks'] as int,
+      numBooks: (json['numBooks'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$CollapsedSeriesImplToJson(

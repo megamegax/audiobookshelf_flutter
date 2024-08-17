@@ -2,12 +2,18 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/audio_file.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/audio_track.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/book_chapter.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/e_book_file.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/library_file.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
+import 'package:audiobookshelf_flutter/widgets/expandable_container.dart';
 import 'package:audiobookshelf_flutter/widgets/player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +43,9 @@ class BookDetailsState extends ConsumerState<BookDetails> {
   bool playerPrepared = false;
   bool playerLoading = false;
   late StreamSubscription subscription;
+  List<BookChapter> _chapters = [];
+  List<AudioFile> _audioTracks = [];
+  List<EBookFile> _eBookFiles = [];
 
   @override
   void initState() {
@@ -53,7 +62,7 @@ class BookDetailsState extends ConsumerState<BookDetails> {
         progress = event.inSeconds / (_audioPlayer.duration?.inSeconds ?? 1);
       });
     });
-
+    _loadBookDetails();
     super.initState();
   }
 
@@ -61,6 +70,18 @@ class BookDetailsState extends ConsumerState<BookDetails> {
   void dispose() {
     subscription.cancel();
     super.dispose();
+  }
+
+  void _loadBookDetails() async {
+    final bookDetails = await libraryService.fetchDetailedLibraryItem(
+        userModel, widget.item.itemId);
+
+    _chapters = bookDetails.media.chapters ?? [];
+    _audioTracks = bookDetails.media.audioFiles ?? [];
+    _eBookFiles = bookDetails.media.ebookFile != null
+        ? [bookDetails.media.ebookFile!]
+        : [];
+    setState(() {});
   }
 
   @override
@@ -288,11 +309,65 @@ class BookDetailsState extends ConsumerState<BookDetails> {
                     ),
                   ),
                 ),
+                _buildChaptersList(),
+                _buildAudioTracksList(),
+                _buildEBookFilesList(),
                 SizedBox(height: _audioPlayer.audioSource != null ? 150 : 50)
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildChaptersList() {
+    return ExpandableCard(
+      title: Text('Chapters', style: Theme.of(context).textTheme.bodyLarge),
+      content: Column(
+        children: [
+          if (_chapters.isEmpty)
+            const ListTile(title: Text("No Chapters found")),
+          ..._chapters.map((e) => ListTile(
+                title: Text(e.title),
+                subtitle: Text(
+                    'Start: ${durationToReadable(e.start ?? 0, showSeconds: true)}'),
+              ))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAudioTracksList() {
+    return ExpandableCard(
+      title: Text('Audio Tracks', style: Theme.of(context).textTheme.bodyLarge),
+      content: Column(
+        children: [
+          if (_audioTracks.isEmpty)
+            const ListTile(title: Text("No Audio Tracks found")),
+          ..._audioTracks.map((e) => ListTile(
+                title: Text(e.metadata?.filename ?? "??"),
+                subtitle: Text(
+                    'Duration: ${durationToReadable(e.duration ?? 0, showSeconds: true)}'),
+              ))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEBookFilesList() {
+    return ExpandableCard(
+      title: Text('EBook Files', style: Theme.of(context).textTheme.bodyLarge),
+      content: Column(
+        children: [
+          if (_eBookFiles.isEmpty)
+            const ListTile(title: Text("No EBook files found")),
+          ..._eBookFiles.map((e) => ListTile(
+                title: Text(e.metadata?.filename ?? "-"),
+                subtitle:
+                    Text('Size: ${sizeToReadable(e.metadata?.size ?? 0)}'),
+              ))
+        ],
       ),
     );
   }
@@ -308,8 +383,13 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     }
   }
 
-  String durationToReadable(double durationInt) {
+  String durationToReadable(double durationInt, {bool showSeconds = false}) {
     final Duration duration = Duration(seconds: durationInt.toInt());
+    if (showSeconds) {
+      String sDuration =
+          "${duration.inHours} hr ${duration.inMinutes.remainder(60)} min ${duration.inSeconds.remainder(60)} sec";
+      return sDuration;
+    }
     String sDuration =
         "${duration.inHours} hr ${duration.inMinutes.remainder(60)} min";
     return sDuration;

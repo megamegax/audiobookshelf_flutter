@@ -21,9 +21,9 @@ _$MediaProgressImpl _$$MediaProgressImplFromJson(Map<String, dynamic> json) =>
       hideFromContinueListening: json['hideFromContinueListening'] as bool,
       ebookLocation: json['ebookLocation'] as String?,
       ebookProgress: (json['ebookProgress'] as num?)?.toDouble(),
-      lastUpdate: json['lastUpdate'] as int?,
-      startedAt: json['startedAt'] as int?,
-      finishedAt: json['finishedAt'] as int?,
+      lastUpdate: (json['lastUpdate'] as num?)?.toInt(),
+      startedAt: (json['startedAt'] as num?)?.toInt(),
+      finishedAt: (json['finishedAt'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$MediaProgressImplToJson(_$MediaProgressImpl instance) =>

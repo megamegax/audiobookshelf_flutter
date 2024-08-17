@@ -13,7 +13,7 @@ _$LibraryImpl _$$LibraryImplFromJson(Map<String, dynamic> json) =>
       folders: (json['folders'] as List<dynamic>)
           .map((e) => Folder.fromJson(e as Map<String, dynamic>))
           .toList(),
-      displayOrder: json['displayOrder'] as int,
+      displayOrder: (json['displayOrder'] as num).toInt(),
       icon: json['icon'] as String,
       mediaType: json['mediaType'] as String,
       provider: json['provider'] as String?,

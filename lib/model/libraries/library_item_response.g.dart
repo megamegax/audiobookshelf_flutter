@@ -1,17 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'library_items_response.dart';
+part of 'library_item_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$LibraryItemsResponseImpl _$$LibraryItemsResponseImplFromJson(
+_$LibraryItemResponseImpl _$$LibraryItemResponseImplFromJson(
         Map<String, dynamic> json) =>
-    _$LibraryItemsResponseImpl(
-      results: (json['results'] as List<dynamic>)
-          .map((e) => LibraryItem.fromJson(e as Map<String, dynamic>))
-          .toList(),
+    _$LibraryItemResponseImpl(
+      result:
+          DetailedLibraryItem.fromJson(json['result'] as Map<String, dynamic>),
       total: (json['total'] as num).toInt(),
       limit: (json['limit'] as num?)?.toInt(),
       page: (json['page'] as num?)?.toInt(),
@@ -24,10 +23,10 @@ _$LibraryItemsResponseImpl _$$LibraryItemsResponseImplFromJson(
       include: json['include'] as String?,
     );
 
-Map<String, dynamic> _$$LibraryItemsResponseImplToJson(
-        _$LibraryItemsResponseImpl instance) =>
+Map<String, dynamic> _$$LibraryItemResponseImplToJson(
+        _$LibraryItemResponseImpl instance) =>
     <String, dynamic>{
-      'results': instance.results,
+      'result': instance.result,
       'total': instance.total,
       'limit': instance.limit,
       'page': instance.page,

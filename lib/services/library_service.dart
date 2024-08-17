@@ -2,11 +2,14 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
+import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dart';
 import 'package:audiobookshelf_flutter/model/libraries/libraries_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
+import 'package:audiobookshelf_flutter/model/libraries/library_item_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_items_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/personalized_home.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/book_chapter.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/device_info.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/play_item_request_payload.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/playback_session.dart';
@@ -54,7 +57,7 @@ class LibraryService {
             mediaPlayer: "web",
             forceDirectPlay: false,
             forceTranscode: true,
-            deviceInfo: DeviceInfo(
+            deviceInfo: const DeviceInfo(
                 clientVersion: "0.1",
                 sdkVersion: 10,
                 manufacturer: "11",
@@ -90,6 +93,21 @@ class LibraryService {
     final LibraryItemsResponse librariesResponse =
         LibraryItemsResponse.fromJson(responseBody);
     return librariesResponse.results;
+  }
+
+  Future<DetailedLibraryItem> fetchDetailedLibraryItem(
+      UserModel userModel, String libraryItemId) async {
+    final token = userModel.token;
+    final fetchLibraryItemsResponse = await httpClient.get(
+        Uri.parse('$serverAddress/api/items/$libraryItemId?expanded=1'),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        });
+    final responseBody = jsonDecode(fetchLibraryItemsResponse.body);
+    final DetailedLibraryItem librariesResponse =
+        DetailedLibraryItem.fromJson(responseBody);
+    return librariesResponse;
   }
 
   Future<List<SeriesItem>> fetchSeries(

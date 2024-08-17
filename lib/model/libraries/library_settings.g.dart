@@ -9,7 +9,7 @@ part of 'library_settings.dart';
 _$LibrarySettingsImpl _$$LibrarySettingsImplFromJson(
         Map<String, dynamic> json) =>
     _$LibrarySettingsImpl(
-      coverAspectRatio: json['coverAspectRatio'] as int,
+      coverAspectRatio: (json['coverAspectRatio'] as num).toInt(),
       disableWatcher: json['disableWatcher'] as bool,
       skipMatchingMediaWithAsin: json['skipMatchingMediaWithAsin'] as bool,
       skipMatchingMediaWithIsbn: json['skipMatchingMediaWithIsbn'] as bool,
@@ -19,10 +19,10 @@ _$LibrarySettingsImpl _$$LibrarySettingsImplFromJson(
       metadataPrecedence: (json['metadataPrecedence'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
-      lastScan: json['lastScan'] as int?,
+      lastScan: (json['lastScan'] as num?)?.toInt(),
       lastScanVersion: json['lastScanVersion'] as String?,
-      createdAt: json['createdAt'] as int?,
-      lastUpdate: json['lastUpdate'] as int?,
+      createdAt: (json['createdAt'] as num?)?.toInt(),
+      lastUpdate: (json['lastUpdate'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$LibrarySettingsImplToJson(

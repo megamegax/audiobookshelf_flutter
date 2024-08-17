@@ -11,7 +11,7 @@ _$DeviceInfoImpl _$$DeviceInfoImplFromJson(Map<String, dynamic> json) =>
       deviceId: json['deviceId'] as String,
       manufacturer: json['manufacturer'] as String,
       model: json['model'] as String,
-      sdkVersion: json['sdkVersion'] as int,
+      sdkVersion: (json['sdkVersion'] as num).toInt(),
       clientVersion: json['clientVersion'] as String,
     );
 
