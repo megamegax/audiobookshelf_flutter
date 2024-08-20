@@ -1,6 +1,5 @@
 import 'package:audiobookshelf_flutter/model/libraries/collapsed_series.dart';
 import 'package:audiobookshelf_flutter/model/libraries/detailed_media.dart';
-import 'package:audiobookshelf_flutter/model/libraries/media.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/library_file.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

@@ -1,7 +1,6 @@
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/audio_track.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/book_chapter.dart';
-import 'package:audiobookshelf_flutter/model/libraries/player/device_info.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/device_info_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

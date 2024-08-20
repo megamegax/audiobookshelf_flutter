@@ -1,5 +1,4 @@
 import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dart';
-import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'library_item_response.freezed.dart';

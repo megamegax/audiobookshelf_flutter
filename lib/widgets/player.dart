@@ -6,6 +6,7 @@ import 'package:audiobookshelf_flutter/pages/player_overlay.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
 import 'package:audiobookshelf_flutter/widgets/player_page_route.dart';
+import 'package:audiobookshelf_flutter/widgets/player_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -43,7 +44,11 @@ class _PlayerState extends ConsumerState<Player> {
     });
     subscription = _audioPlayer.positionStream.listen((event) {
       setState(() {
-        progress = event.inSeconds / (_audioPlayer.duration?.inSeconds ?? 1);
+        if (event.inSeconds == 0) {
+          progress = 0;
+        } else {
+          progress = event.inSeconds / (_audioPlayer.duration!.inSeconds);
+        }
       });
       if (event.inSeconds % 15 == 0) {
         ref.read(playerServiceProvider).sendProgressSync();
@@ -202,20 +207,10 @@ class _PlayerState extends ConsumerState<Player> {
                       const SizedBox(width: 16),
                     ],
                   ),
-                  Slider(
-                    min: 0.0,
-                    // max: _libraryItem.media.duration ?? 1,
-                    value: progress.isNaN ? 0.0 : progress,
-                    onChanged: (double value) {
-                      setState(() {
-                        progress = value;
-                        _audioPlayer.seek(Duration(
-                            seconds: (value * _audioPlayer.duration!.inSeconds)
-                                .floor()));
-                        _playerService.updateMediaProgress();
-                      });
-                    },
-                  ),
+                  PlayerSlider(
+                      audioPlayer: _audioPlayer,
+                      progress: progress,
+                      playerService: _playerService),
                   const SizedBox(height: 0),
                 ],
               ),

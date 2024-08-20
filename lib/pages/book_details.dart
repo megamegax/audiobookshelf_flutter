@@ -1,16 +1,13 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
+import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/audio_file.dart';
-import 'package:audiobookshelf_flutter/model/libraries/player/audio_track.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/book_chapter.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/e_book_file.dart';
-import 'package:audiobookshelf_flutter/model/libraries/player/library_file.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
-import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
 import 'package:audiobookshelf_flutter/widgets/expandable_container.dart';
@@ -19,7 +16,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:loading_btn/loading_btn.dart';
 
 class BookDetails extends ConsumerStatefulWidget {
@@ -46,6 +42,7 @@ class BookDetailsState extends ConsumerState<BookDetails> {
   List<BookChapter> _chapters = [];
   List<AudioFile> _audioTracks = [];
   List<EBookFile> _eBookFiles = [];
+  DetailedLibraryItem? bookDetails;
 
   @override
   void initState() {
@@ -244,8 +241,9 @@ class BookDetailsState extends ConsumerState<BookDetails> {
                             if (btnState == ButtonState.idle) {
                               startLoading();
                             }
-                            playerService.preparePlayer(widget.item,
-                                autoStart: true, onPrepared: () {
+                            playerService.preparePlayer(
+                                widget.item, bookDetails, autoStart: true,
+                                onPrepared: () {
                               setState(() {
                                 if (btnState == ButtonState.busy) {
                                   stopLoading();
@@ -261,8 +259,9 @@ class BookDetailsState extends ConsumerState<BookDetails> {
                             if (btnState == ButtonState.idle) {
                               startLoading();
                             }
-                            playerService.preparePlayer(widget.item,
-                                autoStart: true, onPrepared: () {
+                            playerService.preparePlayer(
+                                widget.item, bookDetails, autoStart: true,
+                                onPrepared: () {
                               setState(() {
                                 stopLoading();
                                 playerPrepared = true;

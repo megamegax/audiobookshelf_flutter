@@ -2,6 +2,7 @@ import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
 import 'package:audiobookshelf_flutter/model/login/login_response.dart';
+import 'package:audiobookshelf_flutter/model/login/response.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/pages/home_screen.dart';
 import 'package:audiobookshelf_flutter/pages/init_screen.dart';
@@ -67,48 +68,56 @@ class InitializationService {
   initialization(BuildContext context) async {
     if (serverAddress.isNotEmpty) {
       if (username.isNotEmpty && password.isNotEmpty) {
-        LoginResponse? loginResponse =
+        Response<LoginResponse?> rawLoginResponse =
             await loginService.login(username, password);
-        if (loginResponse?.user.id == null) {
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const LoginScreen()));
-        } else {
-          Future.delayed(const Duration(milliseconds: 10), () async {
-            serverSettingsNotifier
-                .updateServerSettings(loginResponse!.serverSettings);
-            userModelNotifier.updateUserModel(loginResponse.user);
-            List<Library> libraries =
-                await libraryService.fetchLibraries(loginResponse.user);
-            libraryService
-                .fetchSeries(loginResponse.user, libraries[0].id)
-                .then((seriesItems) {
-              libraryItemsRepository.saveSeriesItems(seriesItems);
-            });
-            final List<LibraryItem> libraryItems = await libraryService
-                .fetchLibraryItems(loginResponse.user, libraries[0].id);
-            List<LibraryItem> libraryItemsWithCover = [];
-            for (int i = 0; i < libraryItems.length; i++) {
-              LibraryItem libraryItem = libraryItems[i];
-              LibraryItemEntity? cachedLibraryItem =
-                  await libraryItemsRepository.getBook(libraryItem.id);
-              if (cachedLibraryItem?.media.coverBytes == null ||
-                  libraryItem.updatedAt > (cachedLibraryItem?.updatedAt ?? 0)) {
-                final cover = await libraryService.fetchCover(
-                    libraryItem, loginResponse.user);
-                final mediaWithCover =
-                    libraryItem.media.copyWith(coverBytes: cover!);
-                libraryItemsWithCover
-                    .add(libraryItem.copyWith(media: mediaWithCover));
+        LoginResponse? loginResponse = rawLoginResponse.data;
+        if (rawLoginResponse.success) {
+          if (loginResponse?.user.id == null) {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const LoginScreen()));
+          } else {
+            Future.delayed(const Duration(milliseconds: 10), () async {
+              serverSettingsNotifier
+                  .updateServerSettings(loginResponse!.serverSettings);
+              userModelNotifier.updateUserModel(loginResponse.user);
+              List<Library> libraries =
+                  await libraryService.fetchLibraries(loginResponse.user);
+              libraryService
+                  .fetchSeries(loginResponse.user, libraries[0].id)
+                  .then((seriesItems) {
+                libraryItemsRepository.saveSeriesItems(seriesItems);
+              });
+              final List<LibraryItem> libraryItems = await libraryService
+                  .fetchLibraryItems(loginResponse.user, libraries[0].id);
+              List<LibraryItem> libraryItemsWithCover = [];
+              for (int i = 0; i < libraryItems.length; i++) {
+                LibraryItem libraryItem = libraryItems[i];
+                LibraryItemEntity? cachedLibraryItem =
+                    await libraryItemsRepository.getBook(libraryItem.id);
+                if (cachedLibraryItem?.media.coverBytes == null ||
+                    libraryItem.updatedAt >
+                        (cachedLibraryItem?.updatedAt ?? 0)) {
+                  final cover = await libraryService.fetchCover(
+                      libraryItem, loginResponse.user);
+                  final mediaWithCover =
+                      libraryItem.media.copyWith(coverBytes: cover!);
+                  libraryItemsWithCover
+                      .add(libraryItem.copyWith(media: mediaWithCover));
+                }
               }
-            }
 
-            libraryRepository.saveLibraries(libraries);
-            await libraryItemsRepository
-                .saveLibraryItems(libraryItemsWithCover);
-            libraryItemsRepository.saveMediaProgresses(loginResponse.user);
-            Navigator.of(context)
-                .pushReplacement(FadePageRoute(page: const HomeScreen()));
-          });
+              libraryRepository.saveLibraries(libraries);
+              await libraryItemsRepository
+                  .saveLibraryItems(libraryItemsWithCover);
+              libraryItemsRepository.saveMediaProgresses(loginResponse.user);
+              Navigator.of(context)
+                  .pushReplacement(FadePageRoute(page: const HomeScreen()));
+            });
+          }
+        } else if (rawLoginResponse.statusCode == 500) {
+          //todo set offline state, disable syncing etc...
+          Navigator.of(context)
+              .pushReplacement(FadePageRoute(page: const HomeScreen()));
         }
       } else {
         Navigator.of(context)

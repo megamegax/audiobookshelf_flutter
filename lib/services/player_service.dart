@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
+import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/audio_track.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/playback_session.dart';
 import 'package:audiobookshelf_flutter/model/login/media_progress.dart';
@@ -9,7 +10,6 @@ import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
-import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,6 +38,7 @@ class PlayerService {
   final String serverAddress;
   late double _startTime;
   LibraryItemEntity? _libraryItem;
+  DetailedLibraryItem? _detailed;
   final UserModel userModel;
   Future<LibraryItemsRepository> libraryItemsRepository;
   PlayerService(
@@ -51,7 +52,7 @@ class PlayerService {
     _startTime = startTime;
   }
 
-  preparePlayer(LibraryItemEntity libraryItem,
+  preparePlayer(LibraryItemEntity libraryItem, detailed,
       {bool autoStart = false, Function? onPrepared}) async {
     _libraryItem = libraryItem;
     if (audioPlayer.playing) {
@@ -83,13 +84,18 @@ class PlayerService {
           duration:
               Duration(seconds: libraryItem.media.duration?.toInt() ?? 0)),
     ));
-    final position = Duration(
-        seconds: libraryItem.media.progress?.currentTime?.toInt() ?? 0);
-    onPrepared?.call();
+    final position = Duration(seconds: playbackSession.currentTime.floor());
+    audioPlayer.setCanUseNetworkResourcesForLiveStreamingWhilePaused(true);
+    final bitRate = _detailed?.media.audioFiles?[0].bitRate?.toDouble();
+    if (bitRate != null) {
+      audioPlayer.setPreferredPeakBitRate(bitRate);
+    }
+
     audioPlayer.seek(position);
     if (autoStart) {
       audioPlayer.play();
     }
+    onPrepared?.call();
   }
 
   LibraryItemEntity? currentItem() {

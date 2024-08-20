@@ -1,7 +1,7 @@
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
 import 'package:audiobookshelf_flutter/model/login/login_response.dart';
+import 'package:audiobookshelf_flutter/model/login/response.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
-import 'package:audiobookshelf_flutter/pages/home_screen.dart';
 import 'package:audiobookshelf_flutter/pages/splash_screen.dart';
 import 'package:audiobookshelf_flutter/provider/credential_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
@@ -76,13 +76,13 @@ class LoginScreen extends HookConsumerWidget {
               onPressed: () async {
                 saveUsername(ref, usernameController.text);
                 savePassword(ref, passwordController.text);
-                final LoginResponse? response = await ref
+                final Response<LoginResponse?> response = await ref
                     .read(loginServiceProvider)
                     .login(usernameController.text, passwordController.text);
-                if (response != null && response.user.id != null) {
+                if (response.data != null && response.data?.user.id != null) {
                   ref
                       .read(userModelNotifierProvider.notifier)
-                      .updateUserModel(response.user);
+                      .updateUserModel(response.data!.user);
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => const SplashScreen()));
                 }

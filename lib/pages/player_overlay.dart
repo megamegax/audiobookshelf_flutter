@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
+import 'package:audiobookshelf_flutter/widgets/player_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,8 +31,11 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
   void initState() {
     subscription = widget.audioPlayer.positionStream.listen((event) {
       setState(() {
-        progress =
-            event.inSeconds / (widget.audioPlayer.duration?.inSeconds ?? 1);
+        if (widget.audioPlayer.duration?.inSeconds == 0) {
+          progress = 0;
+        } else {
+          progress = event.inSeconds / (widget.audioPlayer.duration!.inSeconds);
+        }
       });
       if (event.inSeconds % 15 == 0) {
         ref.read(playerServiceProvider).sendProgressSync();
@@ -87,20 +91,10 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                 ],
               ),
             ),
-            Slider(
-              min: 0.0,
-              // max: _libraryItem.media.duration ?? 1,
-              value: progress.isNaN ? 0.0 : progress,
-              onChanged: (double value) {
-                setState(() {
-                  progress = value;
-                  widget.audioPlayer.seek(Duration(
-                      seconds: (value * widget.audioPlayer.duration!.inSeconds)
-                          .floor()));
-                  widget.playerService.updateMediaProgress();
-                });
-              },
-            ),
+            PlayerSlider(
+                audioPlayer: widget.audioPlayer,
+                progress: progress,
+                playerService: widget.playerService),
             const SizedBox(height: 32),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

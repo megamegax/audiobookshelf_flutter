@@ -3,9 +3,9 @@ import 'dart:async';
 
 import 'package:just_audio/just_audio.dart';
 
-class MyCustomSource extends StreamAudioSource {
+class MyCustomAudioSource extends StreamAudioSource {
   final Stream<dynamic> bytes;
-  MyCustomSource(this.bytes);
+  MyCustomAudioSource(this.bytes);
 
   @override
   Future<StreamAudioResponse> request([int? start, int? end]) async {

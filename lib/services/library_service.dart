@@ -6,10 +6,8 @@ import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dar
 import 'package:audiobookshelf_flutter/model/libraries/libraries_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
-import 'package:audiobookshelf_flutter/model/libraries/library_item_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_items_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/personalized_home.dart';
-import 'package:audiobookshelf_flutter/model/libraries/player/book_chapter.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/device_info.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/play_item_request_payload.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/playback_session.dart';

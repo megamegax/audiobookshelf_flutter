@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:audiobookshelf_flutter/model/login/login_response.dart';
+import 'package:audiobookshelf_flutter/model/login/response.dart';
 import 'package:audiobookshelf_flutter/model/login_state.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +13,8 @@ class LoginService {
 
   LoginService(this.httpClient, this.serverAddress, this.loginStateNotifier);
 
-  Future<LoginResponse?> login(String username, String password) async {
+  Future<Response<LoginResponse?>> login(
+      String username, String password) async {
     LoginState loginState;
     if (username.isEmpty || password.isEmpty) {
       loginState =
@@ -30,11 +32,16 @@ class LoginService {
       final responseBody = jsonDecode(response.body);
       final loginResponse = LoginResponse.fromJson(responseBody);
       loginState = LoginState.success(loginResponse);
-      return loginResponse;
+      return Response(
+          data: loginResponse,
+          message: response.body,
+          success: response.statusCode == 200,
+          statusCode: response.statusCode);
     } catch (e) {
       loginState = LoginState.error(e.toString());
     }
     loginStateNotifier.updateState(loginState);
-    return null;
+    return Response(
+        data: null, message: "unknown error", success: false, statusCode: 500);
   }
 }
