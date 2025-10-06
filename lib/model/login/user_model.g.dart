@@ -14,6 +14,7 @@ _$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String?,
       type: json['type'] as String?,
       token: json['token'] as String?,
+      refreshToken: json['refreshToken'] as String?,
       mediaProgress: (json['mediaProgress'] as List<dynamic>?)
           ?.map((e) => MediaProgress.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -40,6 +41,7 @@ Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
       'email': instance.email,
       'type': instance.type,
       'token': instance.token,
+      'refreshToken': instance.refreshToken,
       'mediaProgress': instance.mediaProgress,
       'seriesHideFromContinueListening':
           instance.seriesHideFromContinueListening,

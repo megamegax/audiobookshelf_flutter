@@ -28,8 +28,12 @@ mixin _$PlayItemRequestPayload {
   bool get forceTranscode => throw _privateConstructorUsedError;
   DeviceInfo get deviceInfo => throw _privateConstructorUsedError;
 
+  /// Serializes this PlayItemRequestPayload to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PlayItemRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PlayItemRequestPayloadCopyWith<PlayItemRequestPayload> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -62,6 +66,8 @@ class _$PlayItemRequestPayloadCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PlayItemRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -100,6 +106,8 @@ class _$PlayItemRequestPayloadCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of PlayItemRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DeviceInfoCopyWith<$Res> get deviceInfo {
@@ -140,6 +148,8 @@ class __$$PlayItemRequestPayloadImplCopyWithImpl<$Res>
       $Res Function(_$PlayItemRequestPayloadImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PlayItemRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -229,12 +239,14 @@ class _$PlayItemRequestPayloadImpl implements _PlayItemRequestPayload {
                 other.deviceInfo == deviceInfo));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, itemId, mediaType, mediaPlayer,
       forceDirectPlay, forceTranscode, deviceInfo);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PlayItemRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PlayItemRequestPayloadImplCopyWith<_$PlayItemRequestPayloadImpl>
@@ -273,8 +285,11 @@ abstract class _PlayItemRequestPayload implements PlayItemRequestPayload {
   bool get forceTranscode;
   @override
   DeviceInfo get deviceInfo;
+
+  /// Create a copy of PlayItemRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PlayItemRequestPayloadImplCopyWith<_$PlayItemRequestPayloadImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

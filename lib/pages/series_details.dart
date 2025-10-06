@@ -11,7 +11,7 @@ class SeriesDetails extends ConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: Hero(
-              tag: 'bookTitle${series.name}',
+              tag: 'seriesTitle${series.seriesId}',
               child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(series.name,
@@ -21,17 +21,54 @@ class SeriesDetails extends ConsumerWidget {
                           ?.copyWith(color: Colors.white)))),
         ),
         body: SingleChildScrollView(
-            child: SizedBox(
-          width: double.infinity,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Wrap(
-                children:
-                    series.books.map((e) => BookCard(libraryItem: e)).toList(),
+            child: Column(
+          children: [
+            // Series cover image with Hero animation
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Hero(
+                tag: 'seriesImage${series.seriesId}',
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .shadow
+                            .withOpacity(0.2),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.library_books,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ),
             ),
-          ),
+            // Books grid
+            SizedBox(
+              width: double.infinity,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Wrap(
+                    children: series.books
+                        .map((e) => BookCard(libraryItem: e))
+                        .toList(),
+                  ),
+                ),
+              ),
+            ),
+          ],
         )));
   }
 

@@ -1,6 +1,6 @@
 import 'package:audiobookshelf_flutter/database/media_progress_entity.dart';
 import 'package:audiobookshelf_flutter/database/metadata_entity.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 part 'media_entity.g.dart';
 

@@ -11,7 +11,7 @@ import 'package:audiobookshelf_flutter/model/login/media_progress.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/database_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 final libraryItemsRepositoryProvider =
     FutureProvider<LibraryItemsRepository>((ref) async {

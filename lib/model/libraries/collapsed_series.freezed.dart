@@ -25,8 +25,12 @@ mixin _$CollapsedSeries {
   String get nameIgnorePrefix => throw _privateConstructorUsedError;
   int get numBooks => throw _privateConstructorUsedError;
 
+  /// Serializes this CollapsedSeries to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of CollapsedSeries
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $CollapsedSeriesCopyWith<CollapsedSeries> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -50,6 +54,8 @@ class _$CollapsedSeriesCopyWithImpl<$Res, $Val extends CollapsedSeries>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of CollapsedSeries
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -98,6 +104,8 @@ class __$$CollapsedSeriesImplCopyWithImpl<$Res>
       _$CollapsedSeriesImpl _value, $Res Function(_$CollapsedSeriesImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of CollapsedSeries
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -166,12 +174,14 @@ class _$CollapsedSeriesImpl implements _CollapsedSeries {
                 other.numBooks == numBooks));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, id, name, nameIgnorePrefix, numBooks);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CollapsedSeries
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$CollapsedSeriesImplCopyWith<_$CollapsedSeriesImpl> get copyWith =>
@@ -204,8 +214,11 @@ abstract class _CollapsedSeries implements CollapsedSeries {
   String get nameIgnorePrefix;
   @override
   int get numBooks;
+
+  /// Create a copy of CollapsedSeries
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CollapsedSeriesImplCopyWith<_$CollapsedSeriesImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

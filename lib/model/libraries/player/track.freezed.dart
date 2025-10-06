@@ -28,8 +28,12 @@ mixin _$Track {
   String? get mimeType => throw _privateConstructorUsedError;
   FileMetadata? get metadata => throw _privateConstructorUsedError;
 
+  /// Serializes this Track to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Track
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TrackCopyWith<Track> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -60,6 +64,8 @@ class _$TrackCopyWithImpl<$Res, $Val extends Track>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Track
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -103,6 +109,8 @@ class _$TrackCopyWithImpl<$Res, $Val extends Track>
     ) as $Val);
   }
 
+  /// Create a copy of Track
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $FileMetadataCopyWith<$Res>? get metadata {
@@ -144,6 +152,8 @@ class __$$TrackImplCopyWithImpl<$Res>
       _$TrackImpl _value, $Res Function(_$TrackImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Track
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -242,12 +252,14 @@ class _$TrackImpl implements _Track {
                 other.metadata == metadata));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, index, startOffset, duration,
       title, contentUrl, mimeType, metadata);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Track
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TrackImplCopyWith<_$TrackImpl> get copyWith =>
@@ -287,8 +299,11 @@ abstract class _Track implements Track {
   String? get mimeType;
   @override
   FileMetadata? get metadata;
+
+  /// Create a copy of Track
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TrackImplCopyWith<_$TrackImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

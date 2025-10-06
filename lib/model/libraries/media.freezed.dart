@@ -35,8 +35,12 @@ mixin _$Media {
   int get size => throw _privateConstructorUsedError;
   String? get ebookFileFormat => throw _privateConstructorUsedError;
 
+  /// Serializes this Media to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Media
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $MediaCopyWith<Media> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -73,6 +77,8 @@ class _$MediaCopyWithImpl<$Res, $Val extends Media>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Media
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -141,6 +147,8 @@ class _$MediaCopyWithImpl<$Res, $Val extends Media>
     ) as $Val);
   }
 
+  /// Create a copy of Media
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $MetadataCopyWith<$Res> get metadata {
@@ -184,6 +192,8 @@ class __$$MediaImplCopyWithImpl<$Res>
       _$MediaImpl _value, $Res Function(_$MediaImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Media
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -343,7 +353,7 @@ class _$MediaImpl implements _Media {
                 other.ebookFileFormat == ebookFileFormat));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -360,7 +370,9 @@ class _$MediaImpl implements _Media {
       size,
       ebookFileFormat);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Media
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$MediaImplCopyWith<_$MediaImpl> get copyWith =>
@@ -395,8 +407,8 @@ abstract class _Media implements Media {
   @override
   Metadata get metadata;
   @override
-  String get coverPath;
-  @override // ignore: invalid_annotation_target
+  String get coverPath; // ignore: invalid_annotation_target
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   Uint8List? get coverBytes;
   @override
@@ -417,8 +429,11 @@ abstract class _Media implements Media {
   int get size;
   @override
   String? get ebookFileFormat;
+
+  /// Create a copy of Media
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$MediaImplCopyWith<_$MediaImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

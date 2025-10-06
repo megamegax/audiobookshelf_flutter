@@ -22,8 +22,12 @@ DeviceInfoResponse _$DeviceInfoResponseFromJson(Map<String, dynamic> json) {
 mixin _$DeviceInfoResponse {
   String get clientVersion => throw _privateConstructorUsedError;
 
+  /// Serializes this DeviceInfoResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of DeviceInfoResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $DeviceInfoResponseCopyWith<DeviceInfoResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -47,6 +51,8 @@ class _$DeviceInfoResponseCopyWithImpl<$Res, $Val extends DeviceInfoResponse>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of DeviceInfoResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -80,6 +86,8 @@ class __$$DeviceInfoResponseImplCopyWithImpl<$Res>
       $Res Function(_$DeviceInfoResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of DeviceInfoResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -119,11 +127,13 @@ class _$DeviceInfoResponseImpl implements _DeviceInfoResponse {
                 other.clientVersion == clientVersion));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, clientVersion);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of DeviceInfoResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$DeviceInfoResponseImplCopyWith<_$DeviceInfoResponseImpl> get copyWith =>
@@ -147,8 +157,11 @@ abstract class _DeviceInfoResponse implements DeviceInfoResponse {
 
   @override
   String get clientVersion;
+
+  /// Create a copy of DeviceInfoResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DeviceInfoResponseImplCopyWith<_$DeviceInfoResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -7,11 +7,11 @@ import Foundation
 
 import audio_service
 import audio_session
-import isar_flutter_libs
+import isar_community_flutter_libs
 import just_audio
 import path_provider_foundation
 import shared_preferences_foundation
-import sqflite
+import sqflite_darwin
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   AudioServicePlugin.register(with: registry.registrar(forPlugin: "AudioServicePlugin"))

@@ -28,8 +28,12 @@ mixin _$Permissions {
   bool? get accessAllTags => throw _privateConstructorUsedError;
   bool? get accessExplicitContent => throw _privateConstructorUsedError;
 
+  /// Serializes this Permissions to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Permissions
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PermissionsCopyWith<Permissions> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -60,6 +64,8 @@ class _$PermissionsCopyWithImpl<$Res, $Val extends Permissions>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Permissions
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -130,6 +136,8 @@ class __$$PermissionsImplCopyWithImpl<$Res>
       _$PermissionsImpl _value, $Res Function(_$PermissionsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Permissions
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -242,12 +250,14 @@ class _$PermissionsImpl with DiagnosticableTreeMixin implements _Permissions {
                 other.accessExplicitContent == accessExplicitContent));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, download, update, delete, upload,
       accessAllLibraries, accessAllTags, accessExplicitContent);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Permissions
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PermissionsImplCopyWith<_$PermissionsImpl> get copyWith =>
@@ -288,8 +298,11 @@ abstract class _Permissions implements Permissions {
   bool? get accessAllTags;
   @override
   bool? get accessExplicitContent;
+
+  /// Create a copy of Permissions
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PermissionsImplCopyWith<_$PermissionsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

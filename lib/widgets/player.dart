@@ -7,6 +7,7 @@ import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
 import 'package:audiobookshelf_flutter/widgets/player_page_route.dart';
 import 'package:audiobookshelf_flutter/widgets/player_slider.dart';
+import 'package:audiobookshelf_flutter/widgets/wave_animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -66,154 +67,195 @@ class _PlayerState extends ConsumerState<Player> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: Platform.isIOS ? 160 : 136,
-      child: Hero(
-        tag: "player",
-        child: Card(
-          child: InkWell(
-            hoverColor: Colors.transparent,
-            onTap: () {
-              Navigator.of(context).push(
-                FadePageRoute(
-                    page: PlayerOverlay(_audioPlayer, _mediaItem, _libraryItem,
-                        _playerService)),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, top: 8),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Image.memory(
+    return Container(
+      height: Platform.isIOS ? 180 : 160,
+      margin: const EdgeInsets.all(8),
+      child: Card(
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          hoverColor: Colors.transparent,
+          onTap: () {
+            Navigator.of(context).push(
+              FadePageRoute(
+                  page: PlayerOverlay(
+                      _audioPlayer, _mediaItem, _libraryItem, _playerService)),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // Top row with cover, title, and play button
+                Row(
+                  children: [
+                    // Cover image with Hero animation
+                    Hero(
+                      tag: 'playerCover${_libraryItem.itemId}',
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.memory(
                           _mediaItem.extras!['coverBytes'] as Uint8List,
-                          width: 48,
-                          height: 48,
-                          fit: BoxFit.cover),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextScroll(
-                              _mediaItem.title,
-                              mode: TextScrollMode.bouncing,
-                              velocity: const Velocity(
-                                  pixelsPerSecond: Offset(100, 0)),
-                              delayBefore: const Duration(seconds: 1),
-                              pauseBetween: const Duration(seconds: 1),
-                              textAlign: TextAlign.left,
-                              selectable: true,
-                              style: Theme.of(context)
-                                  .primaryTextTheme
-                                  .titleLarge!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
-                            ),
-                            TextScroll(
-                              _mediaItem.displayDescription!,
-                              mode: TextScrollMode.bouncing,
-                              velocity: const Velocity(
-                                  pixelsPerSecond: Offset(50, 0)),
-                              delayBefore: const Duration(seconds: 1),
-                              pauseBetween: const Duration(seconds: 1),
-                              textAlign: TextAlign.left,
-                              selectable: true,
-                              style: Theme.of(context)
-                                  .primaryTextTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
-                            ),
-                          ],
+                          width: 56,
+                          height: 56,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 56,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHighest,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.library_music,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                                size: 24,
+                              ),
+                            );
+                          },
                         ),
                       ),
-                      TextButton(
-                          style: TextButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(10),
+                    ),
+                    const SizedBox(width: 12),
+                    // Title and author
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextScroll(
+                            _mediaItem.title,
+                            mode: TextScrollMode.bouncing,
+                            velocity:
+                                const Velocity(pixelsPerSecond: Offset(100, 0)),
+                            delayBefore: const Duration(seconds: 1),
+                            pauseBetween: const Duration(seconds: 1),
+                            textAlign: TextAlign.left,
+                            selectable: true,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
-                          onPressed: () async {
+                          const SizedBox(height: 2),
+                          TextScroll(
+                            _mediaItem.displayDescription!,
+                            mode: TextScrollMode.bouncing,
+                            velocity:
+                                const Velocity(pixelsPerSecond: Offset(50, 0)),
+                            delayBefore: const Duration(seconds: 1),
+                            pauseBetween: const Duration(seconds: 1),
+                            textAlign: TextAlign.left,
+                            selectable: true,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Play/Pause button with wave animation
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .shadow
+                                .withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: IconButton(
+                        onPressed: () async {
+                          if (_audioPlayer.playing) {
                             setState(() {
-                              if (_audioPlayer.position.inSeconds >= 10) {
-                                _audioPlayer.seek(Duration(
-                                    seconds: (_audioPlayer.position.inSeconds -
-                                        10)));
-                              } else {
-                                _audioPlayer.seek(const Duration(seconds: 0));
-                              }
+                              _audioPlayer.pause();
                             });
                             _playerService.updateMediaProgress();
-                          },
-                          child: Icon(Icons.arrow_back_outlined,
-                              color: Theme.of(context).colorScheme.onSurface)),
-                      ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(20),
-                          ),
-                          onPressed: () async {
-                            if (_audioPlayer.playing) {
-                              setState(() {
-                                _audioPlayer.pause();
-                              });
-                              _playerService.updateMediaProgress();
-                            } else {
-                              setState(() {
-                                _audioPlayer.play();
-                              });
-                            }
-                          },
-                          child: Icon(
-                              _audioPlayer.playing
-                                  ? Icons.pause
-                                  : Icons.play_arrow,
-                              color: Colors.white)),
-                      TextButton(
-                          style: TextButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(10),
-                          ),
-                          onPressed: () async {
+                          } else {
                             setState(() {
-                              if (_audioPlayer.position.inSeconds + 10 <=
-                                  _audioPlayer.duration!.inSeconds) {
-                                _audioPlayer.seek(Duration(
-                                    seconds: (_audioPlayer.position.inSeconds +
-                                        10)));
-                              } else {
-                                _audioPlayer.seek(Duration(
-                                    seconds: _audioPlayer.duration!.inSeconds));
-                              }
+                              _audioPlayer.play();
                             });
-                            _playerService.updateMediaProgress();
-                          },
-                          child: Icon(Icons.arrow_forward_outlined,
-                              color: Theme.of(context).colorScheme.onSurface))
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(durationToReadable(_audioPlayer.position)),
-                      const Spacer(),
-                      Text(
-                          "-${durationToReadable(Duration(seconds: (_mediaItem.duration ?? Duration.zero).inSeconds - (_audioPlayer.position.inSeconds).round()))}"),
-                      const SizedBox(width: 16),
-                    ],
-                  ),
-                  PlayerSlider(
+                          }
+                        },
+                        icon: _audioPlayer.playing
+                            ? WaveAnimation(
+                                isPlaying: true,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                height: 16,
+                                barCount: 3,
+                              )
+                            : Icon(
+                                Icons.play_arrow,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                size: 24,
+                              ),
+                        iconSize: 24,
+                        padding: const EdgeInsets.all(12),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                // Progress section
+                Column(
+                  children: [
+                    // Time display
+                    Row(
+                      children: [
+                        Text(
+                          durationToReadable(_audioPlayer.position),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                    fontFamily: 'monospace',
+                                  ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          "-${durationToReadable(Duration(seconds: (_mediaItem.duration ?? Duration.zero).inSeconds - (_audioPlayer.position.inSeconds).round()))}",
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                    fontFamily: 'monospace',
+                                  ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    // Progress slider
+                    PlayerSlider(
                       audioPlayer: _audioPlayer,
                       progress: progress,
-                      playerService: _playerService),
-                  const SizedBox(height: 0),
-                ],
-              ),
+                      playerService: _playerService,
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),

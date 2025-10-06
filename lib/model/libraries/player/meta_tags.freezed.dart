@@ -34,8 +34,12 @@ mixin _$MetaTags {
   String? get tagLanguage => throw _privateConstructorUsedError;
   String? get tagASIN => throw _privateConstructorUsedError;
 
+  /// Serializes this MetaTags to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of MetaTags
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $MetaTagsCopyWith<MetaTags> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -71,6 +75,8 @@ class _$MetaTagsCopyWithImpl<$Res, $Val extends MetaTags>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of MetaTags
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -177,6 +183,8 @@ class __$$MetaTagsImplCopyWithImpl<$Res>
       _$MetaTagsImpl _value, $Res Function(_$MetaTagsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of MetaTags
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -335,7 +343,7 @@ class _$MetaTagsImpl implements _MetaTags {
             (identical(other.tagASIN, tagASIN) || other.tagASIN == tagASIN));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -353,7 +361,9 @@ class _$MetaTagsImpl implements _MetaTags {
       tagLanguage,
       tagASIN);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of MetaTags
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$MetaTagsImplCopyWith<_$MetaTagsImpl> get copyWith =>
@@ -412,8 +422,11 @@ abstract class _MetaTags implements MetaTags {
   String? get tagLanguage;
   @override
   String? get tagASIN;
+
+  /// Create a copy of MetaTags
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$MetaTagsImplCopyWith<_$MetaTagsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

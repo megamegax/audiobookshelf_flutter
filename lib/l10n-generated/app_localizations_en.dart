@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -28,7 +30,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get labelServerAddress => 'Server Address';
 
   @override
-  String get labelServerAddressDescription => 'Enter the server address of Audiobookshelf';
+  String get labelServerAddressDescription =>
+      'Enter the server address of Audiobookshelf';
 
   @override
   String get headerContinueListening => 'Continue listening';
@@ -44,4 +47,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get headerListenAgain => 'Listen again';
+
+  @override
+  String get headerRecentlyAdded => 'Recently Added';
+
+  @override
+  String get headerNewestAuthors => 'Newest Authors';
 }

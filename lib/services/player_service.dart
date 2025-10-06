@@ -55,22 +55,37 @@ class PlayerService {
   preparePlayer(LibraryItemEntity libraryItem, detailed,
       {bool autoStart = false, Function? onPrepared}) async {
     _libraryItem = libraryItem;
-    if (audioPlayer.playing) {
-      final tag = audioPlayer.audioSource!.sequence[0].tag as MediaItem;
-      if (tag.id == libraryItem.itemId.toString()) {
-        onPrepared?.call();
-      } else {
-        return;
-      }
+    _detailed = detailed;
+
+    // Check if we're already playing this item
+    if (audioPlayer.playing && _libraryItem?.itemId == libraryItem.itemId) {
+      onPrepared?.call();
       return;
     }
+
+    // Stop current playback if different item
+    if (audioPlayer.playing) {
+      await audioPlayer.stop();
+    }
+
     final playbackSession =
         await libraryService.playBook(userModel, libraryItem);
-    var startTime = 0.0;
+
+    // Use the current time from the playback session, not 0
+    final startTime = playbackSession.currentTime;
     init(playbackSession, startTime);
+
+    // Build the correct streaming URL based on the track content
+    String streamUrl;
+    if (currentTrack()?.contentUrl?.startsWith('/hls') == true) {
+      streamUrl = "$serverAddress${currentTrack()?.contentUrl}";
+    } else {
+      streamUrl =
+          "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack()?.index ?? 1}";
+    }
+
     await audioPlayer.setAudioSource(AudioSource.uri(
-      Uri.parse(
-          "$serverAddress${currentTrack()?.contentUrl!}?token=${userModel.token}"),
+      Uri.parse("$streamUrl?token=${userModel.token}"),
       tag: MediaItem(
           id: libraryItem.itemId.toString(),
           album: libraryItem.media.metadata?.seriesName,
@@ -84,16 +99,26 @@ class PlayerService {
           duration:
               Duration(seconds: libraryItem.media.duration?.toInt() ?? 0)),
     ));
-    final position = Duration(seconds: playbackSession.currentTime.floor());
+
+    // Configure audio player settings
     audioPlayer.setCanUseNetworkResourcesForLiveStreamingWhilePaused(true);
     final bitRate = _detailed?.media.audioFiles?[0].bitRate?.toDouble();
     if (bitRate != null) {
       audioPlayer.setPreferredPeakBitRate(bitRate);
     }
 
-    audioPlayer.seek(position);
+    // Calculate the correct seek position within the current track
+    final currentTrackStartOffset =
+        _playbackSession.audioTracks[currentTrackIndex()].startOffset ?? 0.0;
+    final seekTimeInTrack = max(0, startTime - currentTrackStartOffset);
+    final position = Duration(seconds: seekTimeInTrack.floor());
+
+    // Wait for the audio source to be loaded before seeking
+    await audioPlayer.load();
+    await audioPlayer.seek(position);
+
     if (autoStart) {
-      audioPlayer.play();
+      await audioPlayer.play();
     }
     onPrepared?.call();
   }
@@ -134,6 +159,63 @@ class PlayerService {
 
   AudioTrack? currentTrack() {
     return _playbackSession.audioTracks[currentTrackIndex()];
+  }
+
+  /// Seek to a specific time in the audiobook
+  Future<void> seekTo(double timeInSeconds) async {
+    if (_libraryItem == null) return;
+
+    // Update the start time
+    _startTime = timeInSeconds;
+
+    // Find the correct track for this time
+    final newTrackIndex = max(
+        0,
+        _playbackSession.audioTracks.indexWhere((t) =>
+            (t.startOffset?.floor() ?? 0) <= timeInSeconds &&
+            ((t.startOffset ?? 0) + (t.duration ?? 0)).floor() >
+                timeInSeconds));
+
+    // If we need to change tracks, reload the audio source
+    if (newTrackIndex != currentTrackIndex()) {
+      final currentTrack = _playbackSession.audioTracks[newTrackIndex];
+      String streamUrl;
+      if (currentTrack.contentUrl?.startsWith('/hls') == true) {
+        streamUrl = "$serverAddress${currentTrack.contentUrl}";
+      } else {
+        streamUrl =
+            "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack.index ?? 1}";
+      }
+
+      await audioPlayer.setAudioSource(AudioSource.uri(
+        Uri.parse("$streamUrl?token=${userModel.token}"),
+        tag: MediaItem(
+            id: _libraryItem!.itemId.toString(),
+            album: _libraryItem!.media.metadata?.seriesName,
+            title: _libraryItem!.media.metadata?.title ?? "-",
+            displayDescription: _libraryItem!.media.metadata?.authorName ?? "-",
+            extras: {
+              "coverBytes":
+                  Uint8List.fromList(_libraryItem!.media.coverBytes ?? []),
+              "item": _libraryItem!
+            },
+            duration:
+                Duration(seconds: _libraryItem!.media.duration?.toInt() ?? 0)),
+      ));
+    }
+
+    // Calculate the seek position within the current track
+    final currentTrackStartOffset =
+        _playbackSession.audioTracks[newTrackIndex].startOffset ?? 0.0;
+    final seekTimeInTrack = max(0, timeInSeconds - currentTrackStartOffset);
+    final position = Duration(seconds: seekTimeInTrack.floor());
+
+    // Wait for the audio source to be loaded before seeking
+    await audioPlayer.load();
+    await audioPlayer.seek(position);
+
+    // Update the playback session current time
+    _playbackSession = _playbackSession.copyWith(currentTime: timeInSeconds);
   }
 
   Future<void> sendProgressSync() async {

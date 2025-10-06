@@ -4,9 +4,11 @@ import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
 import 'package:audiobookshelf_flutter/pages/book_details.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
+import 'package:audiobookshelf_flutter/provider/library_selector_provider.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
 import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
 import 'package:audiobookshelf_flutter/widgets/player.dart';
+import 'package:audiobookshelf_flutter/widgets/library_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,7 +34,8 @@ class BookshelfScreenState extends ConsumerState<BookshelfScreen> {
         ref.read(serverSettingsNotifierProvider);
     final Future<Widget> future = libraryItemsRepository.when(
       data: (libraryItemsRepository) async {
-        final libraryId =
+        final selectedLibrary = ref.read(selectedLibraryProvider);
+        final libraryId = selectedLibrary?.id ?? 
             (await (await libraryRepository).getLibrary())[0].libraryId;
         final List<LibraryItemEntity> libraryItems =
             await libraryItemsRepository.getBooks(libraryId!);
@@ -63,6 +66,10 @@ class BookshelfScreenState extends ConsumerState<BookshelfScreen> {
                   ),
                 ],
               ),
+              actions: const [
+                CompactLibrarySelector(),
+                SizedBox(width: 8),
+              ],
             ),
             drawer: BookDrawer(
               selectedItem: SelectedItem.library,

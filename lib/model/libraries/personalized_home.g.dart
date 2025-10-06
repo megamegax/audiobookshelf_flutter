@@ -28,6 +28,8 @@ const _$SectionTypeEnumMap = {
   SectionType.continueListening: 'continue-listening',
   SectionType.continueSeries: 'continue-series',
   SectionType.recentSeries: 'recent-series',
+  SectionType.recentlyAdded: 'recently-added',
+  SectionType.newestAuthors: 'newest-authors',
   SectionType.discover: 'discover',
   SectionType.listenAgain: 'listen-again',
 };

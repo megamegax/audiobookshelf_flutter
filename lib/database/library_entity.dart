@@ -1,6 +1,6 @@
 import 'package:audiobookshelf_flutter/database/folder_entity.dart';
 import 'package:audiobookshelf_flutter/database/library_settings_entity.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 part 'library_entity.g.dart';
 

@@ -33,8 +33,12 @@ mixin _$LibrarySettings {
   int? get createdAt => throw _privateConstructorUsedError;
   int? get lastUpdate => throw _privateConstructorUsedError;
 
+  /// Serializes this LibrarySettings to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of LibrarySettings
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $LibrarySettingsCopyWith<LibrarySettings> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -70,6 +74,8 @@ class _$LibrarySettingsCopyWithImpl<$Res, $Val extends LibrarySettings>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of LibrarySettings
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -170,6 +176,8 @@ class __$$LibrarySettingsImplCopyWithImpl<$Res>
       _$LibrarySettingsImpl _value, $Res Function(_$LibrarySettingsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of LibrarySettings
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -330,7 +338,7 @@ class _$LibrarySettingsImpl implements _LibrarySettings {
                 other.lastUpdate == lastUpdate));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -347,7 +355,9 @@ class _$LibrarySettingsImpl implements _LibrarySettings {
       createdAt,
       lastUpdate);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LibrarySettings
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LibrarySettingsImplCopyWith<_$LibrarySettingsImpl> get copyWith =>
@@ -404,8 +414,11 @@ abstract class _LibrarySettings implements LibrarySettings {
   int? get createdAt;
   @override
   int? get lastUpdate;
+
+  /// Create a copy of LibrarySettings
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LibrarySettingsImplCopyWith<_$LibrarySettingsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

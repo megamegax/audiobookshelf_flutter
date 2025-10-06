@@ -45,8 +45,12 @@ mixin _$PlaybackSession {
   String? get serverAddress => throw _privateConstructorUsedError;
   String? get mediaPlayer => throw _privateConstructorUsedError;
 
+  /// Serializes this PlaybackSession to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PlaybackSession
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PlaybackSessionCopyWith<PlaybackSession> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -95,6 +99,8 @@ class _$PlaybackSessionCopyWithImpl<$Res, $Val extends PlaybackSession>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PlaybackSession
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -213,6 +219,8 @@ class _$PlaybackSessionCopyWithImpl<$Res, $Val extends PlaybackSession>
     ) as $Val);
   }
 
+  /// Create a copy of PlaybackSession
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DeviceInfoResponseCopyWith<$Res> get deviceInfo {
@@ -221,6 +229,8 @@ class _$PlaybackSessionCopyWithImpl<$Res, $Val extends PlaybackSession>
     });
   }
 
+  /// Create a copy of PlaybackSession
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $LibraryItemCopyWith<$Res>? get libraryItem {
@@ -280,6 +290,8 @@ class __$$PlaybackSessionImplCopyWithImpl<$Res>
       _$PlaybackSessionImpl _value, $Res Function(_$PlaybackSessionImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PlaybackSession
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -544,7 +556,7 @@ class _$PlaybackSessionImpl implements _PlaybackSession {
                 other.mediaPlayer == mediaPlayer));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
@@ -572,7 +584,9 @@ class _$PlaybackSessionImpl implements _PlaybackSession {
         mediaPlayer
       ]);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PlaybackSession
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PlaybackSessionImplCopyWith<_$PlaybackSessionImpl> get copyWith =>
@@ -624,8 +638,8 @@ abstract class _PlaybackSession implements PlaybackSession {
   @override
   String? get episodeId;
   @override
-  String get mediaType;
-  @override //MediaTypeMetadata mediaMetadata,
+  String get mediaType; //MediaTypeMetadata mediaMetadata,
+  @override
   DeviceInfoResponse get deviceInfo;
   @override
   List<BookChapter> get chapters;
@@ -650,8 +664,8 @@ abstract class _PlaybackSession implements PlaybackSession {
   @override
   double get currentTime;
   @override
-  LibraryItem? get libraryItem;
-  @override //LocalLibraryItem? localLibraryItem,
+  LibraryItem? get libraryItem; //LocalLibraryItem? localLibraryItem,
+  @override
   String? get localEpisodeId;
   @override
   String? get serverConnectionConfigId;
@@ -659,8 +673,11 @@ abstract class _PlaybackSession implements PlaybackSession {
   String? get serverAddress;
   @override
   String? get mediaPlayer;
+
+  /// Create a copy of PlaybackSession
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PlaybackSessionImplCopyWith<_$PlaybackSessionImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

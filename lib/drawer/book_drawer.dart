@@ -1,10 +1,11 @@
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
 import 'package:audiobookshelf_flutter/pages/bookshelf_screen.dart';
 import 'package:audiobookshelf_flutter/pages/home_screen.dart';
+import 'package:audiobookshelf_flutter/pages/downloads_page.dart';
+import 'package:audiobookshelf_flutter/pages/download_queue_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-enum SelectedItem { home, library, series, authors, narrators }
+enum SelectedItem { home, library, downloads, downloadQueue, series, authors, narrators }
 
 class BookDrawer extends StatelessWidget {
   final SelectedItem selectedItem;
@@ -14,80 +15,85 @@ class BookDrawer extends StatelessWidget {
       {super.key, required this.selectedItem, required this.serverSettings});
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-        child: Column(
-      children: [
-        const SizedBox(
-          width: double.infinity,
-          child: DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text('Audiobookshelf'),
-          ),
-        ),
-        ListTile(
-          tileColor: selectedItem == SelectedItem.home
-              ? Theme.of(context).primaryColorDark
-              : null,
-          title: const Text('Home'),
-          onTap: () {
-            Navigator.pop(context);
+    return NavigationDrawer(
+      selectedIndex: selectedItem.index,
+      onDestinationSelected: (index) {
+        Navigator.pop(context);
+        switch (index) {
+          case 0:
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: ((context) => const HomeScreen())));
-          },
-        ),
-        ListTile(
-          tileColor: selectedItem == SelectedItem.library
-              ? Theme.of(context).primaryColorDark
-              : null,
-          title: const Text('Library'),
-          onTap: () {
-            Navigator.pop(context);
+            break;
+          case 1:
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: ((context) => const BookshelfScreen())));
-          },
+            break;
+          case 2:
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) => const DownloadsPage())));
+            break;
+          case 3:
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) => const DownloadQueuePage())));
+            break;
+        }
+      },
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
+          child: Text(
+            'Audiobookshelf',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ),
+        const NavigationDrawerDestination(
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home),
+          label: Text('Home'),
+        ),
+        const NavigationDrawerDestination(
+          icon: Icon(Icons.library_books_outlined),
+          selectedIcon: Icon(Icons.library_books),
+          label: Text('Library'),
+        ),
+        const NavigationDrawerDestination(
+          icon: Icon(Icons.download_outlined),
+          selectedIcon: Icon(Icons.download),
+          label: Text('Downloads'),
+        ),
+        const NavigationDrawerDestination(
+          icon: Icon(Icons.queue_outlined),
+          selectedIcon: Icon(Icons.queue),
+          label: Text('Download Queue'),
+        ),
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
+          child: Text(
+            'Server Info',
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
         ),
         ListTile(
-          tileColor: selectedItem == SelectedItem.series
-              ? Theme.of(context).primaryColorDark
-              : null,
-          title: const Text('Series'),
-          onTap: () {
-            Navigator.pop(context);
-          },
+          leading: Icon(
+            Icons.dns,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          title: Text('Server: ${serverSettings?.version ?? 'Unknown'}'),
+          subtitle: Text('App: 1.0.0'),
         ),
-        ListTile(
-          tileColor: selectedItem == SelectedItem.authors
-              ? Theme.of(context).primaryColorDark
-              : null,
-          title: const Text('Authors'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        ListTile(
-          tileColor: selectedItem == SelectedItem.narrators
-              ? Theme.of(context).primaryColorDark
-              : null,
-          title: const Text('Narrators'),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        const Spacer(),
-        Text(
-          "Server: ${serverSettings?.version ?? 'Unknown'}",
-          textAlign: TextAlign.center,
-        ),
-        const Text(
-          "App: 1.0.0",
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 20)
       ],
-    ));
+    );
   }
 }

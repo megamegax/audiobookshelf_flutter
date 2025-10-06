@@ -26,6 +26,7 @@ mixin _$UserModel {
   String? get email => throw _privateConstructorUsedError;
   String? get type => throw _privateConstructorUsedError;
   String? get token => throw _privateConstructorUsedError;
+  String? get refreshToken => throw _privateConstructorUsedError;
   List<MediaProgress>? get mediaProgress => throw _privateConstructorUsedError;
   List<dynamic>? get seriesHideFromContinueListening =>
       throw _privateConstructorUsedError;
@@ -39,8 +40,12 @@ mixin _$UserModel {
   List<dynamic>? get itemTagsSelected => throw _privateConstructorUsedError;
   bool? get hasOpenIDLink => throw _privateConstructorUsedError;
 
+  /// Serializes this UserModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $UserModelCopyWith<UserModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -57,6 +62,7 @@ abstract class $UserModelCopyWith<$Res> {
       String? email,
       String? type,
       String? token,
+      String? refreshToken,
       List<MediaProgress>? mediaProgress,
       List<dynamic>? seriesHideFromContinueListening,
       List<dynamic>? bookmarks,
@@ -82,6 +88,8 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -91,6 +99,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? email = freezed,
     Object? type = freezed,
     Object? token = freezed,
+    Object? refreshToken = freezed,
     Object? mediaProgress = freezed,
     Object? seriesHideFromContinueListening = freezed,
     Object? bookmarks = freezed,
@@ -127,6 +136,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
       token: freezed == token
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
+              as String?,
+      refreshToken: freezed == refreshToken
+          ? _value.refreshToken
+          : refreshToken // ignore: cast_nullable_to_non_nullable
               as String?,
       mediaProgress: freezed == mediaProgress
           ? _value.mediaProgress
@@ -176,6 +189,8 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     ) as $Val);
   }
 
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $PermissionsCopyWith<$Res>? get permissions {
@@ -204,6 +219,7 @@ abstract class _$$UserModelImplCopyWith<$Res>
       String? email,
       String? type,
       String? token,
+      String? refreshToken,
       List<MediaProgress>? mediaProgress,
       List<dynamic>? seriesHideFromContinueListening,
       List<dynamic>? bookmarks,
@@ -228,6 +244,8 @@ class __$$UserModelImplCopyWithImpl<$Res>
       _$UserModelImpl _value, $Res Function(_$UserModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -237,6 +255,7 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? email = freezed,
     Object? type = freezed,
     Object? token = freezed,
+    Object? refreshToken = freezed,
     Object? mediaProgress = freezed,
     Object? seriesHideFromContinueListening = freezed,
     Object? bookmarks = freezed,
@@ -273,6 +292,10 @@ class __$$UserModelImplCopyWithImpl<$Res>
       token: freezed == token
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
+              as String?,
+      refreshToken: freezed == refreshToken
+          ? _value.refreshToken
+          : refreshToken // ignore: cast_nullable_to_non_nullable
               as String?,
       mediaProgress: freezed == mediaProgress
           ? _value._mediaProgress
@@ -333,6 +356,7 @@ class _$UserModelImpl with DiagnosticableTreeMixin implements _UserModel {
       this.email,
       this.type,
       this.token,
+      this.refreshToken,
       final List<MediaProgress>? mediaProgress,
       final List<dynamic>? seriesHideFromContinueListening,
       final List<dynamic>? bookmarks,
@@ -365,6 +389,8 @@ class _$UserModelImpl with DiagnosticableTreeMixin implements _UserModel {
   final String? type;
   @override
   final String? token;
+  @override
+  final String? refreshToken;
   final List<MediaProgress>? _mediaProgress;
   @override
   List<MediaProgress>? get mediaProgress {
@@ -433,7 +459,7 @@ class _$UserModelImpl with DiagnosticableTreeMixin implements _UserModel {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'UserModel(id: $id, oldUserId: $oldUserId, username: $username, email: $email, type: $type, token: $token, mediaProgress: $mediaProgress, seriesHideFromContinueListening: $seriesHideFromContinueListening, bookmarks: $bookmarks, isActive: $isActive, isLocked: $isLocked, lastSeen: $lastSeen, createdAt: $createdAt, permissions: $permissions, librariesAccessible: $librariesAccessible, itemTagsSelected: $itemTagsSelected, hasOpenIDLink: $hasOpenIDLink)';
+    return 'UserModel(id: $id, oldUserId: $oldUserId, username: $username, email: $email, type: $type, token: $token, refreshToken: $refreshToken, mediaProgress: $mediaProgress, seriesHideFromContinueListening: $seriesHideFromContinueListening, bookmarks: $bookmarks, isActive: $isActive, isLocked: $isLocked, lastSeen: $lastSeen, createdAt: $createdAt, permissions: $permissions, librariesAccessible: $librariesAccessible, itemTagsSelected: $itemTagsSelected, hasOpenIDLink: $hasOpenIDLink)';
   }
 
   @override
@@ -447,6 +473,7 @@ class _$UserModelImpl with DiagnosticableTreeMixin implements _UserModel {
       ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('type', type))
       ..add(DiagnosticsProperty('token', token))
+      ..add(DiagnosticsProperty('refreshToken', refreshToken))
       ..add(DiagnosticsProperty('mediaProgress', mediaProgress))
       ..add(DiagnosticsProperty(
           'seriesHideFromContinueListening', seriesHideFromContinueListening))
@@ -474,6 +501,8 @@ class _$UserModelImpl with DiagnosticableTreeMixin implements _UserModel {
             (identical(other.email, email) || other.email == email) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.token, token) || other.token == token) &&
+            (identical(other.refreshToken, refreshToken) ||
+                other.refreshToken == refreshToken) &&
             const DeepCollectionEquality()
                 .equals(other._mediaProgress, _mediaProgress) &&
             const DeepCollectionEquality().equals(
@@ -499,7 +528,7 @@ class _$UserModelImpl with DiagnosticableTreeMixin implements _UserModel {
                 other.hasOpenIDLink == hasOpenIDLink));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -509,6 +538,7 @@ class _$UserModelImpl with DiagnosticableTreeMixin implements _UserModel {
       email,
       type,
       token,
+      refreshToken,
       const DeepCollectionEquality().hash(_mediaProgress),
       const DeepCollectionEquality().hash(_seriesHideFromContinueListening),
       const DeepCollectionEquality().hash(_bookmarks),
@@ -521,7 +551,9 @@ class _$UserModelImpl with DiagnosticableTreeMixin implements _UserModel {
       const DeepCollectionEquality().hash(_itemTagsSelected),
       hasOpenIDLink);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>
@@ -543,6 +575,7 @@ abstract class _UserModel implements UserModel {
       final String? email,
       final String? type,
       final String? token,
+      final String? refreshToken,
       final List<MediaProgress>? mediaProgress,
       final List<dynamic>? seriesHideFromContinueListening,
       final List<dynamic>? bookmarks,
@@ -571,6 +604,8 @@ abstract class _UserModel implements UserModel {
   @override
   String? get token;
   @override
+  String? get refreshToken;
+  @override
   List<MediaProgress>? get mediaProgress;
   @override
   List<dynamic>? get seriesHideFromContinueListening;
@@ -592,8 +627,11 @@ abstract class _UserModel implements UserModel {
   List<dynamic>? get itemTagsSelected;
   @override
   bool? get hasOpenIDLink;
+
+  /// Create a copy of UserModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

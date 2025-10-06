@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -28,7 +30,8 @@ class AppLocalizationsHu extends AppLocalizations {
   String get labelServerAddress => 'Szerver Cím';
 
   @override
-  String get labelServerAddressDescription => 'Adja meg az Audiobookshelf szerver címét';
+  String get labelServerAddressDescription =>
+      'Adja meg az Audiobookshelf szerver címét';
 
   @override
   String get headerContinueListening => 'Hallgatás folytatása';
@@ -44,4 +47,10 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get headerListenAgain => 'Újra hallgatás';
+
+  @override
+  String get headerRecentlyAdded => 'Nemrég hozzáadott';
+
+  @override
+  String get headerNewestAuthors => 'Legújabb szerzők';
 }

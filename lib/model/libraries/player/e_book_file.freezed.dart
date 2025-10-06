@@ -26,8 +26,12 @@ mixin _$EBookFile {
   int get addedAt => throw _privateConstructorUsedError;
   int? get updatedAt => throw _privateConstructorUsedError;
 
+  /// Serializes this EBookFile to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of EBookFile
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $EBookFileCopyWith<EBookFile> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -57,6 +61,8 @@ class _$EBookFileCopyWithImpl<$Res, $Val extends EBookFile>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of EBookFile
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -90,6 +96,8 @@ class _$EBookFileCopyWithImpl<$Res, $Val extends EBookFile>
     ) as $Val);
   }
 
+  /// Create a copy of EBookFile
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $FileMetadataCopyWith<$Res>? get metadata {
@@ -130,6 +138,8 @@ class __$$EBookFileImplCopyWithImpl<$Res>
       _$EBookFileImpl _value, $Res Function(_$EBookFileImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of EBookFile
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -208,12 +218,14 @@ class _$EBookFileImpl implements _EBookFile {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, ino, metadata, ebookFormat, addedAt, updatedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of EBookFile
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$EBookFileImplCopyWith<_$EBookFileImpl> get copyWith =>
@@ -248,8 +260,11 @@ abstract class _EBookFile implements EBookFile {
   int get addedAt;
   @override
   int? get updatedAt;
+
+  /// Create a copy of EBookFile
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$EBookFileImplCopyWith<_$EBookFileImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

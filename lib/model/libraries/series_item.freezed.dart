@@ -28,8 +28,12 @@ mixin _$SeriesItem {
   String? get description => throw _privateConstructorUsedError;
   List<SeriesBook> get books => throw _privateConstructorUsedError;
 
+  /// Serializes this SeriesItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SeriesItem
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SeriesItemCopyWith<SeriesItem> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -60,6 +64,8 @@ class _$SeriesItemCopyWithImpl<$Res, $Val extends SeriesItem>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SeriesItem
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -130,6 +136,8 @@ class __$$SeriesItemImplCopyWithImpl<$Res>
       _$SeriesItemImpl _value, $Res Function(_$SeriesItemImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SeriesItem
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -232,7 +240,7 @@ class _$SeriesItemImpl implements _SeriesItem {
             const DeepCollectionEquality().equals(other._books, _books));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -244,7 +252,9 @@ class _$SeriesItemImpl implements _SeriesItem {
       description,
       const DeepCollectionEquality().hash(_books));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SeriesItem
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SeriesItemImplCopyWith<_$SeriesItemImpl> get copyWith =>
@@ -285,8 +295,11 @@ abstract class _SeriesItem implements SeriesItem {
   String? get description;
   @override
   List<SeriesBook> get books;
+
+  /// Create a copy of SeriesItem
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SeriesItemImplCopyWith<_$SeriesItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -299,8 +312,12 @@ SeriesBook _$SeriesBookFromJson(Map<String, dynamic> json) {
 mixin _$SeriesBook {
   String get id => throw _privateConstructorUsedError;
 
+  /// Serializes this SeriesBook to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SeriesBook
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SeriesBookCopyWith<SeriesBook> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -324,6 +341,8 @@ class _$SeriesBookCopyWithImpl<$Res, $Val extends SeriesBook>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SeriesBook
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -357,6 +376,8 @@ class __$$SeriesBookImplCopyWithImpl<$Res>
       _$SeriesBookImpl _value, $Res Function(_$SeriesBookImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SeriesBook
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -395,11 +416,13 @@ class _$SeriesBookImpl implements _SeriesBook {
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SeriesBook
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SeriesBookImplCopyWith<_$SeriesBookImpl> get copyWith =>
@@ -421,8 +444,11 @@ abstract class _SeriesBook implements SeriesBook {
 
   @override
   String get id;
+
+  /// Create a copy of SeriesBook
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SeriesBookImplCopyWith<_$SeriesBookImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

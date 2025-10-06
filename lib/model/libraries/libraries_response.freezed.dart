@@ -22,8 +22,12 @@ LibrariesResponse _$LibrariesResponseFromJson(Map<String, dynamic> json) {
 mixin _$LibrariesResponse {
   List<Library> get libraries => throw _privateConstructorUsedError;
 
+  /// Serializes this LibrariesResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of LibrariesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $LibrariesResponseCopyWith<LibrariesResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -47,6 +51,8 @@ class _$LibrariesResponseCopyWithImpl<$Res, $Val extends LibrariesResponse>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of LibrariesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -80,6 +86,8 @@ class __$$LibrariesResponseImplCopyWithImpl<$Res>
       $Res Function(_$LibrariesResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of LibrariesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -125,12 +133,14 @@ class _$LibrariesResponseImpl implements _LibrariesResponse {
                 .equals(other._libraries, _libraries));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_libraries));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LibrariesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LibrariesResponseImplCopyWith<_$LibrariesResponseImpl> get copyWith =>
@@ -154,8 +164,11 @@ abstract class _LibrariesResponse implements LibrariesResponse {
 
   @override
   List<Library> get libraries;
+
+  /// Create a copy of LibrariesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LibrariesResponseImplCopyWith<_$LibrariesResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

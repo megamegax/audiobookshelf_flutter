@@ -16,20 +16,84 @@ import 'package:audiobookshelf_flutter/model/libraries/series_response.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/http_client_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
+import 'package:audiobookshelf_flutter/services/login_service.dart';
+import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 final libraryServiceProvider = Provider<LibraryService>((ref) {
   return LibraryService(
-      ref.watch(httpClientProvider), ref.watch(serverAddressProvider));
+    ref.watch(httpClientProvider),
+    ref.watch(serverAddressProvider),
+    LoginService(
+      ref.watch(httpClientProvider),
+      ref.watch(serverAddressProvider),
+      ref.watch(loginStateProvider.notifier),
+    ),
+  );
 });
 
 class LibraryService {
   final http.Client httpClient;
   final String serverAddress;
+  final LoginService loginService;
 
-  LibraryService(this.httpClient, this.serverAddress);
+  LibraryService(this.httpClient, this.serverAddress, this.loginService);
+
+  /// Make an authenticated HTTP request with automatic token refresh
+  Future<http.Response> _makeAuthenticatedRequest(
+    String method,
+    String endpoint, {
+    Map<String, String>? headers,
+    String? body,
+    UserModel? userModel,
+  }) async {
+    final requestHeaders = <String, String>{
+      'Content-Type': 'application/json',
+      ...?headers,
+    };
+
+    if (userModel != null) {
+      requestHeaders['Authorization'] = 'Bearer ${userModel.token}';
+    }
+
+    final uri = Uri.parse('$serverAddress$endpoint');
+    http.Response response;
+
+    if (method.toUpperCase() == 'GET') {
+      response = await httpClient.get(uri, headers: requestHeaders);
+    } else if (method.toUpperCase() == 'POST') {
+      response =
+          await httpClient.post(uri, headers: requestHeaders, body: body);
+    } else if (method.toUpperCase() == 'PATCH') {
+      response =
+          await httpClient.patch(uri, headers: requestHeaders, body: body);
+    } else {
+      throw UnsupportedError('HTTP method $method not supported');
+    }
+
+    // Handle 401 Unauthorized - try to refresh token
+    if (response.statusCode == 401 && userModel != null) {
+      final newToken = await loginService.refreshToken();
+      if (newToken != null) {
+        // Retry the request with the new token
+        requestHeaders['Authorization'] = 'Bearer $newToken';
+
+        if (method.toUpperCase() == 'GET') {
+          response = await httpClient.get(uri, headers: requestHeaders);
+        } else if (method.toUpperCase() == 'POST') {
+          response =
+              await httpClient.post(uri, headers: requestHeaders, body: body);
+        } else if (method.toUpperCase() == 'PATCH') {
+          response =
+              await httpClient.patch(uri, headers: requestHeaders, body: body);
+        }
+      }
+    }
+
+    return response;
+  }
 
   Future<List<Library>> fetchLibraries(UserModel userModel) async {
     final token = userModel.token;
@@ -45,22 +109,27 @@ class LibraryService {
 
   Future<PlaybackSession> playBook(
       UserModel userModel, LibraryItemEntity libraryItem) async {
-    final token = userModel.token;
-    final personalizedHomeSectionsResponse = await httpClient.post(
-        Uri.parse(
-            '$serverAddress/api/items/${libraryItem.itemId}/play?token=$token'),
+    final personalizedHomeSectionsResponse = await _makeAuthenticatedRequest(
+        'POST', '/api/items/${libraryItem.itemId}/play',
+        userModel: userModel,
         body: jsonEncode(PlayItemRequestPayload(
             itemId: libraryItem.itemId,
             mediaType: libraryItem.mediaType,
-            mediaPlayer: "web",
-            forceDirectPlay: false,
-            forceTranscode: true,
+            mediaPlayer: "html5-mobile",
+            forceDirectPlay: true,
+            forceTranscode: false,
             deviceInfo: const DeviceInfo(
                 clientVersion: "0.1",
                 sdkVersion: 10,
-                manufacturer: "11",
-                model: "Pixel 4a",
-                deviceId: "1234"))));
+                manufacturer: "Flutter",
+                model: "Flutter App",
+                deviceId: "flutter_device_1234"))));
+
+    if (personalizedHomeSectionsResponse.statusCode != 200) {
+      throw Exception(
+          'Failed to start playback: ${personalizedHomeSectionsResponse.statusCode}');
+    }
+
     PlaybackSession playbackSession = PlaybackSession.fromJson(
         jsonDecode(personalizedHomeSectionsResponse.body));
     return playbackSession;
@@ -134,38 +203,31 @@ class LibraryService {
 
   Future<void> sendProgressSync(UserModel userModel, String sessionId,
       Map<String, dynamic> syncData) async {
-    final token = userModel.token;
-
-    final response = await httpClient.post(
-      Uri.parse('$serverAddress/api/session/$sessionId/sync'),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token"
-      },
+    final response = await _makeAuthenticatedRequest(
+      'POST',
+      '/api/session/$sessionId/sync',
+      userModel: userModel,
       body: jsonEncode(syncData),
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to sync progress');
+      throw Exception('Failed to sync progress: ${response.statusCode}');
     }
   }
 
   Future<void> updateMediaProgress(UserModel userModel, String libraryItemId,
       {required Map<String, dynamic> updatePayload}) async {
-    final token = userModel.token;
-
-    final response = await httpClient.patch(
-      Uri.parse('$serverAddress/api/me/progress/$libraryItemId'),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token"
-      },
+    final response = await _makeAuthenticatedRequest(
+      'PATCH',
+      '/api/me/progress/$libraryItemId',
+      userModel: userModel,
       body: jsonEncode(updatePayload),
     );
 
     if (response.statusCode != 200) {
       print(response.body);
-      throw Exception('Failed to update media progress');
+      throw Exception(
+          'Failed to update media progress: ${response.statusCode}');
     }
   }
 }

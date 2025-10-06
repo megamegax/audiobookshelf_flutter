@@ -1,6 +1,5 @@
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
 import 'package:audiobookshelf_flutter/pages/splash_screen.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,74 +7,77 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-// Light and dark ColorSchemes made by FlexColorScheme v7.0.5.
-// These ColorScheme objects require Flutter 3.7 or later.
-const ColorScheme flexSchemeLight = ColorScheme(
+// Modern Material Design 3 Color Schemes
+const ColorScheme lightColorScheme = ColorScheme(
   brightness: Brightness.light,
-  primary: Color.fromRGBO(0, 72, 129, 1),
-  onPrimary: Color(0xffffffff),
-  primaryContainer: Color(0xffd0e4ff),
-  onPrimaryContainer: Color(0xff111314),
-  secondary: Color(0xffac3306),
-  onSecondary: Color(0xffffffff),
-  secondaryContainer: Color(0xffffdbcf),
-  onSecondaryContainer: Color(0xff141211),
-  tertiary: Color(0xff006875),
-  onTertiary: Color(0xffffffff),
-  tertiaryContainer: Color(0xff95f0ff),
-  onTertiaryContainer: Color(0xff0d1414),
-  error: Color(0xffba1a1a),
-  onError: Color(0xffffffff),
-  errorContainer: Color(0xffffdad6),
-  onErrorContainer: Color(0xff410002),
-  background: Color(0xfff8f9fb),
-  onBackground: Color(0xff090909),
-  surface: Color(0xfff8f9fb),
-  onSurface: Color(0xff090909),
-  surfaceVariant: Color(0xffe0e4e8),
-  onSurfaceVariant: Color(0xff111112),
-  outline: Color(0xff7c7c7c),
-  outlineVariant: Color(0xffc8c8c8),
-  shadow: Color(0xff000000),
-  scrim: Color(0xff000000),
-  inverseSurface: Color(0xff101214),
-  onInverseSurface: Color(0xfff5f5f5),
-  inversePrimary: Color(0xff92c5ee),
-  surfaceTint: Color(0xff004881),
+  primary: Color(0xFF6750A4), // Modern purple
+  onPrimary: Color(0xFFFFFFFF),
+  primaryContainer: Color(0xFFEADDFF),
+  onPrimaryContainer: Color(0xFF21005D),
+  secondary: Color(0xFF625B71), // Sophisticated gray
+  onSecondary: Color(0xFFFFFFFF),
+  secondaryContainer: Color(0xFFE8DEF8),
+  onSecondaryContainer: Color(0xFF1D192B),
+  tertiary: Color(0xFF7D5260), // Warm pink
+  onTertiary: Color(0xFFFFFFFF),
+  tertiaryContainer: Color(0xFFFFD8E4),
+  onTertiaryContainer: Color(0xFF31111D),
+  error: Color(0xFFBA1A1A),
+  onError: Color(0xFFFFFFFF),
+  errorContainer: Color(0xFFFFDAD6),
+  onErrorContainer: Color(0xFF410002),
+  surface: Color(0xFFFFFBFE), // Clean white
+  onSurface: Color(0xFF1C1B1F),
+  surfaceContainerLowest: Color(0xFFFFFFFF),
+  surfaceContainerLow: Color(0xFFF7F2FA),
+  surfaceContainer: Color(0xFFF1ECF4),
+  surfaceContainerHigh: Color(0xFFEBE6EF),
+  surfaceContainerHighest: Color(0xFFE6E0E9),
+  onSurfaceVariant: Color(0xFF49454F),
+  outline: Color(0xFF79747E),
+  outlineVariant: Color(0xFFCAC4D0),
+  shadow: Color(0xFF000000),
+  scrim: Color(0xFF000000),
+  inverseSurface: Color(0xFF313033),
+  onInverseSurface: Color(0xFFF4EFF4),
+  inversePrimary: Color(0xFFD0BCFF),
+  surfaceTint: Color(0xFF6750A4),
 );
 
-const ColorScheme flexSchemeDark = ColorScheme(
+const ColorScheme darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
-  primary: Color.fromARGB(255, 244, 150, 56),
-  onPrimary: Color(0xff141414),
-  primaryContainer: Color(0xff19598d),
-  onPrimaryContainer: Color(0xffe3edf5),
-  secondary: Color(0xffffded3),
-  onSecondary: Color(0xff141414),
-  secondaryContainer: Color(0xffb4471e),
-  onSecondaryContainer: Color(0xfffceae4),
-  tertiary: Color(0xff9ff1ff),
-  onTertiary: Color(0xff101414),
-  tertiaryContainer: Color(0xff197682),
-  onTertiaryContainer: Color(0xffe3f2f4),
-  error: Color(0xffffb4ab),
-  onError: Color(0xff690005),
-  errorContainer: Color(0xff93000a),
-  onErrorContainer: Color(0xffffb4ab),
-  background: Color(0xff1a1b1d),
-  onBackground: Color(0xffededed),
-  surface: Color(0xff1a1b1d),
-  onSurface: Color(0xffededed),
-  surfaceVariant: Color(0xff424446),
-  onSurfaceVariant: Color(0xffe1e1e1),
-  outline: Color(0xff7a7a7a),
-  outlineVariant: Color(0xff2e2e2e),
-  shadow: Color(0xff000000),
-  scrim: Color(0xff000000),
-  inverseSurface: Color(0xfffcfdff),
-  onInverseSurface: Color(0xff131314),
-  inversePrimary: Color(0xff697177),
-  surfaceTint: Color(0xffd4e6ff),
+  primary: Color(0xFFD0BCFF), // Light purple
+  onPrimary: Color(0xFF381E72),
+  primaryContainer: Color(0xFF4F378B),
+  onPrimaryContainer: Color(0xFFEADDFF),
+  secondary: Color(0xFFCCC2DC), // Light gray
+  onSecondary: Color(0xFF332D41),
+  secondaryContainer: Color(0xFF4A4458),
+  onSecondaryContainer: Color(0xFFE8DEF8),
+  tertiary: Color(0xFFEFB8C8), // Light pink
+  onTertiary: Color(0xFF492532),
+  tertiaryContainer: Color(0xFF633B48),
+  onTertiaryContainer: Color(0xFFFFD8E4),
+  error: Color(0xFFFFB4AB),
+  onError: Color(0xFF690005),
+  errorContainer: Color(0xFF93000A),
+  onErrorContainer: Color(0xFFFFDAD6),
+  surface: Color(0xFF1C1B1F), // Dark surface
+  onSurface: Color(0xFFE6E0E9),
+  surfaceContainerLowest: Color(0xFF0F0D13),
+  surfaceContainerLow: Color(0xFF1D1B20),
+  surfaceContainer: Color(0xFF211F26),
+  surfaceContainerHigh: Color(0xFF2B2930),
+  surfaceContainerHighest: Color(0xFF36343B),
+  onSurfaceVariant: Color(0xFFCAC4D0),
+  outline: Color(0xFF938F99),
+  outlineVariant: Color(0xFF49454F),
+  shadow: Color(0xFF000000),
+  scrim: Color(0xFF000000),
+  inverseSurface: Color(0xFFE6E0E9),
+  onInverseSurface: Color(0xFF313033),
+  inversePrimary: Color(0xFF6750A4),
+  surfaceTint: Color(0xFFD0BCFF),
 );
 final navigatorKeyProvider = Provider((_) => GlobalKey<NavigatorState>());
 
@@ -87,8 +89,130 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       navigatorKey: ref.watch(navigatorKeyProvider),
       home: const SplashScreen(),
-      theme: FlexThemeData.light(colorScheme: flexSchemeLight),
-      darkTheme: FlexThemeData.dark(colorScheme: flexSchemeDark),
+      theme: ThemeData(
+        colorScheme: lightColorScheme,
+        useMaterial3: true,
+        typography: Typography.material2021(),
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 0,
+          scrolledUnderElevation: 1,
+        ),
+        cardTheme: CardThemeData(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          filled: true,
+        ),
+        navigationDrawerTheme: const NavigationDrawerThemeData(
+          elevation: 0,
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          elevation: 0,
+          type: BottomNavigationBarType.fixed,
+        ),
+      ),
+      darkTheme: ThemeData(
+        colorScheme: darkColorScheme,
+        useMaterial3: true,
+        typography: Typography.material2021(),
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 0,
+          scrolledUnderElevation: 1,
+        ),
+        cardTheme: CardThemeData(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          filled: true,
+        ),
+        navigationDrawerTheme: const NavigationDrawerThemeData(
+          elevation: 0,
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          elevation: 0,
+          type: BottomNavigationBarType.fixed,
+        ),
+      ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     );

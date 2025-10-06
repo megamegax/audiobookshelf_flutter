@@ -24,8 +24,12 @@ mixin _$PersonalizedHome {
   String get type => throw _privateConstructorUsedError;
   List<PersonalizedEntity> get entities => throw _privateConstructorUsedError;
 
+  /// Serializes this PersonalizedHome to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PersonalizedHome
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PersonalizedHomeCopyWith<PersonalizedHome> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -49,6 +53,8 @@ class _$PersonalizedHomeCopyWithImpl<$Res, $Val extends PersonalizedHome>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PersonalizedHome
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -92,6 +98,8 @@ class __$$PersonalizedHomeImplCopyWithImpl<$Res>
       $Res Function(_$PersonalizedHomeImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PersonalizedHome
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -155,12 +163,14 @@ class _$PersonalizedHomeImpl implements _PersonalizedHome {
             const DeepCollectionEquality().equals(other._entities, _entities));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, id, type, const DeepCollectionEquality().hash(_entities));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PersonalizedHome
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PersonalizedHomeImplCopyWith<_$PersonalizedHomeImpl> get copyWith =>
@@ -191,8 +201,11 @@ abstract class _PersonalizedHome implements PersonalizedHome {
   String get type;
   @override
   List<PersonalizedEntity> get entities;
+
+  /// Create a copy of PersonalizedHome
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PersonalizedHomeImplCopyWith<_$PersonalizedHomeImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -203,7 +216,9 @@ mixin _$PersonalizedHomeEntity {
   String get type => throw _privateConstructorUsedError;
   List<dynamic> get entities => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PersonalizedHomeEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PersonalizedHomeEntityCopyWith<PersonalizedHomeEntity> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -228,6 +243,8 @@ class _$PersonalizedHomeEntityCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PersonalizedHomeEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -274,6 +291,8 @@ class __$$PersonalizedHomeEntityImplCopyWithImpl<$Res>
       $Res Function(_$PersonalizedHomeEntityImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PersonalizedHomeEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -338,7 +357,9 @@ class _$PersonalizedHomeEntityImpl implements _PersonalizedHomeEntity {
   int get hashCode => Object.hash(
       runtimeType, id, type, const DeepCollectionEquality().hash(_entities));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PersonalizedHomeEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PersonalizedHomeEntityImplCopyWith<_$PersonalizedHomeEntityImpl>
@@ -358,8 +379,11 @@ abstract class _PersonalizedHomeEntity implements PersonalizedHomeEntity {
   String get type;
   @override
   List<dynamic> get entities;
+
+  /// Create a copy of PersonalizedHomeEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PersonalizedHomeEntityImplCopyWith<_$PersonalizedHomeEntityImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -372,8 +396,12 @@ PersonalizedEntity _$PersonalizedEntityFromJson(Map<String, dynamic> json) {
 mixin _$PersonalizedEntity {
   String get id => throw _privateConstructorUsedError;
 
+  /// Serializes this PersonalizedEntity to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PersonalizedEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PersonalizedEntityCopyWith<PersonalizedEntity> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -397,6 +425,8 @@ class _$PersonalizedEntityCopyWithImpl<$Res, $Val extends PersonalizedEntity>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PersonalizedEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -430,6 +460,8 @@ class __$$PersonalizedEntityImplCopyWithImpl<$Res>
       $Res Function(_$PersonalizedEntityImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PersonalizedEntity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -468,11 +500,13 @@ class _$PersonalizedEntityImpl implements _PersonalizedEntity {
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PersonalizedEntity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PersonalizedEntityImplCopyWith<_$PersonalizedEntityImpl> get copyWith =>
@@ -496,8 +530,11 @@ abstract class _PersonalizedEntity implements PersonalizedEntity {
 
   @override
   String get id;
+
+  /// Create a copy of PersonalizedEntity
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PersonalizedEntityImplCopyWith<_$PersonalizedEntityImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

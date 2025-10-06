@@ -2,12 +2,29 @@ import 'package:audiobookshelf_flutter/provider/shared_preferences_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final usernameProvider = StateProvider<String>((ref) {
-  return '';
+final usernameProvider = StateNotifierProvider<UsernameNotifier, String>((ref) {
+  return UsernameNotifier();
 });
-final passwordProvider = StateProvider<String>((ref) {
-  return '';
+
+final passwordProvider = StateNotifierProvider<PasswordNotifier, String>((ref) {
+  return PasswordNotifier();
 });
+
+class UsernameNotifier extends StateNotifier<String> {
+  UsernameNotifier() : super('');
+
+  void updateUsername(String username) {
+    state = username;
+  }
+}
+
+class PasswordNotifier extends StateNotifier<String> {
+  PasswordNotifier() : super('');
+
+  void updatePassword(String password) {
+    state = password;
+  }
+}
 
 final usernameLoaderProvider = FutureProvider<String>((ref) async {
   SharedPreferences sharedPrefs =

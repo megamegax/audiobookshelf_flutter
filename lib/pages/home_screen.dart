@@ -10,10 +10,15 @@ import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/widgets/book_card.dart';
 import 'package:audiobookshelf_flutter/widgets/player.dart';
 import 'package:audiobookshelf_flutter/widgets/series_card.dart';
+import 'package:audiobookshelf_flutter/widgets/library_selector.dart';
+import 'package:audiobookshelf_flutter/widgets/sync_indicator.dart';
+import 'package:audiobookshelf_flutter/widgets/background_loading_indicator.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
+import 'package:audiobookshelf_flutter/provider/library_selector_provider.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
 import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
@@ -39,6 +44,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (kDebugMode) {
+      print('[HOME_SCREEN] HomeScreen build kezdődik...');
+    }
+
     _audioPlayer = ref.watch(audioPlayerProvider);
 
     if (_audioPlayer.audioSource != null) {
@@ -55,13 +64,48 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     final userModel = ref.read(userModelNotifierProvider);
     final ServerSettings? serverSettings =
         ref.read(serverSettingsNotifierProvider);
+
+    if (kDebugMode) {
+      print('[HOME_SCREEN] UserModel: ${userModel?.username}');
+      print('[HOME_SCREEN] ServerSettings: ${serverSettings != null}');
+    }
     final Future<Widget> future = libraryItemsRepository.when(
       data: (libraryItemsRepository) async {
-        final libraryId =
-            (await (await libraryRepository).getLibrary())[0].libraryId;
+        if (kDebugMode) {
+          print('[HOME_SCREEN] LibraryItemsRepository betöltve');
+        }
+
+        final selectedLibrary = ref.read(selectedLibraryProvider);
+        final libraries = await (await libraryRepository).getLibrary();
+        final libraryId = selectedLibrary?.id ?? libraries[0].libraryId;
+
+        if (kDebugMode) {
+          print('[HOME_SCREEN] Selected library: ${selectedLibrary?.name}');
+          print('[HOME_SCREEN] Library ID: $libraryId');
+        }
+
+        if (userModel == null) {
+          if (kDebugMode) {
+            print('[HOME_SCREEN] UserModel null!');
+          }
+          return const Center(child: Text('User not found'));
+        }
+
+        if (kDebugMode) {
+          print('[HOME_SCREEN] Personalized home betöltése...');
+        }
 
         final List<PersonalizedHome> personalizedHomeSections =
-            await libraryService.fetchPersonalizedHome(userModel!, libraryId!);
+            await libraryService.fetchPersonalizedHome(userModel, libraryId!);
+
+        if (kDebugMode) {
+          print(
+              '[HOME_SCREEN] ${personalizedHomeSections.length} personalized home section betöltve');
+        }
+        if (kDebugMode) {
+          print('[HOME_SCREEN] Home sections feldolgozása...');
+        }
+
         final homeSections = await Future.wait(personalizedHomeSections.map(
             (section) async => PersonalizedHomeEntity(
                 id: section.id,
@@ -78,6 +122,12 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     return cachedSerie;
                   }
                 }).toList()))));
+
+        if (kDebugMode) {
+          print(
+              '[HOME_SCREEN] ${homeSections.length} home section feldolgozva');
+        }
+
         bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
         Color modifiedSurfaceColor;
         if (isDarkMode) {
@@ -93,12 +143,21 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             Theme.of(context).colorScheme.surface,
           );
         }
+        if (kDebugMode) {
+          print('[HOME_SCREEN] Scaffold létrehozása...');
+        }
+
         return Scaffold(
             backgroundColor: modifiedSurfaceColor,
             bottomSheet:
                 showPlayer ? Player(source: _audioPlayer.audioSource!) : null,
             appBar: AppBar(
               title: const Text('Audiobookshelf - Flutter'),
+              actions: const [
+                CompactLibrarySelector(),
+                SyncIndicator(),
+                SizedBox(width: 8),
+              ],
             ),
             drawer: BookDrawer(
               selectedItem: SelectedItem.home,
@@ -112,6 +171,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
+                    // Background loading indicator
+                    const BackgroundLoadingIndicator(),
                     ...homeSections
                         .map((homeSection) => buildSection(homeSection)),
                   ],
@@ -119,12 +180,70 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ));
       },
-      loading: () => Future.value(const CircularProgressIndicator()),
-      error: (error, stackTrace) => Future.value(Text('Error: $error')),
+      loading: () {
+        if (kDebugMode) {
+          print('[HOME_SCREEN] LibraryItemsRepository loading...');
+        }
+        return Future.value(const Center(child: CircularProgressIndicator()));
+      },
+      error: (error, stackTrace) {
+        if (kDebugMode) {
+          print('[HOME_SCREEN] LibraryItemsRepository error: $error');
+        }
+        return Future.value(Center(child: Text('Error: $error')));
+      },
     );
+
+    if (kDebugMode) {
+      print('[HOME_SCREEN] FutureBuilder létrehozása...');
+    }
+
     return FutureBuilder<Widget>(
         future: future,
-        builder: (context, snapshot) => snapshot.data ?? Container());
+        builder: (context, snapshot) {
+          if (kDebugMode) {
+            print(
+                '[HOME_SCREEN] FutureBuilder snapshot state: ${snapshot.connectionState}');
+            if (snapshot.hasError) {
+              print('[HOME_SCREEN] FutureBuilder error: ${snapshot.error}');
+            }
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Scaffold(
+              appBar: AppBar(title: const Text('Audiobookshelf - Flutter')),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error, size: 64, color: Colors.red),
+                    const SizedBox(height: 16),
+                    Text('Error: ${snapshot.error}'),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {});
+                      },
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return snapshot.data ??
+              Scaffold(
+                appBar: AppBar(title: const Text('Audiobookshelf - Flutter')),
+                body: const Center(child: Text('No data')),
+              );
+        });
   }
 
   @override
@@ -146,6 +265,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 AppLocalizations.of(context)!.headerContinueSeries,
               SectionType.recentSeries =>
                 AppLocalizations.of(context)!.headerRecentSeries,
+              SectionType.recentlyAdded =>
+                AppLocalizations.of(context)!.headerRecentlyAdded,
+              SectionType.newestAuthors =>
+                AppLocalizations.of(context)!.headerNewestAuthors,
               SectionType.discover =>
                 AppLocalizations.of(context)!.headerDiscover,
               SectionType.listenAgain =>
@@ -158,10 +281,20 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             scrollDirection: Axis.horizontal,
             child: Row(
                 children: homeSection.entities
-                    .map((libraryItem) => libraryItem is LibraryItemEntity
-                        ? BookCard(libraryItem: libraryItem)
-                        : SeriesCard(series: libraryItem as Series))
-                    .toList())),
+                    .where((libraryItem) => libraryItem != null)
+                    .map((libraryItem) {
+              if (libraryItem is LibraryItemEntity) {
+                return BookCard(libraryItem: libraryItem);
+              } else if (libraryItem is Series) {
+                return SeriesCard(series: libraryItem);
+              } else {
+                if (kDebugMode) {
+                  print(
+                      '[HOME_SCREEN] Unknown entity type: ${libraryItem.runtimeType}');
+                }
+                return const SizedBox.shrink();
+              }
+            }).toList())),
       ],
     );
   }

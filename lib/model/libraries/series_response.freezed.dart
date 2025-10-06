@@ -22,8 +22,12 @@ SeriesResponse _$SeriesResponseFromJson(Map<String, dynamic> json) {
 mixin _$SeriesResponse {
   List<SeriesItem> get results => throw _privateConstructorUsedError;
 
+  /// Serializes this SeriesResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SeriesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SeriesResponseCopyWith<SeriesResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -47,6 +51,8 @@ class _$SeriesResponseCopyWithImpl<$Res, $Val extends SeriesResponse>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SeriesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -80,6 +86,8 @@ class __$$SeriesResponseImplCopyWithImpl<$Res>
       _$SeriesResponseImpl _value, $Res Function(_$SeriesResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SeriesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -124,12 +132,14 @@ class _$SeriesResponseImpl implements _SeriesResponse {
             const DeepCollectionEquality().equals(other._results, _results));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_results));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SeriesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SeriesResponseImplCopyWith<_$SeriesResponseImpl> get copyWith =>
@@ -153,8 +163,11 @@ abstract class _SeriesResponse implements SeriesResponse {
 
   @override
   List<SeriesItem> get results;
+
+  /// Create a copy of SeriesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SeriesResponseImplCopyWith<_$SeriesResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

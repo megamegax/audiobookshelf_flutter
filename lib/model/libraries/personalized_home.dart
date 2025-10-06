@@ -10,6 +10,10 @@ enum SectionType {
   continueSeries,
   @JsonValue("recent-series")
   recentSeries,
+  @JsonValue("recently-added")
+  recentlyAdded,
+  @JsonValue("newest-authors")
+  newestAuthors,
   @JsonValue("discover")
   discover,
   @JsonValue("listen-again")

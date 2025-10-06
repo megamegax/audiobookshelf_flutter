@@ -26,8 +26,12 @@ mixin _$LoginResponse {
   List<String> get ereaderDevices => throw _privateConstructorUsedError;
   String get Source => throw _privateConstructorUsedError;
 
+  /// Serializes this LoginResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of LoginResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $LoginResponseCopyWith<LoginResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -59,6 +63,8 @@ class _$LoginResponseCopyWithImpl<$Res, $Val extends LoginResponse>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of LoginResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -92,6 +98,8 @@ class _$LoginResponseCopyWithImpl<$Res, $Val extends LoginResponse>
     ) as $Val);
   }
 
+  /// Create a copy of LoginResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserModelCopyWith<$Res> get user {
@@ -100,6 +108,8 @@ class _$LoginResponseCopyWithImpl<$Res, $Val extends LoginResponse>
     });
   }
 
+  /// Create a copy of LoginResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ServerSettingsCopyWith<$Res> get serverSettings {
@@ -138,6 +148,8 @@ class __$$LoginResponseImplCopyWithImpl<$Res>
       _$LoginResponseImpl _value, $Res Function(_$LoginResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of LoginResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -237,7 +249,7 @@ class _$LoginResponseImpl
             (identical(other.Source, Source) || other.Source == Source));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -247,7 +259,9 @@ class _$LoginResponseImpl
       const DeepCollectionEquality().hash(_ereaderDevices),
       Source);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LoginResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LoginResponseImplCopyWith<_$LoginResponseImpl> get copyWith =>
@@ -282,8 +296,11 @@ abstract class _LoginResponse implements LoginResponse {
   List<String> get ereaderDevices;
   @override
   String get Source;
+
+  /// Create a copy of LoginResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoginResponseImplCopyWith<_$LoginResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

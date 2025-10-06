@@ -61,8 +61,12 @@ mixin _$ServerSettings {
   bool get authOpenIDAutoRegister => throw _privateConstructorUsedError;
   String? get authOpenIDMatchExistingBy => throw _privateConstructorUsedError;
 
+  /// Serializes this ServerSettings to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ServerSettings
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ServerSettingsCopyWith<ServerSettings> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -126,6 +130,8 @@ class _$ServerSettingsCopyWithImpl<$Res, $Val extends ServerSettings>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ServerSettings
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -394,6 +400,8 @@ class __$$ServerSettingsImplCopyWithImpl<$Res>
       _$ServerSettingsImpl _value, $Res Function(_$ServerSettingsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ServerSettings
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -830,7 +838,7 @@ class _$ServerSettingsImpl implements _ServerSettings {
             (identical(other.authOpenIDMatchExistingBy, authOpenIDMatchExistingBy) || other.authOpenIDMatchExistingBy == authOpenIDMatchExistingBy));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
@@ -876,7 +884,9 @@ class _$ServerSettingsImpl implements _ServerSettings {
         authOpenIDMatchExistingBy
       ]);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ServerSettings
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ServerSettingsImplCopyWith<_$ServerSettingsImpl> get copyWith =>
@@ -1017,8 +1027,11 @@ abstract class _ServerSettings implements ServerSettings {
   bool get authOpenIDAutoRegister;
   @override
   String? get authOpenIDMatchExistingBy;
+
+  /// Create a copy of ServerSettings
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ServerSettingsImplCopyWith<_$ServerSettingsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

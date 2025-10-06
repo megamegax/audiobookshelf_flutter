@@ -17,20 +17,26 @@ final loginStateProvider =
 
 class LoginStateNotifier extends StateNotifier<LoginState> {
   LoginStateNotifier() : super(const LoginState.initial());
+
   void updateState(LoginState loginState) {
     state = loginState;
+  }
+
+  /// Refresh token method - placeholder for now
+  Future<String?> refreshToken() async {
+    // This would typically implement token refresh logic
+    // For now, return null as we don't have the full implementation
+    return null;
   }
 }
 
 final serverSettingsNotifierProvider =
     StateNotifierProvider<ServerSettingsNotifier, ServerSettings?>((ref) {
-  return ServerSettingsNotifier(ref);
+  return ServerSettingsNotifier();
 });
 
 class ServerSettingsNotifier extends StateNotifier<ServerSettings?> {
-  final Ref ref;
-
-  ServerSettingsNotifier(this.ref) : super(null);
+  ServerSettingsNotifier() : super(null);
   ServerSettings loadServerSettings() {
     //todo load server settings from database
     return state!;
@@ -44,13 +50,11 @@ class ServerSettingsNotifier extends StateNotifier<ServerSettings?> {
 
 final userModelNotifierProvider =
     StateNotifierProvider<UserModelNotifier, UserModel?>((ref) {
-  return UserModelNotifier(ref);
+  return UserModelNotifier();
 });
 
 class UserModelNotifier extends StateNotifier<UserModel?> {
-  final Ref ref;
-
-  UserModelNotifier(this.ref) : super(null);
+  UserModelNotifier() : super(null);
   UserModel loadUserModel() {
     //todo load user model from database
     return state!;

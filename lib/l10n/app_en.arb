@@ -64,5 +64,15 @@
     "@headerListenAgain": {
         "description": "Section title at Home screen",
         "type": "text"
+    },
+    "headerRecentlyAdded": "Recently Added",
+    "@headerRecentlyAdded": {
+        "description": "Section title at Home screen",
+        "type": "text"
+    },
+    "headerNewestAuthors": "Newest Authors",
+    "@headerNewestAuthors": {
+        "description": "Section title at Home screen",
+        "type": "text"
     }
 }

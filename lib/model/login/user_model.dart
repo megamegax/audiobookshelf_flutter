@@ -15,6 +15,7 @@ class UserModel with _$UserModel {
     String? email,
     String? type,
     String? token,
+    String? refreshToken,
     List<MediaProgress>? mediaProgress,
     List<dynamic>? seriesHideFromContinueListening,
     List<dynamic>? bookmarks,

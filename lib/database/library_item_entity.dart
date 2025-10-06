@@ -2,7 +2,7 @@ import 'package:audiobookshelf_flutter/database/collapsed_series_entity.dart';
 import 'package:audiobookshelf_flutter/database/media_entity.dart';
 import 'package:audiobookshelf_flutter/database/media_progress_entity.dart';
 import 'package:audiobookshelf_flutter/database/metadata_entity.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 part 'library_item_entity.g.dart';
 

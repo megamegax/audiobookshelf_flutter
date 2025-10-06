@@ -42,8 +42,12 @@ mixin _$DetailedLibraryItem {
   int get size => throw _privateConstructorUsedError;
   CollapsedSeries? get collapsedSeries => throw _privateConstructorUsedError;
 
+  /// Serializes this DetailedLibraryItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of DetailedLibraryItem
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $DetailedLibraryItemCopyWith<DetailedLibraryItem> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -91,6 +95,8 @@ class _$DetailedLibraryItemCopyWithImpl<$Res, $Val extends DetailedLibraryItem>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of DetailedLibraryItem
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -204,6 +210,8 @@ class _$DetailedLibraryItemCopyWithImpl<$Res, $Val extends DetailedLibraryItem>
     ) as $Val);
   }
 
+  /// Create a copy of DetailedLibraryItem
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DetailedMediaCopyWith<$Res> get media {
@@ -212,6 +220,8 @@ class _$DetailedLibraryItemCopyWithImpl<$Res, $Val extends DetailedLibraryItem>
     });
   }
 
+  /// Create a copy of DetailedLibraryItem
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CollapsedSeriesCopyWith<$Res>? get collapsedSeries {
@@ -270,6 +280,8 @@ class __$$DetailedLibraryItemImplCopyWithImpl<$Res>
       $Res Function(_$DetailedLibraryItemImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of DetailedLibraryItem
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -509,7 +521,7 @@ class _$DetailedLibraryItemImpl implements _DetailedLibraryItem {
                 other.collapsedSeries == collapsedSeries));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
@@ -536,7 +548,9 @@ class _$DetailedLibraryItemImpl implements _DetailedLibraryItem {
         collapsedSeries
       ]);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of DetailedLibraryItem
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$DetailedLibraryItemImplCopyWith<_$DetailedLibraryItemImpl> get copyWith =>
@@ -621,8 +635,11 @@ abstract class _DetailedLibraryItem implements DetailedLibraryItem {
   int get size;
   @override
   CollapsedSeries? get collapsedSeries;
+
+  /// Create a copy of DetailedLibraryItem
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DetailedLibraryItemImplCopyWith<_$DetailedLibraryItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

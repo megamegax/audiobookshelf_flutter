@@ -32,8 +32,12 @@ mixin _$LibraryItemResponse {
   bool get collapseseries => throw _privateConstructorUsedError;
   String? get include => throw _privateConstructorUsedError;
 
+  /// Serializes this LibraryItemResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of LibraryItemResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $LibraryItemResponseCopyWith<LibraryItemResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -70,6 +74,8 @@ class _$LibraryItemResponseCopyWithImpl<$Res, $Val extends LibraryItemResponse>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of LibraryItemResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -133,6 +139,8 @@ class _$LibraryItemResponseCopyWithImpl<$Res, $Val extends LibraryItemResponse>
     ) as $Val);
   }
 
+  /// Create a copy of LibraryItemResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DetailedLibraryItemCopyWith<$Res> get result {
@@ -175,6 +183,8 @@ class __$$LibraryItemResponseImplCopyWithImpl<$Res>
       $Res Function(_$LibraryItemResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of LibraryItemResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -309,12 +319,14 @@ class _$LibraryItemResponseImpl implements _LibraryItemResponse {
             (identical(other.include, include) || other.include == include));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, result, total, limit, page,
       sortBy, sortDesc, filterBy, mediaType, minified, collapseseries, include);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LibraryItemResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LibraryItemResponseImplCopyWith<_$LibraryItemResponseImpl> get copyWith =>
@@ -368,8 +380,11 @@ abstract class _LibraryItemResponse implements LibraryItemResponse {
   bool get collapseseries;
   @override
   String? get include;
+
+  /// Create a copy of LibraryItemResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LibraryItemResponseImplCopyWith<_$LibraryItemResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
