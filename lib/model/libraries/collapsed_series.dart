@@ -9,7 +9,7 @@ class CollapsedSeries with _$CollapsedSeries {
     required String id,
     required String name,
     required String nameIgnorePrefix,
-    required int numBooks,
+    int? numBooks,
   }) = _CollapsedSeries;
 
   factory CollapsedSeries.fromJson(Map<String, dynamic> json) =>

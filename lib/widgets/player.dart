@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:developer' as dev;
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/pages/player_overlay.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
 import 'package:audiobookshelf_flutter/widgets/player_page_route.dart';
-import 'package:audiobookshelf_flutter/widgets/player_slider.dart';
+import 'package:audiobookshelf_flutter/widgets/wavy_progress_bar.dart';
 import 'package:audiobookshelf_flutter/widgets/wave_animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +34,22 @@ class _PlayerState extends ConsumerState<Player> {
   late PlayerService _playerService;
   @override
   void initState() {
+    dev.log('[PLAYER_WIDGET] initState called');
     _mediaItem = widget.source.sequence[0].tag as MediaItem;
     _libraryItem = _mediaItem.extras!['item'] as LibraryItemEntity;
     _audioPlayer = ref.read(audioPlayerProvider);
     _playerService = ref.read(playerServiceProvider);
+
+    dev.log('[PLAYER_WIDGET] Initialized with:');
+    dev.log('[PLAYER_WIDGET] - Title: ${_mediaItem.title}');
+    dev.log('[PLAYER_WIDGET] - Library Item ID: ${_libraryItem.itemId}');
+    dev.log(
+        '[PLAYER_WIDGET] - Audio Player State: ${_audioPlayer.playerState}');
+    dev.log(
+        '[PLAYER_WIDGET] - Has Audio Source: ${_audioPlayer.audioSource != null}');
     metaSubscription = _audioPlayer.playerStateStream.listen((event) {
+      dev.log(
+          '[PLAYER_WIDGET] Player state changed: ${event.processingState}, playing: ${event.playing}');
       setState(() {
         _mediaItem = widget.source.sequence[0].tag as MediaItem;
         _libraryItem = _mediaItem.extras!['item'] as LibraryItemEntity;
@@ -45,12 +57,19 @@ class _PlayerState extends ConsumerState<Player> {
     });
     subscription = _audioPlayer.positionStream.listen((event) {
       setState(() {
-        if (event.inSeconds == 0) {
+        final currentTrackDuration = _playerService.currentTrackDuration();
+        if (event.inSeconds == 0 || currentTrackDuration <= 0) {
           progress = 0;
         } else {
-          progress = event.inSeconds / (_audioPlayer.duration!.inSeconds);
+          // Progress within the current track/chapter
+          progress = event.inSeconds / currentTrackDuration;
         }
       });
+      // Log progress every 30 seconds to avoid spam
+      if (event.inSeconds % 30 == 0) {
+        dev.log(
+            '[PLAYER_WIDGET] Position: ${event.inSeconds}s, Progress: ${(progress * 100).toStringAsFixed(1)}%');
+      }
       if (event.inSeconds % 15 == 0) {
         ref.read(playerServiceProvider).sendProgressSync();
       }
@@ -60,6 +79,7 @@ class _PlayerState extends ConsumerState<Player> {
 
   @override
   void dispose() {
+    dev.log('[PLAYER_WIDGET] dispose called - cleaning up subscriptions');
     subscription.cancel();
     metaSubscription.cancel();
     super.dispose();
@@ -67,8 +87,13 @@ class _PlayerState extends ConsumerState<Player> {
 
   @override
   Widget build(BuildContext context) {
+    dev.log('[PLAYER_WIDGET] build() called - rendering player widget');
+    dev.log('[PLAYER_WIDGET] Current playing state: ${_audioPlayer.playing}');
+    dev.log(
+        '[PLAYER_WIDGET] Current progress: ${(progress * 100).toStringAsFixed(1)}%');
+
     return Container(
-      height: Platform.isIOS ? 180 : 160,
+      height: Platform.isIOS ? 220 : 200,
       margin: const EdgeInsets.all(8),
       child: Card(
         elevation: 0,
@@ -216,7 +241,83 @@ class _PlayerState extends ConsumerState<Player> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
+                // Control buttons row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // Previous chapter button
+                    IconButton(
+                      onPressed: _playerService.hasPreviousChapter()
+                          ? () async => await _playerService.previousChapter()
+                          : null,
+                      icon: Icon(
+                        Icons.skip_previous,
+                        size: 20,
+                        color: _playerService.hasPreviousChapter()
+                            ? Theme.of(context).colorScheme.onSurface
+                            : Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.4),
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
+                    ),
+                    // Skip backward 10s
+                    IconButton(
+                      onPressed: () async =>
+                          await _playerService.skipBackward(10),
+                      icon: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Icon(
+                            Icons.replay_10,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ],
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
+                    ),
+                    // Skip forward 10s
+                    IconButton(
+                      onPressed: () async =>
+                          await _playerService.skipForward(10),
+                      icon: Icon(
+                        Icons.forward_10,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
+                    ),
+                    // Next chapter button
+                    IconButton(
+                      onPressed: _playerService.hasNextChapter()
+                          ? () async => await _playerService.nextChapter()
+                          : null,
+                      icon: Icon(
+                        Icons.skip_next,
+                        size: 20,
+                        color: _playerService.hasNextChapter()
+                            ? Theme.of(context).colorScheme.onSurface
+                            : Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.4),
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
                 // Progress section
                 Column(
                   children: [
@@ -235,7 +336,7 @@ class _PlayerState extends ConsumerState<Player> {
                         ),
                         const Spacer(),
                         Text(
-                          "-${durationToReadable(Duration(seconds: (_mediaItem.duration ?? Duration.zero).inSeconds - (_audioPlayer.position.inSeconds).round()))}",
+                          "-${durationToReadable(Duration(seconds: (_playerService.currentTrackDuration() - (_audioPlayer.position.inSeconds)).round().clamp(0, double.infinity).toInt()))}",
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: Theme.of(context)
@@ -247,11 +348,12 @@ class _PlayerState extends ConsumerState<Player> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    // Progress slider
-                    PlayerSlider(
+                    // Wavy progress bar
+                    WavyProgressBar(
                       audioPlayer: _audioPlayer,
                       progress: progress,
                       playerService: _playerService,
+                      height: 6.0,
                     ),
                   ],
                 ),

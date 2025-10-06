@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dart';
@@ -54,22 +55,36 @@ class PlayerService {
 
   preparePlayer(LibraryItemEntity libraryItem, detailed,
       {bool autoStart = false, Function? onPrepared}) async {
+    dev.log(
+        '[PLAYER_SERVICE] preparePlayer called for: ${libraryItem.media.metadata?.title}');
+    dev.log('[PLAYER_SERVICE] autoStart: $autoStart');
+    dev.log(
+        '[PLAYER_SERVICE] current audioPlayer.playing: ${audioPlayer.playing}');
+
     _libraryItem = libraryItem;
     _detailed = detailed;
 
     // Check if we're already playing this item
     if (audioPlayer.playing && _libraryItem?.itemId == libraryItem.itemId) {
+      dev.log('[PLAYER_SERVICE] Already playing this item, calling onPrepared');
       onPrepared?.call();
       return;
     }
 
     // Stop current playback if different item
     if (audioPlayer.playing) {
+      dev.log('[PLAYER_SERVICE] Stopping current playback for different item');
       await audioPlayer.stop();
     }
 
     final playbackSession =
         await libraryService.playBook(userModel, libraryItem);
+
+    dev.log('[PLAYER_SERVICE] Playback session created: ${playbackSession.id}');
+    dev.log(
+        '[PLAYER_SERVICE] Session current time: ${playbackSession.currentTime}');
+    dev.log(
+        '[PLAYER_SERVICE] Audio tracks count: ${playbackSession.audioTracks.length}');
 
     // Use the current time from the playback session, not 0
     final startTime = playbackSession.currentTime;
@@ -79,11 +94,15 @@ class PlayerService {
     String streamUrl;
     if (currentTrack()?.contentUrl?.startsWith('/hls') == true) {
       streamUrl = "$serverAddress${currentTrack()?.contentUrl}";
+      dev.log('[PLAYER_SERVICE] Using HLS URL: $streamUrl');
     } else {
       streamUrl =
           "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack()?.index ?? 1}";
+      dev.log('[PLAYER_SERVICE] Using track URL: $streamUrl');
     }
 
+    dev.log(
+        '[PLAYER_SERVICE] Setting audio source with URL: $streamUrl?token=***');
     await audioPlayer.setAudioSource(AudioSource.uri(
       Uri.parse("$streamUrl?token=${userModel.token}"),
       tag: MediaItem(
@@ -100,10 +119,13 @@ class PlayerService {
               Duration(seconds: libraryItem.media.duration?.toInt() ?? 0)),
     ));
 
+    dev.log('[PLAYER_SERVICE] Audio source set successfully');
+
     // Configure audio player settings
     audioPlayer.setCanUseNetworkResourcesForLiveStreamingWhilePaused(true);
     final bitRate = _detailed?.media.audioFiles?[0].bitRate?.toDouble();
     if (bitRate != null) {
+      dev.log('[PLAYER_SERVICE] Setting preferred bit rate: $bitRate');
       audioPlayer.setPreferredPeakBitRate(bitRate);
     }
 
@@ -113,13 +135,21 @@ class PlayerService {
     final seekTimeInTrack = max(0, startTime - currentTrackStartOffset);
     final position = Duration(seconds: seekTimeInTrack.floor());
 
+    dev.log(
+        '[PLAYER_SERVICE] Calculated seek position: ${position.inSeconds}s within track');
+
     // Wait for the audio source to be loaded before seeking
+    dev.log('[PLAYER_SERVICE] Loading audio source...');
     await audioPlayer.load();
+    dev.log('[PLAYER_SERVICE] Audio source loaded, seeking to position');
     await audioPlayer.seek(position);
 
     if (autoStart) {
+      dev.log('[PLAYER_SERVICE] Auto-starting playback');
       await audioPlayer.play();
     }
+
+    dev.log('[PLAYER_SERVICE] preparePlayer completed, calling onPrepared');
     onPrepared?.call();
   }
 
@@ -159,6 +189,11 @@ class PlayerService {
 
   AudioTrack? currentTrack() {
     return _playbackSession.audioTracks[currentTrackIndex()];
+  }
+
+  /// Get the duration of the current track/chapter in seconds
+  double currentTrackDuration() {
+    return currentTrack()?.duration ?? 0.0;
   }
 
   /// Seek to a specific time in the audiobook
@@ -214,8 +249,30 @@ class PlayerService {
     await audioPlayer.load();
     await audioPlayer.seek(position);
 
-    // Update the playback session current time
+    // Update the playbook session current time
     _playbackSession = _playbackSession.copyWith(currentTime: timeInSeconds);
+  }
+
+  /// Seek within the current track/chapter (for slider usage)
+  Future<void> seekWithinCurrentTrack(double progressRatio) async {
+    if (_libraryItem == null) return;
+
+    final currentTrackDur = currentTrackDuration();
+    if (currentTrackDur <= 0) return;
+
+    // Calculate the target time within the current track
+    final targetTimeInTrack = progressRatio * currentTrackDur;
+    final targetOverallTime = currentTrackStartOffset() + targetTimeInTrack;
+
+    dev.log(
+        '[PLAYER_SERVICE] Seeking within track: ${progressRatio * 100}% (${targetTimeInTrack}s of ${currentTrackDur}s)');
+
+    // Seek within the current audio source
+    await audioPlayer.seek(Duration(seconds: targetTimeInTrack.floor()));
+
+    // Update the playback session current time
+    _playbackSession =
+        _playbackSession.copyWith(currentTime: targetOverallTime);
   }
 
   Future<void> sendProgressSync() async {
@@ -253,5 +310,98 @@ class PlayerService {
     }).toList();
     final updatedUserModel = userModel.copyWith(mediaProgress: mediaProgress);
     (await libraryItemsRepository).saveMediaProgresses(updatedUserModel);
+  }
+
+  /// Skip forward by specified seconds
+  Future<void> skipForward(int seconds) async {
+    final currentPosition = audioPlayer.position.inSeconds;
+    final newPosition = currentPosition + seconds;
+    final currentTrackDur = currentTrackDuration();
+
+    dev.log(
+        '[PLAYER_SERVICE] Skip forward ${seconds}s: ${currentPosition}s -> ${newPosition}s');
+
+    if (newPosition < currentTrackDur) {
+      // Stay within current track
+      await audioPlayer.seek(Duration(seconds: newPosition));
+    } else {
+      // Skip to next chapter if available
+      await nextChapter();
+    }
+    updateMediaProgress();
+  }
+
+  /// Skip backward by specified seconds
+  Future<void> skipBackward(int seconds) async {
+    final currentPosition = audioPlayer.position.inSeconds;
+    final newPosition = currentPosition - seconds;
+
+    dev.log(
+        '[PLAYER_SERVICE] Skip backward ${seconds}s: ${currentPosition}s -> ${newPosition}s');
+
+    if (newPosition >= 0) {
+      // Stay within current track
+      await audioPlayer.seek(Duration(seconds: newPosition));
+    } else {
+      // Skip to previous chapter if available
+      await previousChapter();
+    }
+    updateMediaProgress();
+  }
+
+  /// Navigate to next chapter/track
+  Future<void> nextChapter() async {
+    final currentIndex = currentTrackIndex();
+    final nextIndex = currentIndex + 1;
+
+    dev.log('[PLAYER_SERVICE] Next chapter: ${currentIndex} -> ${nextIndex}');
+
+    if (nextIndex < _playbackSession.audioTracks.length) {
+      final nextTrack = _playbackSession.audioTracks[nextIndex];
+      final startTime = nextTrack.startOffset ?? 0.0;
+
+      dev.log(
+          '[PLAYER_SERVICE] Switching to track ${nextIndex} at offset ${startTime}s');
+      await seekTo(startTime);
+    } else {
+      dev.log('[PLAYER_SERVICE] Already at last chapter');
+    }
+  }
+
+  /// Navigate to previous chapter/track
+  Future<void> previousChapter() async {
+    final currentIndex = currentTrackIndex();
+    final currentPosition = audioPlayer.position.inSeconds;
+
+    dev.log(
+        '[PLAYER_SERVICE] Previous chapter: current track ${currentIndex}, position ${currentPosition}s');
+
+    // If we're more than 3 seconds into the track, restart current track
+    if (currentPosition > 3) {
+      dev.log('[PLAYER_SERVICE] Restarting current track');
+      await audioPlayer.seek(Duration.zero);
+    } else if (currentIndex > 0) {
+      // Go to previous track
+      final previousIndex = currentIndex - 1;
+      final previousTrack = _playbackSession.audioTracks[previousIndex];
+      final startTime = previousTrack.startOffset ?? 0.0;
+
+      dev.log(
+          '[PLAYER_SERVICE] Switching to previous track ${previousIndex} at offset ${startTime}s');
+      await seekTo(startTime);
+    } else {
+      dev.log('[PLAYER_SERVICE] Already at first chapter, restarting');
+      await audioPlayer.seek(Duration.zero);
+    }
+  }
+
+  /// Check if next chapter is available
+  bool hasNextChapter() {
+    return currentTrackIndex() < _playbackSession.audioTracks.length - 1;
+  }
+
+  /// Check if previous chapter is available
+  bool hasPreviousChapter() {
+    return currentTrackIndex() > 0 || audioPlayer.position.inSeconds > 3;
   }
 }

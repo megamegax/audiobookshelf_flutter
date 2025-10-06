@@ -53,4 +53,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get headerNewestAuthors => 'Newest Authors';
+
+  @override
+  String get headerNewestEpisodes => 'Newest Episodes';
+
+  @override
+  String get headerContinuePodcast => 'Continue Podcast';
+
+  @override
+  String get headerRecentPodcasts => 'Recent Podcasts';
 }

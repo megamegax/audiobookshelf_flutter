@@ -187,6 +187,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Newest Authors'**
   String get headerNewestAuthors;
+
+  /// Section title at Home screen for podcasts
+  ///
+  /// In en, this message translates to:
+  /// **'Newest Episodes'**
+  String get headerNewestEpisodes;
+
+  /// Section title at Home screen for podcasts
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Podcast'**
+  String get headerContinuePodcast;
+
+  /// Section title at Home screen for podcasts
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Podcasts'**
+  String get headerRecentPodcasts;
 }
 
 class _AppLocalizationsDelegate

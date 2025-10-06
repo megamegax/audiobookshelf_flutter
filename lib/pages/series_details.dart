@@ -1,5 +1,6 @@
 import 'package:audiobookshelf_flutter/database/series.dart';
 import 'package:audiobookshelf_flutter/widgets/book_card.dart';
+import 'package:audiobookshelf_flutter/widgets/series_cover_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,11 +30,7 @@ class SeriesDetails extends ConsumerWidget {
               child: Hero(
                 tag: 'seriesImage${series.seriesId}',
                 child: Container(
-                  width: 200,
-                  height: 200,
                   decoration: BoxDecoration(
-                    color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
@@ -46,10 +43,14 @@ class SeriesDetails extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  child: Icon(
-                    Icons.library_books,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: SeriesCoverWidget(
+                      series: series,
+                      width: 200,
+                      height: 200,
+                      bookCoverAspectRatio: 1.6,
+                    ),
                   ),
                 ),
               ),

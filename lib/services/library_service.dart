@@ -5,7 +5,7 @@ import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dart';
 import 'package:audiobookshelf_flutter/model/libraries/libraries_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
-import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
+import 'package:audiobookshelf_flutter/model/libraries/library_item_new.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_items_response.dart';
 import 'package:audiobookshelf_flutter/model/libraries/personalized_home.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/device_info.dart';
@@ -149,14 +149,122 @@ class LibraryService {
     return personalizedHomeSections;
   }
 
-  Future<List<LibraryItem>> fetchLibraryItems(
+  Future<List<LibraryItemNew>> fetchLibraryItems(
       UserModel userModel, String libraryId) async {
     final token = userModel.token;
+    if (kDebugMode) {
+      print('[LIBRARY_SERVICE] Fetching library items for library: $libraryId');
+    }
+
     final fetchLibraryItemsResponse = await httpClient.get(
         Uri.parse(
             '$serverAddress/api/libraries/$libraryId/items?expanded=1&include=progress,rssfeed,authors'),
         headers: {"Authorization": "Bearer $token"});
+
+    if (kDebugMode) {
+      print(
+          '[LIBRARY_SERVICE] HTTP response status: ${fetchLibraryItemsResponse.statusCode}');
+      print(
+          '[LIBRARY_SERVICE] Response body length: ${fetchLibraryItemsResponse.body.length}');
+    }
+
     final responseBody = jsonDecode(fetchLibraryItemsResponse.body);
+
+    if (kDebugMode) {
+      print('[LIBRARY_SERVICE] JSON decoded successfully');
+
+      // Log the complete response structure
+      print('[LIBRARY_SERVICE] === COMPLETE RESPONSE STRUCTURE ===');
+      print('[LIBRARY_SERVICE] Response keys: ${responseBody.keys.toList()}');
+      responseBody.forEach((key, value) {
+        if (key != 'results') {
+          print('[LIBRARY_SERVICE] $key: $value (${value.runtimeType})');
+        }
+      });
+      print('[LIBRARY_SERVICE] =====================================');
+
+      if (responseBody is Map && responseBody.containsKey('results')) {
+        final results = responseBody['results'] as List;
+        print('[LIBRARY_SERVICE] Found ${results.length} items in response');
+        if (results.isNotEmpty) {
+          final firstItem = results.first;
+          print('[LIBRARY_SERVICE] === FIRST ITEM COMPLETE STRUCTURE ===');
+          print(
+              '[LIBRARY_SERVICE] First item raw JSON keys: ${firstItem.keys.toList()}');
+
+          // Log ALL fields in the first item
+          firstItem.forEach((key, value) {
+            if (key != 'media') {
+              // We'll handle media separately
+              print('[LIBRARY_SERVICE] $key: $value (${value.runtimeType})');
+            }
+          });
+
+          print('[LIBRARY_SERVICE] =======================================');
+
+          // Debug the media object specifically
+          if (firstItem['media'] != null) {
+            final media = firstItem['media'] as Map<String, dynamic>;
+            print('[LIBRARY_SERVICE] === MEDIA OBJECT COMPLETE STRUCTURE ===');
+            print(
+                '[LIBRARY_SERVICE] Media object keys: ${media.keys.toList()}');
+
+            // Log ALL fields in the media object
+            media.forEach((key, value) {
+              if (key != 'metadata') {
+                // We'll handle metadata separately
+                print(
+                    '[LIBRARY_SERVICE] media.$key: $value (${value.runtimeType})');
+              }
+            });
+
+            print(
+                '[LIBRARY_SERVICE] ==========================================');
+
+            // Debug metadata object
+            if (media['metadata'] != null) {
+              final metadata = media['metadata'] as Map<String, dynamic>;
+              print(
+                  '[LIBRARY_SERVICE] === METADATA OBJECT COMPLETE STRUCTURE ===');
+              print(
+                  '[LIBRARY_SERVICE] Metadata object keys: ${metadata.keys.toList()}');
+
+              // Log ALL fields in the metadata object
+              metadata.forEach((key, value) {
+                print(
+                    '[LIBRARY_SERVICE] metadata.$key: $value (${value.runtimeType})');
+              });
+
+              print(
+                  '[LIBRARY_SERVICE] ==============================================');
+            }
+          }
+        }
+      }
+    }
+
+    // Try to deserialize each item individually to find the problematic one
+    if (kDebugMode) {
+      print(
+          '[LIBRARY_SERVICE] Attempting to deserialize items individually...');
+      final results = responseBody['results'] as List;
+      for (int i = 0; i < results.length; i++) {
+        try {
+          final item = results[i];
+          print(
+              '[LIBRARY_SERVICE] Testing item $i: ${item['id']} - ${item['media']?['metadata']?['title']}');
+
+          // Try to create a LibraryItemNew from this specific item
+          LibraryItemNew.fromJson(item);
+          print('[LIBRARY_SERVICE] Item $i deserialized successfully');
+        } catch (e) {
+          print('[LIBRARY_SERVICE] ERROR in item $i: $e');
+          print('[LIBRARY_SERVICE] Problematic item data: ${results[i]}');
+          rethrow; // Re-throw to see the full stack trace
+        }
+      }
+    }
+
     final LibraryItemsResponse librariesResponse =
         LibraryItemsResponse.fromJson(responseBody);
     return librariesResponse.results;
@@ -180,16 +288,43 @@ class LibraryService {
   Future<List<SeriesItem>> fetchSeries(
       UserModel userModel, String libraryId) async {
     final token = userModel.token;
+    if (kDebugMode) {
+      print('[LIBRARY_SERVICE] Fetching series for library: $libraryId');
+    }
+
     final fetchLibraryItemsResponse = await httpClient.get(
         Uri.parse(
             '$serverAddress/api/libraries/$libraryId/series?sort=name&desc=0&filter=all&limit=50&page=0&minified=1&include=rssfeed,numEpisodesIncomplete'),
         headers: {"Authorization": "Bearer $token"});
+
+    if (kDebugMode) {
+      print(
+          '[LIBRARY_SERVICE] Series HTTP response status: ${fetchLibraryItemsResponse.statusCode}');
+      print(
+          '[LIBRARY_SERVICE] Series response body length: ${fetchLibraryItemsResponse.body.length}');
+    }
+
     final responseBody = jsonDecode(fetchLibraryItemsResponse.body);
+
+    if (kDebugMode) {
+      print('[LIBRARY_SERVICE] Series JSON decoded successfully');
+      if (responseBody is Map && responseBody.containsKey('results')) {
+        final results = responseBody['results'] as List;
+        print('[LIBRARY_SERVICE] Found ${results.length} series in response');
+        if (results.isNotEmpty) {
+          final firstSeries = results.first;
+          print(
+              '[LIBRARY_SERVICE] First series raw JSON keys: ${firstSeries.keys.toList()}');
+        }
+      }
+    }
+
     final SeriesResponse seriesResponse = SeriesResponse.fromJson(responseBody);
     return seriesResponse.results;
   }
 
-  Future<Uint8List?> fetchCover(LibraryItem item, UserModel userModel) async {
+  Future<Uint8List?> fetchCover(
+      LibraryItemNew item, UserModel userModel) async {
     final token = userModel.token;
 
     final response = await httpClient.get(

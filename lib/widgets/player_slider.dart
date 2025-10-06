@@ -40,8 +40,8 @@ class _PlayerSliderState extends ConsumerState<PlayerSlider> {
           // Progress will be updated by the parent widget
         },
         onChangeEnd: (value) async {
-          final seekTime = value * widget.playerService.totalDuration();
-          await widget.playerService.seekTo(seekTime);
+          // Use the new chapter-aware seeking method
+          await widget.playerService.seekWithinCurrentTrack(value);
           widget.playerService.updateMediaProgress();
         },
       ),

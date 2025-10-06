@@ -1,18 +1,22 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/database/series.dart';
-import 'package:audiobookshelf_flutter/drawer/book_drawer.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
 import 'package:audiobookshelf_flutter/model/libraries/personalized_home.dart';
+
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
-import 'package:audiobookshelf_flutter/widgets/book_card.dart';
-import 'package:audiobookshelf_flutter/widgets/player.dart';
+import 'package:audiobookshelf_flutter/widgets/morphing_book_card.dart';
 import 'package:audiobookshelf_flutter/widgets/series_card.dart';
+import 'package:audiobookshelf_flutter/widgets/morphing_navigation_drawer.dart';
 import 'package:audiobookshelf_flutter/widgets/library_selector.dart';
 import 'package:audiobookshelf_flutter/widgets/sync_indicator.dart';
 import 'package:audiobookshelf_flutter/widgets/background_loading_indicator.dart';
+import 'package:audiobookshelf_flutter/widgets/player.dart';
+import 'package:audiobookshelf_flutter/layouts/responsive_layout.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/library_selector_provider.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
@@ -50,12 +54,36 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
     _audioPlayer = ref.watch(audioPlayerProvider);
 
+    // Comprehensive audioPlayer logging
+    dev.log('[HOME_SCREEN] AudioPlayer state check:');
+    dev.log(
+        '[HOME_SCREEN] - Has audioSource: ${_audioPlayer.audioSource != null}');
+    dev.log('[HOME_SCREEN] - Player state: ${_audioPlayer.playerState}');
+    dev.log('[HOME_SCREEN] - Playing: ${_audioPlayer.playing}');
+    dev.log('[HOME_SCREEN] - Current position: ${_audioPlayer.position}');
+    if (_audioPlayer.audioSource != null) {
+      dev.log(
+          '[HOME_SCREEN] - AudioSource type: ${_audioPlayer.audioSource.runtimeType}');
+      dev.log(
+          '[HOME_SCREEN] - Sequence length: ${_audioPlayer.audioSource!.sequence.length}');
+      if (_audioPlayer.audioSource!.sequence.isNotEmpty) {
+        final tag = _audioPlayer.audioSource!.sequence[0].tag;
+        dev.log('[HOME_SCREEN] - Current media tag: $tag');
+        if (tag is MediaItem) {
+          dev.log(
+              '[HOME_SCREEN] - Current media: ${tag.title} by ${tag.artist}');
+        }
+      }
+    }
+
     if (_audioPlayer.audioSource != null) {
       setState(() {
         showPlayer = true;
       });
+      dev.log('[HOME_SCREEN] Setting showPlayer = true');
     } else {
       showPlayer = false;
+      dev.log('[HOME_SCREEN] Setting showPlayer = false');
     }
 
     final libraryItemsRepository = ref.read(libraryItemsRepositoryProvider);
@@ -69,19 +97,30 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       print('[HOME_SCREEN] UserModel: ${userModel?.username}');
       print('[HOME_SCREEN] ServerSettings: ${serverSettings != null}');
     }
+    // Watch the selected library to make the widget reactive
+    final selectedLibrary = ref.watch(selectedLibraryProvider);
+
     final Future<Widget> future = libraryItemsRepository.when(
       data: (libraryItemsRepository) async {
         if (kDebugMode) {
           print('[HOME_SCREEN] LibraryItemsRepository betöltve');
         }
 
-        final selectedLibrary = ref.read(selectedLibraryProvider);
         final libraries = await (await libraryRepository).getLibrary();
         final libraryId = selectedLibrary?.id ?? libraries[0].libraryId;
 
         if (kDebugMode) {
           print('[HOME_SCREEN] Selected library: ${selectedLibrary?.name}');
           print('[HOME_SCREEN] Library ID: $libraryId');
+          final availableLibrariesAsync = ref.read(availableLibrariesProvider);
+          availableLibrariesAsync.when(
+            data: (availableLibraries) => print(
+                '[HOME_SCREEN] Available libraries: ${availableLibraries.map((lib) => '${lib.name} (${lib.id})').join(', ')}'),
+            loading: () =>
+                print('[HOME_SCREEN] Available libraries: Loading...'),
+            error: (error, stack) =>
+                print('[HOME_SCREEN] Available libraries: Error - $error'),
+          );
         }
 
         if (userModel == null) {
@@ -113,13 +152,25 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 entities: await Future.wait(
                     section.entities.map((PersonalizedEntity item) async {
                   if (section.type == "book") {
-                    final cachedBook =
-                        (await libraryItemsRepository.getBook(item.id));
-                    return cachedBook;
+                    // Use generic method that works for all media types (books, podcasts, children's books)
+                    final cachedItem = (await libraryItemsRepository
+                        .getBookByLibrary(item.id, libraryId));
+                    // If not cached, return null (will be loaded by background service)
+                    // This prevents empty sections from showing while background loading is in progress
+                    return cachedItem;
                   } else {
+                    // For series, we need to check if any book in this series belongs to the current library
                     final cachedSerie =
                         (await libraryItemsRepository.getSeriesItem(item.id));
-                    return cachedSerie;
+                    if (cachedSerie != null) {
+                      // Check if any book in this series belongs to the current library
+                      final hasBookInLibrary = cachedSerie.books
+                          .any((book) => book.libraryId == libraryId);
+                      return hasBookInLibrary ? cachedSerie : null;
+                    }
+                    // If not cached, return null (will be loaded by background service)
+                    // This prevents empty sections from showing while background loading is in progress
+                    return null;
                   }
                 }).toList()))));
 
@@ -147,38 +198,63 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           print('[HOME_SCREEN] Scaffold létrehozása...');
         }
 
-        return Scaffold(
-            backgroundColor: modifiedSurfaceColor,
-            bottomSheet:
-                showPlayer ? Player(source: _audioPlayer.audioSource!) : null,
-            appBar: AppBar(
-              title: const Text('Audiobookshelf - Flutter'),
-              actions: const [
-                CompactLibrarySelector(),
-                SyncIndicator(),
-                SizedBox(width: 8),
-              ],
-            ),
-            drawer: BookDrawer(
-              selectedItem: SelectedItem.home,
-              serverSettings: serverSettings,
-            ),
-            body: Padding(
-              padding: EdgeInsets.only(
-                  bottom: _audioPlayer.audioSource != null ? 100.0 : 0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    // Background loading indicator
-                    const BackgroundLoadingIndicator(),
-                    ...homeSections
-                        .map((homeSection) => buildSection(homeSection)),
+        return Stack(
+          children: [
+            ResponsiveLayout(
+                title: 'Audiobookshelf - Flutter',
+                selectedDrawerItem: SelectedItem.home,
+                serverSettings: serverSettings,
+                appBar: AppBar(
+                  title: const Text('Audiobookshelf - Flutter'),
+                  actions: const [
+                    CompactLibrarySelector(),
+                    SyncIndicator(),
+                    SizedBox(width: 8),
                   ],
                 ),
+                body: Container(
+                  color: modifiedSurfaceColor,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        bottom: _audioPlayer.audioSource != null ? 100.0 : 0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 20),
+                          // Background loading indicator
+                          const BackgroundLoadingIndicator(),
+                          ...homeSections
+                              .map((homeSection) => buildSection(homeSection)),
+                        ],
+                      ),
+                    ),
+                  ),
+                )),
+            // Floating Player Widget
+            if (_audioPlayer.audioSource != null)
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Builder(
+                  builder: (context) {
+                    dev.log(
+                        '[HOME_SCREEN] Rendering Player widget - audioSource exists');
+                    return Player(source: _audioPlayer.audioSource!);
+                  },
+                ),
+              )
+            else
+              Builder(
+                builder: (context) {
+                  dev.log(
+                      '[HOME_SCREEN] Player widget NOT rendered - no audioSource');
+                  return const SizedBox.shrink();
+                },
               ),
-            ));
+          ],
+        );
       },
       loading: () {
         if (kDebugMode) {
@@ -273,6 +349,12 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 AppLocalizations.of(context)!.headerDiscover,
               SectionType.listenAgain =>
                 AppLocalizations.of(context)!.headerListenAgain,
+              SectionType.newestEpisodes =>
+                AppLocalizations.of(context)!.headerNewestEpisodes,
+              SectionType.continuePodcast =>
+                AppLocalizations.of(context)!.headerContinuePodcast,
+              SectionType.recentPodcasts =>
+                AppLocalizations.of(context)!.headerRecentPodcasts,
             },
             style: Theme.of(context).textTheme.titleLarge,
           ),
@@ -282,9 +364,19 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             child: Row(
                 children: homeSection.entities
                     .where((libraryItem) => libraryItem != null)
-                    .map((libraryItem) {
+                    .toList()
+                    .cast<dynamic>()
+                    .asMap()
+                    .entries
+                    .map((entry) {
+              final index = entry.key;
+              final libraryItem = entry.value;
               if (libraryItem is LibraryItemEntity) {
-                return BookCard(libraryItem: libraryItem);
+                return MorphingBookCard(
+                  libraryItem: libraryItem,
+                  heroTag:
+                      'book-cover-${libraryItem.id}-${homeSection.id.name}-$index',
+                );
               } else if (libraryItem is Series) {
                 return SeriesCard(series: libraryItem);
               } else {

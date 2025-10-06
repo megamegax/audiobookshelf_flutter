@@ -20,17 +20,21 @@ Metadata _$MetadataFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Metadata {
-  String get title => throw _privateConstructorUsedError;
+  String? get title => throw _privateConstructorUsedError;
   String? get titleIgnorePrefix => throw _privateConstructorUsedError;
   String? get subtitle => throw _privateConstructorUsedError;
   String? get authorName => throw _privateConstructorUsedError;
   String? get narratorName => throw _privateConstructorUsedError;
   String? get seriesName => throw _privateConstructorUsedError;
-  List<String> get genres => throw _privateConstructorUsedError;
-  String? get publishedYear => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _genresFromJson)
+  List<String>? get genres => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _publishedYearFromJson)
+  int? get publishedYear => throw _privateConstructorUsedError;
   String? get publishedDate => throw _privateConstructorUsedError;
   String? get publisher => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
+  @JsonKey(name: 'descriptionFormat', defaultValue: 'text')
+  String? get descriptionFormat => throw _privateConstructorUsedError;
   String? get isbn => throw _privateConstructorUsedError;
   String? get asin => throw _privateConstructorUsedError;
   String? get language => throw _privateConstructorUsedError;
@@ -52,17 +56,19 @@ abstract class $MetadataCopyWith<$Res> {
       _$MetadataCopyWithImpl<$Res, Metadata>;
   @useResult
   $Res call(
-      {String title,
+      {String? title,
       String? titleIgnorePrefix,
       String? subtitle,
       String? authorName,
       String? narratorName,
       String? seriesName,
-      List<String> genres,
-      String? publishedYear,
+      @JsonKey(fromJson: _genresFromJson) List<String>? genres,
+      @JsonKey(fromJson: _publishedYearFromJson) int? publishedYear,
       String? publishedDate,
       String? publisher,
       String? description,
+      @JsonKey(name: 'descriptionFormat', defaultValue: 'text')
+      String? descriptionFormat,
       String? isbn,
       String? asin,
       String? language,
@@ -84,27 +90,28 @@ class _$MetadataCopyWithImpl<$Res, $Val extends Metadata>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
+    Object? title = freezed,
     Object? titleIgnorePrefix = freezed,
     Object? subtitle = freezed,
     Object? authorName = freezed,
     Object? narratorName = freezed,
     Object? seriesName = freezed,
-    Object? genres = null,
+    Object? genres = freezed,
     Object? publishedYear = freezed,
     Object? publishedDate = freezed,
     Object? publisher = freezed,
     Object? description = freezed,
+    Object? descriptionFormat = freezed,
     Object? isbn = freezed,
     Object? asin = freezed,
     Object? language = freezed,
     Object? explicit = null,
   }) {
     return _then(_value.copyWith(
-      title: null == title
+      title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       titleIgnorePrefix: freezed == titleIgnorePrefix
           ? _value.titleIgnorePrefix
           : titleIgnorePrefix // ignore: cast_nullable_to_non_nullable
@@ -125,14 +132,14 @@ class _$MetadataCopyWithImpl<$Res, $Val extends Metadata>
           ? _value.seriesName
           : seriesName // ignore: cast_nullable_to_non_nullable
               as String?,
-      genres: null == genres
+      genres: freezed == genres
           ? _value.genres
           : genres // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
       publishedYear: freezed == publishedYear
           ? _value.publishedYear
           : publishedYear // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       publishedDate: freezed == publishedDate
           ? _value.publishedDate
           : publishedDate // ignore: cast_nullable_to_non_nullable
@@ -144,6 +151,10 @@ class _$MetadataCopyWithImpl<$Res, $Val extends Metadata>
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      descriptionFormat: freezed == descriptionFormat
+          ? _value.descriptionFormat
+          : descriptionFormat // ignore: cast_nullable_to_non_nullable
               as String?,
       isbn: freezed == isbn
           ? _value.isbn
@@ -174,17 +185,19 @@ abstract class _$$MetadataImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String title,
+      {String? title,
       String? titleIgnorePrefix,
       String? subtitle,
       String? authorName,
       String? narratorName,
       String? seriesName,
-      List<String> genres,
-      String? publishedYear,
+      @JsonKey(fromJson: _genresFromJson) List<String>? genres,
+      @JsonKey(fromJson: _publishedYearFromJson) int? publishedYear,
       String? publishedDate,
       String? publisher,
       String? description,
+      @JsonKey(name: 'descriptionFormat', defaultValue: 'text')
+      String? descriptionFormat,
       String? isbn,
       String? asin,
       String? language,
@@ -204,27 +217,28 @@ class __$$MetadataImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
+    Object? title = freezed,
     Object? titleIgnorePrefix = freezed,
     Object? subtitle = freezed,
     Object? authorName = freezed,
     Object? narratorName = freezed,
     Object? seriesName = freezed,
-    Object? genres = null,
+    Object? genres = freezed,
     Object? publishedYear = freezed,
     Object? publishedDate = freezed,
     Object? publisher = freezed,
     Object? description = freezed,
+    Object? descriptionFormat = freezed,
     Object? isbn = freezed,
     Object? asin = freezed,
     Object? language = freezed,
     Object? explicit = null,
   }) {
     return _then(_$MetadataImpl(
-      title: null == title
+      title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       titleIgnorePrefix: freezed == titleIgnorePrefix
           ? _value.titleIgnorePrefix
           : titleIgnorePrefix // ignore: cast_nullable_to_non_nullable
@@ -245,14 +259,14 @@ class __$$MetadataImplCopyWithImpl<$Res>
           ? _value.seriesName
           : seriesName // ignore: cast_nullable_to_non_nullable
               as String?,
-      genres: null == genres
+      genres: freezed == genres
           ? _value._genres
           : genres // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
       publishedYear: freezed == publishedYear
           ? _value.publishedYear
           : publishedYear // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       publishedDate: freezed == publishedDate
           ? _value.publishedDate
           : publishedDate // ignore: cast_nullable_to_non_nullable
@@ -264,6 +278,10 @@ class __$$MetadataImplCopyWithImpl<$Res>
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      descriptionFormat: freezed == descriptionFormat
+          ? _value.descriptionFormat
+          : descriptionFormat // ignore: cast_nullable_to_non_nullable
               as String?,
       isbn: freezed == isbn
           ? _value.isbn
@@ -289,17 +307,19 @@ class __$$MetadataImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$MetadataImpl implements _Metadata {
   const _$MetadataImpl(
-      {required this.title,
+      {this.title,
       this.titleIgnorePrefix,
       this.subtitle,
       this.authorName,
       this.narratorName,
       this.seriesName,
-      required final List<String> genres,
-      this.publishedYear,
+      @JsonKey(fromJson: _genresFromJson) final List<String>? genres,
+      @JsonKey(fromJson: _publishedYearFromJson) this.publishedYear,
       this.publishedDate,
       this.publisher,
       this.description,
+      @JsonKey(name: 'descriptionFormat', defaultValue: 'text')
+      this.descriptionFormat,
       this.isbn,
       this.asin,
       this.language,
@@ -310,7 +330,7 @@ class _$MetadataImpl implements _Metadata {
       _$$MetadataImplFromJson(json);
 
   @override
-  final String title;
+  final String? title;
   @override
   final String? titleIgnorePrefix;
   @override
@@ -321,22 +341,29 @@ class _$MetadataImpl implements _Metadata {
   final String? narratorName;
   @override
   final String? seriesName;
-  final List<String> _genres;
+  final List<String>? _genres;
   @override
-  List<String> get genres {
+  @JsonKey(fromJson: _genresFromJson)
+  List<String>? get genres {
+    final value = _genres;
+    if (value == null) return null;
     if (_genres is EqualUnmodifiableListView) return _genres;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_genres);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
-  final String? publishedYear;
+  @JsonKey(fromJson: _publishedYearFromJson)
+  final int? publishedYear;
   @override
   final String? publishedDate;
   @override
   final String? publisher;
   @override
   final String? description;
+  @override
+  @JsonKey(name: 'descriptionFormat', defaultValue: 'text')
+  final String? descriptionFormat;
   @override
   final String? isbn;
   @override
@@ -348,7 +375,7 @@ class _$MetadataImpl implements _Metadata {
 
   @override
   String toString() {
-    return 'Metadata(title: $title, titleIgnorePrefix: $titleIgnorePrefix, subtitle: $subtitle, authorName: $authorName, narratorName: $narratorName, seriesName: $seriesName, genres: $genres, publishedYear: $publishedYear, publishedDate: $publishedDate, publisher: $publisher, description: $description, isbn: $isbn, asin: $asin, language: $language, explicit: $explicit)';
+    return 'Metadata(title: $title, titleIgnorePrefix: $titleIgnorePrefix, subtitle: $subtitle, authorName: $authorName, narratorName: $narratorName, seriesName: $seriesName, genres: $genres, publishedYear: $publishedYear, publishedDate: $publishedDate, publisher: $publisher, description: $description, descriptionFormat: $descriptionFormat, isbn: $isbn, asin: $asin, language: $language, explicit: $explicit)';
   }
 
   @override
@@ -376,6 +403,8 @@ class _$MetadataImpl implements _Metadata {
                 other.publisher == publisher) &&
             (identical(other.description, description) ||
                 other.description == description) &&
+            (identical(other.descriptionFormat, descriptionFormat) ||
+                other.descriptionFormat == descriptionFormat) &&
             (identical(other.isbn, isbn) || other.isbn == isbn) &&
             (identical(other.asin, asin) || other.asin == asin) &&
             (identical(other.language, language) ||
@@ -399,6 +428,7 @@ class _$MetadataImpl implements _Metadata {
       publishedDate,
       publisher,
       description,
+      descriptionFormat,
       isbn,
       asin,
       language,
@@ -422,17 +452,19 @@ class _$MetadataImpl implements _Metadata {
 
 abstract class _Metadata implements Metadata {
   const factory _Metadata(
-      {required final String title,
+      {final String? title,
       final String? titleIgnorePrefix,
       final String? subtitle,
       final String? authorName,
       final String? narratorName,
       final String? seriesName,
-      required final List<String> genres,
-      final String? publishedYear,
+      @JsonKey(fromJson: _genresFromJson) final List<String>? genres,
+      @JsonKey(fromJson: _publishedYearFromJson) final int? publishedYear,
       final String? publishedDate,
       final String? publisher,
       final String? description,
+      @JsonKey(name: 'descriptionFormat', defaultValue: 'text')
+      final String? descriptionFormat,
       final String? isbn,
       final String? asin,
       final String? language,
@@ -442,7 +474,7 @@ abstract class _Metadata implements Metadata {
       _$MetadataImpl.fromJson;
 
   @override
-  String get title;
+  String? get title;
   @override
   String? get titleIgnorePrefix;
   @override
@@ -454,15 +486,20 @@ abstract class _Metadata implements Metadata {
   @override
   String? get seriesName;
   @override
-  List<String> get genres;
+  @JsonKey(fromJson: _genresFromJson)
+  List<String>? get genres;
   @override
-  String? get publishedYear;
+  @JsonKey(fromJson: _publishedYearFromJson)
+  int? get publishedYear;
   @override
   String? get publishedDate;
   @override
   String? get publisher;
   @override
   String? get description;
+  @override
+  @JsonKey(name: 'descriptionFormat', defaultValue: 'text')
+  String? get descriptionFormat;
   @override
   String? get isbn;
   @override

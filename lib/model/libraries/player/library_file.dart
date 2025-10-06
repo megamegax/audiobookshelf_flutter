@@ -21,11 +21,11 @@ class LibraryFile with _$LibraryFile {
 @freezed
 class FileMetadata with _$FileMetadata {
   const factory FileMetadata({
-    required String? filename,
-    required String? ext,
-    required String? path,
+    String? filename,
+    String? ext,
+    String? path,
     String? relPath,
-    required int? size,
+    int? size,
     int? mtimeMs,
     int? ctimeMs,
     int? birthtimeMs,

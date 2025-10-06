@@ -27,9 +27,20 @@ mixin _$DetailedMedia {
   List<BookChapter>? get chapters => throw _privateConstructorUsedError;
   List<Track>? get tracks => throw _privateConstructorUsedError;
   List<LibraryFile>? get libraryFiles => throw _privateConstructorUsedError;
-  double get duration => throw _privateConstructorUsedError;
-  int get size => throw _privateConstructorUsedError;
-  EBookFile? get ebookFile => throw _privateConstructorUsedError;
+  double? get duration => throw _privateConstructorUsedError;
+  int? get size => throw _privateConstructorUsedError;
+  EBookFile? get ebookFile =>
+      throw _privateConstructorUsedError; // Podcast-specific fields
+  int? get numEpisodes => throw _privateConstructorUsedError;
+  bool? get autoDownloadEpisodes => throw _privateConstructorUsedError;
+  String? get autoDownloadSchedule => throw _privateConstructorUsedError;
+  int? get lastEpisodeCheck => throw _privateConstructorUsedError;
+  int? get maxEpisodesToKeep => throw _privateConstructorUsedError;
+  int? get maxNewEpisodesToDownload =>
+      throw _privateConstructorUsedError; // Book-specific fields
+  int? get numTracks => throw _privateConstructorUsedError;
+  int? get numAudioFiles => throw _privateConstructorUsedError;
+  int? get numChapters => throw _privateConstructorUsedError;
 
   /// Serializes this DetailedMedia to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -55,9 +66,18 @@ abstract class $DetailedMediaCopyWith<$Res> {
       List<BookChapter>? chapters,
       List<Track>? tracks,
       List<LibraryFile>? libraryFiles,
-      double duration,
-      int size,
-      EBookFile? ebookFile});
+      double? duration,
+      int? size,
+      EBookFile? ebookFile,
+      int? numEpisodes,
+      bool? autoDownloadEpisodes,
+      String? autoDownloadSchedule,
+      int? lastEpisodeCheck,
+      int? maxEpisodesToKeep,
+      int? maxNewEpisodesToDownload,
+      int? numTracks,
+      int? numAudioFiles,
+      int? numChapters});
 
   $MetadataCopyWith<$Res> get metadata;
   $EBookFileCopyWith<$Res>? get ebookFile;
@@ -85,9 +105,18 @@ class _$DetailedMediaCopyWithImpl<$Res, $Val extends DetailedMedia>
     Object? chapters = freezed,
     Object? tracks = freezed,
     Object? libraryFiles = freezed,
-    Object? duration = null,
-    Object? size = null,
+    Object? duration = freezed,
+    Object? size = freezed,
     Object? ebookFile = freezed,
+    Object? numEpisodes = freezed,
+    Object? autoDownloadEpisodes = freezed,
+    Object? autoDownloadSchedule = freezed,
+    Object? lastEpisodeCheck = freezed,
+    Object? maxEpisodesToKeep = freezed,
+    Object? maxNewEpisodesToDownload = freezed,
+    Object? numTracks = freezed,
+    Object? numAudioFiles = freezed,
+    Object? numChapters = freezed,
   }) {
     return _then(_value.copyWith(
       metadata: null == metadata
@@ -118,18 +147,54 @@ class _$DetailedMediaCopyWithImpl<$Res, $Val extends DetailedMedia>
           ? _value.libraryFiles
           : libraryFiles // ignore: cast_nullable_to_non_nullable
               as List<LibraryFile>?,
-      duration: null == duration
+      duration: freezed == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
-              as double,
-      size: null == size
+              as double?,
+      size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       ebookFile: freezed == ebookFile
           ? _value.ebookFile
           : ebookFile // ignore: cast_nullable_to_non_nullable
               as EBookFile?,
+      numEpisodes: freezed == numEpisodes
+          ? _value.numEpisodes
+          : numEpisodes // ignore: cast_nullable_to_non_nullable
+              as int?,
+      autoDownloadEpisodes: freezed == autoDownloadEpisodes
+          ? _value.autoDownloadEpisodes
+          : autoDownloadEpisodes // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      autoDownloadSchedule: freezed == autoDownloadSchedule
+          ? _value.autoDownloadSchedule
+          : autoDownloadSchedule // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastEpisodeCheck: freezed == lastEpisodeCheck
+          ? _value.lastEpisodeCheck
+          : lastEpisodeCheck // ignore: cast_nullable_to_non_nullable
+              as int?,
+      maxEpisodesToKeep: freezed == maxEpisodesToKeep
+          ? _value.maxEpisodesToKeep
+          : maxEpisodesToKeep // ignore: cast_nullable_to_non_nullable
+              as int?,
+      maxNewEpisodesToDownload: freezed == maxNewEpisodesToDownload
+          ? _value.maxNewEpisodesToDownload
+          : maxNewEpisodesToDownload // ignore: cast_nullable_to_non_nullable
+              as int?,
+      numTracks: freezed == numTracks
+          ? _value.numTracks
+          : numTracks // ignore: cast_nullable_to_non_nullable
+              as int?,
+      numAudioFiles: freezed == numAudioFiles
+          ? _value.numAudioFiles
+          : numAudioFiles // ignore: cast_nullable_to_non_nullable
+              as int?,
+      numChapters: freezed == numChapters
+          ? _value.numChapters
+          : numChapters // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 
@@ -174,9 +239,18 @@ abstract class _$$DetailedMediaImplCopyWith<$Res>
       List<BookChapter>? chapters,
       List<Track>? tracks,
       List<LibraryFile>? libraryFiles,
-      double duration,
-      int size,
-      EBookFile? ebookFile});
+      double? duration,
+      int? size,
+      EBookFile? ebookFile,
+      int? numEpisodes,
+      bool? autoDownloadEpisodes,
+      String? autoDownloadSchedule,
+      int? lastEpisodeCheck,
+      int? maxEpisodesToKeep,
+      int? maxNewEpisodesToDownload,
+      int? numTracks,
+      int? numAudioFiles,
+      int? numChapters});
 
   @override
   $MetadataCopyWith<$Res> get metadata;
@@ -204,9 +278,18 @@ class __$$DetailedMediaImplCopyWithImpl<$Res>
     Object? chapters = freezed,
     Object? tracks = freezed,
     Object? libraryFiles = freezed,
-    Object? duration = null,
-    Object? size = null,
+    Object? duration = freezed,
+    Object? size = freezed,
     Object? ebookFile = freezed,
+    Object? numEpisodes = freezed,
+    Object? autoDownloadEpisodes = freezed,
+    Object? autoDownloadSchedule = freezed,
+    Object? lastEpisodeCheck = freezed,
+    Object? maxEpisodesToKeep = freezed,
+    Object? maxNewEpisodesToDownload = freezed,
+    Object? numTracks = freezed,
+    Object? numAudioFiles = freezed,
+    Object? numChapters = freezed,
   }) {
     return _then(_$DetailedMediaImpl(
       metadata: null == metadata
@@ -237,18 +320,54 @@ class __$$DetailedMediaImplCopyWithImpl<$Res>
           ? _value._libraryFiles
           : libraryFiles // ignore: cast_nullable_to_non_nullable
               as List<LibraryFile>?,
-      duration: null == duration
+      duration: freezed == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
-              as double,
-      size: null == size
+              as double?,
+      size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       ebookFile: freezed == ebookFile
           ? _value.ebookFile
           : ebookFile // ignore: cast_nullable_to_non_nullable
               as EBookFile?,
+      numEpisodes: freezed == numEpisodes
+          ? _value.numEpisodes
+          : numEpisodes // ignore: cast_nullable_to_non_nullable
+              as int?,
+      autoDownloadEpisodes: freezed == autoDownloadEpisodes
+          ? _value.autoDownloadEpisodes
+          : autoDownloadEpisodes // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      autoDownloadSchedule: freezed == autoDownloadSchedule
+          ? _value.autoDownloadSchedule
+          : autoDownloadSchedule // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastEpisodeCheck: freezed == lastEpisodeCheck
+          ? _value.lastEpisodeCheck
+          : lastEpisodeCheck // ignore: cast_nullable_to_non_nullable
+              as int?,
+      maxEpisodesToKeep: freezed == maxEpisodesToKeep
+          ? _value.maxEpisodesToKeep
+          : maxEpisodesToKeep // ignore: cast_nullable_to_non_nullable
+              as int?,
+      maxNewEpisodesToDownload: freezed == maxNewEpisodesToDownload
+          ? _value.maxNewEpisodesToDownload
+          : maxNewEpisodesToDownload // ignore: cast_nullable_to_non_nullable
+              as int?,
+      numTracks: freezed == numTracks
+          ? _value.numTracks
+          : numTracks // ignore: cast_nullable_to_non_nullable
+              as int?,
+      numAudioFiles: freezed == numAudioFiles
+          ? _value.numAudioFiles
+          : numAudioFiles // ignore: cast_nullable_to_non_nullable
+              as int?,
+      numChapters: freezed == numChapters
+          ? _value.numChapters
+          : numChapters // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -260,13 +379,22 @@ class _$DetailedMediaImpl implements _DetailedMedia {
       {required this.metadata,
       required this.coverPath,
       final List<String>? tags,
-      required final List<AudioFile>? audioFiles,
-      required final List<BookChapter>? chapters,
-      required final List<Track>? tracks,
-      required final List<LibraryFile>? libraryFiles,
-      required this.duration,
-      required this.size,
-      this.ebookFile})
+      final List<AudioFile>? audioFiles,
+      final List<BookChapter>? chapters,
+      final List<Track>? tracks,
+      final List<LibraryFile>? libraryFiles,
+      this.duration,
+      this.size,
+      this.ebookFile,
+      this.numEpisodes,
+      this.autoDownloadEpisodes,
+      this.autoDownloadSchedule,
+      this.lastEpisodeCheck,
+      this.maxEpisodesToKeep,
+      this.maxNewEpisodesToDownload,
+      this.numTracks,
+      this.numAudioFiles,
+      this.numChapters})
       : _tags = tags,
         _audioFiles = audioFiles,
         _chapters = chapters,
@@ -331,15 +459,35 @@ class _$DetailedMediaImpl implements _DetailedMedia {
   }
 
   @override
-  final double duration;
+  final double? duration;
   @override
-  final int size;
+  final int? size;
   @override
   final EBookFile? ebookFile;
+// Podcast-specific fields
+  @override
+  final int? numEpisodes;
+  @override
+  final bool? autoDownloadEpisodes;
+  @override
+  final String? autoDownloadSchedule;
+  @override
+  final int? lastEpisodeCheck;
+  @override
+  final int? maxEpisodesToKeep;
+  @override
+  final int? maxNewEpisodesToDownload;
+// Book-specific fields
+  @override
+  final int? numTracks;
+  @override
+  final int? numAudioFiles;
+  @override
+  final int? numChapters;
 
   @override
   String toString() {
-    return 'DetailedMedia(metadata: $metadata, coverPath: $coverPath, tags: $tags, audioFiles: $audioFiles, chapters: $chapters, tracks: $tracks, libraryFiles: $libraryFiles, duration: $duration, size: $size, ebookFile: $ebookFile)';
+    return 'DetailedMedia(metadata: $metadata, coverPath: $coverPath, tags: $tags, audioFiles: $audioFiles, chapters: $chapters, tracks: $tracks, libraryFiles: $libraryFiles, duration: $duration, size: $size, ebookFile: $ebookFile, numEpisodes: $numEpisodes, autoDownloadEpisodes: $autoDownloadEpisodes, autoDownloadSchedule: $autoDownloadSchedule, lastEpisodeCheck: $lastEpisodeCheck, maxEpisodesToKeep: $maxEpisodesToKeep, maxNewEpisodesToDownload: $maxNewEpisodesToDownload, numTracks: $numTracks, numAudioFiles: $numAudioFiles, numChapters: $numChapters)';
   }
 
   @override
@@ -362,23 +510,52 @@ class _$DetailedMediaImpl implements _DetailedMedia {
                 other.duration == duration) &&
             (identical(other.size, size) || other.size == size) &&
             (identical(other.ebookFile, ebookFile) ||
-                other.ebookFile == ebookFile));
+                other.ebookFile == ebookFile) &&
+            (identical(other.numEpisodes, numEpisodes) ||
+                other.numEpisodes == numEpisodes) &&
+            (identical(other.autoDownloadEpisodes, autoDownloadEpisodes) ||
+                other.autoDownloadEpisodes == autoDownloadEpisodes) &&
+            (identical(other.autoDownloadSchedule, autoDownloadSchedule) ||
+                other.autoDownloadSchedule == autoDownloadSchedule) &&
+            (identical(other.lastEpisodeCheck, lastEpisodeCheck) ||
+                other.lastEpisodeCheck == lastEpisodeCheck) &&
+            (identical(other.maxEpisodesToKeep, maxEpisodesToKeep) ||
+                other.maxEpisodesToKeep == maxEpisodesToKeep) &&
+            (identical(
+                    other.maxNewEpisodesToDownload, maxNewEpisodesToDownload) ||
+                other.maxNewEpisodesToDownload == maxNewEpisodesToDownload) &&
+            (identical(other.numTracks, numTracks) ||
+                other.numTracks == numTracks) &&
+            (identical(other.numAudioFiles, numAudioFiles) ||
+                other.numAudioFiles == numAudioFiles) &&
+            (identical(other.numChapters, numChapters) ||
+                other.numChapters == numChapters));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      metadata,
-      coverPath,
-      const DeepCollectionEquality().hash(_tags),
-      const DeepCollectionEquality().hash(_audioFiles),
-      const DeepCollectionEquality().hash(_chapters),
-      const DeepCollectionEquality().hash(_tracks),
-      const DeepCollectionEquality().hash(_libraryFiles),
-      duration,
-      size,
-      ebookFile);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        metadata,
+        coverPath,
+        const DeepCollectionEquality().hash(_tags),
+        const DeepCollectionEquality().hash(_audioFiles),
+        const DeepCollectionEquality().hash(_chapters),
+        const DeepCollectionEquality().hash(_tracks),
+        const DeepCollectionEquality().hash(_libraryFiles),
+        duration,
+        size,
+        ebookFile,
+        numEpisodes,
+        autoDownloadEpisodes,
+        autoDownloadSchedule,
+        lastEpisodeCheck,
+        maxEpisodesToKeep,
+        maxNewEpisodesToDownload,
+        numTracks,
+        numAudioFiles,
+        numChapters
+      ]);
 
   /// Create a copy of DetailedMedia
   /// with the given fields replaced by the non-null parameter values.
@@ -401,13 +578,22 @@ abstract class _DetailedMedia implements DetailedMedia {
       {required final Metadata metadata,
       required final String coverPath,
       final List<String>? tags,
-      required final List<AudioFile>? audioFiles,
-      required final List<BookChapter>? chapters,
-      required final List<Track>? tracks,
-      required final List<LibraryFile>? libraryFiles,
-      required final double duration,
-      required final int size,
-      final EBookFile? ebookFile}) = _$DetailedMediaImpl;
+      final List<AudioFile>? audioFiles,
+      final List<BookChapter>? chapters,
+      final List<Track>? tracks,
+      final List<LibraryFile>? libraryFiles,
+      final double? duration,
+      final int? size,
+      final EBookFile? ebookFile,
+      final int? numEpisodes,
+      final bool? autoDownloadEpisodes,
+      final String? autoDownloadSchedule,
+      final int? lastEpisodeCheck,
+      final int? maxEpisodesToKeep,
+      final int? maxNewEpisodesToDownload,
+      final int? numTracks,
+      final int? numAudioFiles,
+      final int? numChapters}) = _$DetailedMediaImpl;
 
   factory _DetailedMedia.fromJson(Map<String, dynamic> json) =
       _$DetailedMediaImpl.fromJson;
@@ -427,11 +613,29 @@ abstract class _DetailedMedia implements DetailedMedia {
   @override
   List<LibraryFile>? get libraryFiles;
   @override
-  double get duration;
+  double? get duration;
   @override
-  int get size;
+  int? get size;
   @override
-  EBookFile? get ebookFile;
+  EBookFile? get ebookFile; // Podcast-specific fields
+  @override
+  int? get numEpisodes;
+  @override
+  bool? get autoDownloadEpisodes;
+  @override
+  String? get autoDownloadSchedule;
+  @override
+  int? get lastEpisodeCheck;
+  @override
+  int? get maxEpisodesToKeep;
+  @override
+  int? get maxNewEpisodesToDownload; // Book-specific fields
+  @override
+  int? get numTracks;
+  @override
+  int? get numAudioFiles;
+  @override
+  int? get numChapters;
 
   /// Create a copy of DetailedMedia
   /// with the given fields replaced by the non-null parameter values.

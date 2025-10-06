@@ -21,23 +21,23 @@ LibraryItem _$LibraryItemFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$LibraryItem {
   String get id => throw _privateConstructorUsedError;
-  String get ino => throw _privateConstructorUsedError;
+  String? get ino => throw _privateConstructorUsedError;
   String get libraryId => throw _privateConstructorUsedError;
   String get folderId => throw _privateConstructorUsedError;
   String get path => throw _privateConstructorUsedError;
   String get relPath => throw _privateConstructorUsedError;
   bool get isFile => throw _privateConstructorUsedError;
-  int get mtimeMs => throw _privateConstructorUsedError;
-  int get ctimeMs => throw _privateConstructorUsedError;
-  int get birthtimeMs => throw _privateConstructorUsedError;
-  int get addedAt => throw _privateConstructorUsedError;
-  int get updatedAt => throw _privateConstructorUsedError;
+  int? get mtimeMs => throw _privateConstructorUsedError;
+  int? get ctimeMs => throw _privateConstructorUsedError;
+  int? get birthtimeMs => throw _privateConstructorUsedError;
+  int? get addedAt => throw _privateConstructorUsedError;
+  int? get updatedAt => throw _privateConstructorUsedError;
   bool get isMissing => throw _privateConstructorUsedError;
   bool get isInvalid => throw _privateConstructorUsedError;
-  String get mediaType => throw _privateConstructorUsedError;
+  String? get mediaType => throw _privateConstructorUsedError;
   Media get media => throw _privateConstructorUsedError;
   int? get numFiles => throw _privateConstructorUsedError;
-  int get size => throw _privateConstructorUsedError;
+  int? get size => throw _privateConstructorUsedError;
   CollapsedSeries? get collapsedSeries => throw _privateConstructorUsedError;
 
   /// Serializes this LibraryItem to a JSON map.
@@ -58,23 +58,23 @@ abstract class $LibraryItemCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String ino,
+      String? ino,
       String libraryId,
       String folderId,
       String path,
       String relPath,
       bool isFile,
-      int mtimeMs,
-      int ctimeMs,
-      int birthtimeMs,
-      int addedAt,
-      int updatedAt,
+      int? mtimeMs,
+      int? ctimeMs,
+      int? birthtimeMs,
+      int? addedAt,
+      int? updatedAt,
       bool isMissing,
       bool isInvalid,
-      String mediaType,
+      String? mediaType,
       Media media,
       int? numFiles,
-      int size,
+      int? size,
       CollapsedSeries? collapsedSeries});
 
   $MediaCopyWith<$Res> get media;
@@ -97,23 +97,23 @@ class _$LibraryItemCopyWithImpl<$Res, $Val extends LibraryItem>
   @override
   $Res call({
     Object? id = null,
-    Object? ino = null,
+    Object? ino = freezed,
     Object? libraryId = null,
     Object? folderId = null,
     Object? path = null,
     Object? relPath = null,
     Object? isFile = null,
-    Object? mtimeMs = null,
-    Object? ctimeMs = null,
-    Object? birthtimeMs = null,
-    Object? addedAt = null,
-    Object? updatedAt = null,
+    Object? mtimeMs = freezed,
+    Object? ctimeMs = freezed,
+    Object? birthtimeMs = freezed,
+    Object? addedAt = freezed,
+    Object? updatedAt = freezed,
     Object? isMissing = null,
     Object? isInvalid = null,
-    Object? mediaType = null,
+    Object? mediaType = freezed,
     Object? media = null,
     Object? numFiles = freezed,
-    Object? size = null,
+    Object? size = freezed,
     Object? collapsedSeries = freezed,
   }) {
     return _then(_value.copyWith(
@@ -121,10 +121,10 @@ class _$LibraryItemCopyWithImpl<$Res, $Val extends LibraryItem>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      ino: null == ino
+      ino: freezed == ino
           ? _value.ino
           : ino // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       libraryId: null == libraryId
           ? _value.libraryId
           : libraryId // ignore: cast_nullable_to_non_nullable
@@ -145,26 +145,26 @@ class _$LibraryItemCopyWithImpl<$Res, $Val extends LibraryItem>
           ? _value.isFile
           : isFile // ignore: cast_nullable_to_non_nullable
               as bool,
-      mtimeMs: null == mtimeMs
+      mtimeMs: freezed == mtimeMs
           ? _value.mtimeMs
           : mtimeMs // ignore: cast_nullable_to_non_nullable
-              as int,
-      ctimeMs: null == ctimeMs
+              as int?,
+      ctimeMs: freezed == ctimeMs
           ? _value.ctimeMs
           : ctimeMs // ignore: cast_nullable_to_non_nullable
-              as int,
-      birthtimeMs: null == birthtimeMs
+              as int?,
+      birthtimeMs: freezed == birthtimeMs
           ? _value.birthtimeMs
           : birthtimeMs // ignore: cast_nullable_to_non_nullable
-              as int,
-      addedAt: null == addedAt
+              as int?,
+      addedAt: freezed == addedAt
           ? _value.addedAt
           : addedAt // ignore: cast_nullable_to_non_nullable
-              as int,
-      updatedAt: null == updatedAt
+              as int?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       isMissing: null == isMissing
           ? _value.isMissing
           : isMissing // ignore: cast_nullable_to_non_nullable
@@ -173,10 +173,10 @@ class _$LibraryItemCopyWithImpl<$Res, $Val extends LibraryItem>
           ? _value.isInvalid
           : isInvalid // ignore: cast_nullable_to_non_nullable
               as bool,
-      mediaType: null == mediaType
+      mediaType: freezed == mediaType
           ? _value.mediaType
           : mediaType // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       media: null == media
           ? _value.media
           : media // ignore: cast_nullable_to_non_nullable
@@ -185,10 +185,10 @@ class _$LibraryItemCopyWithImpl<$Res, $Val extends LibraryItem>
           ? _value.numFiles
           : numFiles // ignore: cast_nullable_to_non_nullable
               as int?,
-      size: null == size
+      size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       collapsedSeries: freezed == collapsedSeries
           ? _value.collapsedSeries
           : collapsedSeries // ignore: cast_nullable_to_non_nullable
@@ -231,23 +231,23 @@ abstract class _$$LibraryItemImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      String ino,
+      String? ino,
       String libraryId,
       String folderId,
       String path,
       String relPath,
       bool isFile,
-      int mtimeMs,
-      int ctimeMs,
-      int birthtimeMs,
-      int addedAt,
-      int updatedAt,
+      int? mtimeMs,
+      int? ctimeMs,
+      int? birthtimeMs,
+      int? addedAt,
+      int? updatedAt,
       bool isMissing,
       bool isInvalid,
-      String mediaType,
+      String? mediaType,
       Media media,
       int? numFiles,
-      int size,
+      int? size,
       CollapsedSeries? collapsedSeries});
 
   @override
@@ -270,23 +270,23 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? ino = null,
+    Object? ino = freezed,
     Object? libraryId = null,
     Object? folderId = null,
     Object? path = null,
     Object? relPath = null,
     Object? isFile = null,
-    Object? mtimeMs = null,
-    Object? ctimeMs = null,
-    Object? birthtimeMs = null,
-    Object? addedAt = null,
-    Object? updatedAt = null,
+    Object? mtimeMs = freezed,
+    Object? ctimeMs = freezed,
+    Object? birthtimeMs = freezed,
+    Object? addedAt = freezed,
+    Object? updatedAt = freezed,
     Object? isMissing = null,
     Object? isInvalid = null,
-    Object? mediaType = null,
+    Object? mediaType = freezed,
     Object? media = null,
     Object? numFiles = freezed,
-    Object? size = null,
+    Object? size = freezed,
     Object? collapsedSeries = freezed,
   }) {
     return _then(_$LibraryItemImpl(
@@ -294,10 +294,10 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      ino: null == ino
+      ino: freezed == ino
           ? _value.ino
           : ino // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       libraryId: null == libraryId
           ? _value.libraryId
           : libraryId // ignore: cast_nullable_to_non_nullable
@@ -318,26 +318,26 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
           ? _value.isFile
           : isFile // ignore: cast_nullable_to_non_nullable
               as bool,
-      mtimeMs: null == mtimeMs
+      mtimeMs: freezed == mtimeMs
           ? _value.mtimeMs
           : mtimeMs // ignore: cast_nullable_to_non_nullable
-              as int,
-      ctimeMs: null == ctimeMs
+              as int?,
+      ctimeMs: freezed == ctimeMs
           ? _value.ctimeMs
           : ctimeMs // ignore: cast_nullable_to_non_nullable
-              as int,
-      birthtimeMs: null == birthtimeMs
+              as int?,
+      birthtimeMs: freezed == birthtimeMs
           ? _value.birthtimeMs
           : birthtimeMs // ignore: cast_nullable_to_non_nullable
-              as int,
-      addedAt: null == addedAt
+              as int?,
+      addedAt: freezed == addedAt
           ? _value.addedAt
           : addedAt // ignore: cast_nullable_to_non_nullable
-              as int,
-      updatedAt: null == updatedAt
+              as int?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       isMissing: null == isMissing
           ? _value.isMissing
           : isMissing // ignore: cast_nullable_to_non_nullable
@@ -346,10 +346,10 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
           ? _value.isInvalid
           : isInvalid // ignore: cast_nullable_to_non_nullable
               as bool,
-      mediaType: null == mediaType
+      mediaType: freezed == mediaType
           ? _value.mediaType
           : mediaType // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       media: null == media
           ? _value.media
           : media // ignore: cast_nullable_to_non_nullable
@@ -358,10 +358,10 @@ class __$$LibraryItemImplCopyWithImpl<$Res>
           ? _value.numFiles
           : numFiles // ignore: cast_nullable_to_non_nullable
               as int?,
-      size: null == size
+      size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       collapsedSeries: freezed == collapsedSeries
           ? _value.collapsedSeries
           : collapsedSeries // ignore: cast_nullable_to_non_nullable
@@ -400,7 +400,7 @@ class _$LibraryItemImpl implements _LibraryItem {
   @override
   final String id;
   @override
-  final String ino;
+  final String? ino;
   @override
   final String libraryId;
   @override
@@ -412,27 +412,27 @@ class _$LibraryItemImpl implements _LibraryItem {
   @override
   final bool isFile;
   @override
-  final int mtimeMs;
+  final int? mtimeMs;
   @override
-  final int ctimeMs;
+  final int? ctimeMs;
   @override
-  final int birthtimeMs;
+  final int? birthtimeMs;
   @override
-  final int addedAt;
+  final int? addedAt;
   @override
-  final int updatedAt;
+  final int? updatedAt;
   @override
   final bool isMissing;
   @override
   final bool isInvalid;
   @override
-  final String mediaType;
+  final String? mediaType;
   @override
   final Media media;
   @override
   final int? numFiles;
   @override
-  final int size;
+  final int? size;
   @override
   final CollapsedSeries? collapsedSeries;
 
@@ -520,23 +520,23 @@ class _$LibraryItemImpl implements _LibraryItem {
 abstract class _LibraryItem implements LibraryItem {
   const factory _LibraryItem(
       {required final String id,
-      required final String ino,
+      required final String? ino,
       required final String libraryId,
       required final String folderId,
       required final String path,
       required final String relPath,
       required final bool isFile,
-      required final int mtimeMs,
-      required final int ctimeMs,
-      required final int birthtimeMs,
-      required final int addedAt,
-      required final int updatedAt,
+      required final int? mtimeMs,
+      required final int? ctimeMs,
+      required final int? birthtimeMs,
+      required final int? addedAt,
+      required final int? updatedAt,
       required final bool isMissing,
       required final bool isInvalid,
-      required final String mediaType,
+      required final String? mediaType,
       required final Media media,
       required final int? numFiles,
-      required final int size,
+      required final int? size,
       required final CollapsedSeries? collapsedSeries}) = _$LibraryItemImpl;
 
   factory _LibraryItem.fromJson(Map<String, dynamic> json) =
@@ -545,7 +545,7 @@ abstract class _LibraryItem implements LibraryItem {
   @override
   String get id;
   @override
-  String get ino;
+  String? get ino;
   @override
   String get libraryId;
   @override
@@ -557,27 +557,27 @@ abstract class _LibraryItem implements LibraryItem {
   @override
   bool get isFile;
   @override
-  int get mtimeMs;
+  int? get mtimeMs;
   @override
-  int get ctimeMs;
+  int? get ctimeMs;
   @override
-  int get birthtimeMs;
+  int? get birthtimeMs;
   @override
-  int get addedAt;
+  int? get addedAt;
   @override
-  int get updatedAt;
+  int? get updatedAt;
   @override
   bool get isMissing;
   @override
   bool get isInvalid;
   @override
-  String get mediaType;
+  String? get mediaType;
   @override
   Media get media;
   @override
   int? get numFiles;
   @override
-  int get size;
+  int? get size;
   @override
   CollapsedSeries? get collapsedSeries;
 

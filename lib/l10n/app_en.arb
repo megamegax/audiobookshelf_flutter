@@ -74,5 +74,20 @@
     "@headerNewestAuthors": {
         "description": "Section title at Home screen",
         "type": "text"
+    },
+    "headerNewestEpisodes": "Newest Episodes",
+    "@headerNewestEpisodes": {
+        "description": "Section title at Home screen for podcasts",
+        "type": "text"
+    },
+    "headerContinuePodcast": "Continue Podcast",
+    "@headerContinuePodcast": {
+        "description": "Section title at Home screen for podcasts",
+        "type": "text"
+    },
+    "headerRecentPodcasts": "Recent Podcasts",
+    "@headerRecentPodcasts": {
+        "description": "Section title at Home screen for podcasts",
+        "type": "text"
     }
 }

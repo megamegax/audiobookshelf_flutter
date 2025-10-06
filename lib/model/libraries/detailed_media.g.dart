@@ -23,11 +23,21 @@ _$DetailedMediaImpl _$$DetailedMediaImplFromJson(Map<String, dynamic> json) =>
       libraryFiles: (json['libraryFiles'] as List<dynamic>?)
           ?.map((e) => LibraryFile.fromJson(e as Map<String, dynamic>))
           .toList(),
-      duration: (json['duration'] as num).toDouble(),
-      size: (json['size'] as num).toInt(),
+      duration: (json['duration'] as num?)?.toDouble(),
+      size: (json['size'] as num?)?.toInt(),
       ebookFile: json['ebookFile'] == null
           ? null
           : EBookFile.fromJson(json['ebookFile'] as Map<String, dynamic>),
+      numEpisodes: (json['numEpisodes'] as num?)?.toInt(),
+      autoDownloadEpisodes: json['autoDownloadEpisodes'] as bool?,
+      autoDownloadSchedule: json['autoDownloadSchedule'] as String?,
+      lastEpisodeCheck: (json['lastEpisodeCheck'] as num?)?.toInt(),
+      maxEpisodesToKeep: (json['maxEpisodesToKeep'] as num?)?.toInt(),
+      maxNewEpisodesToDownload:
+          (json['maxNewEpisodesToDownload'] as num?)?.toInt(),
+      numTracks: (json['numTracks'] as num?)?.toInt(),
+      numAudioFiles: (json['numAudioFiles'] as num?)?.toInt(),
+      numChapters: (json['numChapters'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$DetailedMediaImplToJson(_$DetailedMediaImpl instance) =>
@@ -42,4 +52,13 @@ Map<String, dynamic> _$$DetailedMediaImplToJson(_$DetailedMediaImpl instance) =>
       'duration': instance.duration,
       'size': instance.size,
       'ebookFile': instance.ebookFile,
+      'numEpisodes': instance.numEpisodes,
+      'autoDownloadEpisodes': instance.autoDownloadEpisodes,
+      'autoDownloadSchedule': instance.autoDownloadSchedule,
+      'lastEpisodeCheck': instance.lastEpisodeCheck,
+      'maxEpisodesToKeep': instance.maxEpisodesToKeep,
+      'maxNewEpisodesToDownload': instance.maxNewEpisodesToDownload,
+      'numTracks': instance.numTracks,
+      'numAudioFiles': instance.numAudioFiles,
+      'numChapters': instance.numChapters,
     };

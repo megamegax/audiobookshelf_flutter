@@ -5,7 +5,7 @@ import 'package:audiobookshelf_flutter/database/media_progress_entity.dart';
 import 'package:audiobookshelf_flutter/database/metadata_entity.dart';
 import 'package:audiobookshelf_flutter/database/series.dart';
 import 'package:audiobookshelf_flutter/database/series_item_entity.dart';
-import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
+import 'package:audiobookshelf_flutter/model/libraries/library_item_new.dart';
 import 'package:audiobookshelf_flutter/model/libraries/series_item.dart';
 import 'package:audiobookshelf_flutter/model/login/media_progress.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
@@ -43,6 +43,19 @@ class LibraryItemsRepository {
     return item;
   }
 
+  /// Generic method to get any library item by ID and library ID (works for books, podcasts, etc.)
+  Future<LibraryItemEntity?> getBookByLibrary(
+      String itemId, String libraryId) async {
+    final LibraryItemEntity? item = await _isar.libraryItemEntitys
+        .where()
+        .filter()
+        .itemIdEqualTo(itemId)
+        .libraryIdEqualTo(libraryId)
+        .findFirst();
+
+    return item;
+  }
+
   Future<List<LibraryItemEntity>> getPodcasts(String libraryId) async {
     final List<LibraryItemEntity> libraryItems = await _isar.libraryItemEntitys
         .where()
@@ -54,7 +67,7 @@ class LibraryItemsRepository {
     return libraryItems;
   }
 
-  Future<void> saveLibraryItems(List<LibraryItem> libraryItems) async {
+  Future<void> saveLibraryItems(List<LibraryItemNew> libraryItems) async {
     for (int i = 0; i < libraryItems.length; i++) {
       final fetchedLibrary = libraryItems[i];
       LibraryItemEntity? cachedLibraryItem = await _isar.libraryItemEntitys
@@ -65,15 +78,17 @@ class LibraryItemsRepository {
       if (cachedLibraryItem != null) {
         if (cachedLibraryItem.updatedAt != null &&
             (cachedLibraryItem.media.coverBytes == null ||
-                fetchedLibrary.updatedAt > (cachedLibraryItem.updatedAt!))) {
+                (fetchedLibrary.updatedAt != null &&
+                    fetchedLibrary.updatedAt! >
+                        (cachedLibraryItem.updatedAt!)))) {
           cachedLibraryItem
-            ..birthtimeMs = fetchedLibrary.birthtimeMs
-            ..ctimeMs = fetchedLibrary.ctimeMs
-            ..mtimeMs = fetchedLibrary.mtimeMs
-            ..ino = fetchedLibrary.ino
+            ..birthtimeMs = fetchedLibrary.birthtimeMs ?? 0
+            ..ctimeMs = fetchedLibrary.ctimeMs ?? 0
+            ..mtimeMs = fetchedLibrary.mtimeMs ?? 0
+            ..ino = fetchedLibrary.ino ?? ''
             ..isFile = fetchedLibrary.isFile
             ..isMissing = fetchedLibrary.isMissing
-            ..updatedAt = fetchedLibrary.updatedAt
+            ..updatedAt = fetchedLibrary.updatedAt ?? 0
             ..media = MediaEntity(
                 coverBytes: fetchedLibrary.media.coverBytes,
                 coverPath: fetchedLibrary.media.coverPath,
@@ -90,7 +105,8 @@ class LibraryItemsRepository {
                     language: fetchedLibrary.media.metadata.language,
                     narratorName: fetchedLibrary.media.metadata.narratorName,
                     publishedDate: fetchedLibrary.media.metadata.publishedDate,
-                    publishedYear: fetchedLibrary.media.metadata.publishedYear,
+                    publishedYear:
+                        fetchedLibrary.media.metadata.publishedYear?.toString(),
                     publisher: fetchedLibrary.media.metadata.publisher,
                     subtitle: fetchedLibrary.media.metadata.subtitle,
                     titleIgnorePrefix:
@@ -104,11 +120,11 @@ class LibraryItemsRepository {
                 size: fetchedLibrary.media.size,
                 tags: fetchedLibrary.media.tags,
                 progress: null)
-            ..birthtimeMs = fetchedLibrary.birthtimeMs
-            ..ctimeMs = fetchedLibrary.ctimeMs
-            ..mtimeMs = fetchedLibrary.mtimeMs
+            ..birthtimeMs = fetchedLibrary.birthtimeMs ?? 0
+            ..ctimeMs = fetchedLibrary.ctimeMs ?? 0
+            ..mtimeMs = fetchedLibrary.mtimeMs ?? 0
             ..numFiles = fetchedLibrary.numFiles ?? 0
-            ..size = fetchedLibrary.size
+            ..size = fetchedLibrary.size ?? 0
             ..isInvalid = fetchedLibrary.isInvalid
             ..mediaType = fetchedLibrary.mediaType
             ..path = fetchedLibrary.path
@@ -131,17 +147,17 @@ class LibraryItemsRepository {
         _isar.writeTxn(() {
           final libraryEntity = LibraryItemEntity(
               itemId: fetchedLibrary.id,
-              ino: fetchedLibrary.ino,
+              ino: fetchedLibrary.ino ?? '',
               libraryId: fetchedLibrary.libraryId,
               folderId: fetchedLibrary.folderId,
               path: fetchedLibrary.path,
               relPath: fetchedLibrary.relPath,
               isFile: fetchedLibrary.isFile,
-              mtimeMs: fetchedLibrary.mtimeMs,
-              ctimeMs: fetchedLibrary.ctimeMs,
-              birthtimeMs: fetchedLibrary.birthtimeMs,
-              addedAt: fetchedLibrary.addedAt,
-              updatedAt: fetchedLibrary.updatedAt,
+              mtimeMs: fetchedLibrary.mtimeMs ?? 0,
+              ctimeMs: fetchedLibrary.ctimeMs ?? 0,
+              birthtimeMs: fetchedLibrary.birthtimeMs ?? 0,
+              addedAt: fetchedLibrary.addedAt ?? 0,
+              updatedAt: fetchedLibrary.updatedAt ?? 0,
               isMissing: fetchedLibrary.isMissing,
               isInvalid: fetchedLibrary.isInvalid,
               mediaType: fetchedLibrary.mediaType,
@@ -162,8 +178,8 @@ class LibraryItemsRepository {
                       narratorName: fetchedLibrary.media.metadata.narratorName,
                       publishedDate:
                           fetchedLibrary.media.metadata.publishedDate,
-                      publishedYear:
-                          fetchedLibrary.media.metadata.publishedYear,
+                      publishedYear: fetchedLibrary.media.metadata.publishedYear
+                          ?.toString(),
                       publisher: fetchedLibrary.media.metadata.publisher,
                       subtitle: fetchedLibrary.media.metadata.subtitle,
                       titleIgnorePrefix:
@@ -179,7 +195,7 @@ class LibraryItemsRepository {
                   tags: fetchedLibrary.media.tags,
                   progress: null),
               numFiles: fetchedLibrary.numFiles ?? 0,
-              size: fetchedLibrary.size,
+              size: fetchedLibrary.size ?? 0,
               collapsedSeries: fetchedLibrary.collapsedSeries == null
                   ? null
                   : CollapsedSeriesEntity(

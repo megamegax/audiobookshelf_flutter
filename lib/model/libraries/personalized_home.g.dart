@@ -32,6 +32,9 @@ const _$SectionTypeEnumMap = {
   SectionType.newestAuthors: 'newest-authors',
   SectionType.discover: 'discover',
   SectionType.listenAgain: 'listen-again',
+  SectionType.newestEpisodes: 'newest-episodes',
+  SectionType.continuePodcast: 'continue-podcast',
+  SectionType.recentPodcasts: 'recent-podcasts',
 };
 
 _$PersonalizedEntityImpl _$$PersonalizedEntityImplFromJson(

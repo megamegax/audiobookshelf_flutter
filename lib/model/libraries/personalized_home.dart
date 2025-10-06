@@ -18,6 +18,12 @@ enum SectionType {
   discover,
   @JsonValue("listen-again")
   listenAgain,
+  @JsonValue("newest-episodes")
+  newestEpisodes,
+  @JsonValue("continue-podcast")
+  continuePodcast,
+  @JsonValue("recent-podcasts")
+  recentPodcasts,
 }
 
 @freezed

@@ -14,6 +14,7 @@ import 'package:audiobookshelf_flutter/services/background_download_service.dart
 import 'package:audiobookshelf_flutter/provider/background_download_provider.dart';
 import 'package:audiobookshelf_flutter/widgets/expandable_container.dart';
 import 'package:audiobookshelf_flutter/widgets/player.dart';
+import 'package:audiobookshelf_flutter/widgets/description_widget.dart';
 import 'package:audiobookshelf_flutter/pages/ebook_reader_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +132,7 @@ class BookDetailsState extends ConsumerState<BookDetails> {
                   width: 200,
                   height: 204,
                   child: Hero(
-                    tag: 'bookImageDetails${widget.item.itemId}',
+                    tag: 'book-cover-${widget.item.id}',
                     child: Card(
                       elevation: 4,
                       child: Column(
@@ -225,6 +226,31 @@ class BookDetailsState extends ConsumerState<BookDetails> {
                               style: Theme.of(context).textTheme.labelMedium,
                             ),
                             Text(sizeToReadable(widget.item.media.size ?? 0)),
+                          ],
+                        ),
+                        const TableRow(
+                          children: [
+                            SizedBox(height: 10),
+                            SizedBox(height: 10),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            Text(
+                              "Progress".toUpperCase(),
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            Text(
+                              '${((widget.item.media.progress?.progress ?? 0) * 100).toInt()}%',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                            ),
                           ],
                         ),
                       ],
@@ -444,11 +470,13 @@ class BookDetailsState extends ConsumerState<BookDetails> {
                   width: double.infinity,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      widget.item.media.metadata?.description ?? "",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.justify,
-                    ),
+                    child: widget.item.media.metadata != null
+                        ? SimpleDescriptionWidget(
+                            description:
+                                widget.item.media.metadata!.description,
+                            textStyle: Theme.of(context).textTheme.bodyMedium,
+                          )
+                        : const SizedBox.shrink(),
                   ),
                 ),
                 _buildChaptersList(),

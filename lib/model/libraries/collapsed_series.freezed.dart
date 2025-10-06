@@ -23,7 +23,7 @@ mixin _$CollapsedSeries {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get nameIgnorePrefix => throw _privateConstructorUsedError;
-  int get numBooks => throw _privateConstructorUsedError;
+  int? get numBooks => throw _privateConstructorUsedError;
 
   /// Serializes this CollapsedSeries to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -41,7 +41,7 @@ abstract class $CollapsedSeriesCopyWith<$Res> {
           CollapsedSeries value, $Res Function(CollapsedSeries) then) =
       _$CollapsedSeriesCopyWithImpl<$Res, CollapsedSeries>;
   @useResult
-  $Res call({String id, String name, String nameIgnorePrefix, int numBooks});
+  $Res call({String id, String name, String nameIgnorePrefix, int? numBooks});
 }
 
 /// @nodoc
@@ -62,7 +62,7 @@ class _$CollapsedSeriesCopyWithImpl<$Res, $Val extends CollapsedSeries>
     Object? id = null,
     Object? name = null,
     Object? nameIgnorePrefix = null,
-    Object? numBooks = null,
+    Object? numBooks = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -77,10 +77,10 @@ class _$CollapsedSeriesCopyWithImpl<$Res, $Val extends CollapsedSeries>
           ? _value.nameIgnorePrefix
           : nameIgnorePrefix // ignore: cast_nullable_to_non_nullable
               as String,
-      numBooks: null == numBooks
+      numBooks: freezed == numBooks
           ? _value.numBooks
           : numBooks // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
     ) as $Val);
   }
 }
@@ -93,7 +93,7 @@ abstract class _$$CollapsedSeriesImplCopyWith<$Res>
       __$$CollapsedSeriesImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, String nameIgnorePrefix, int numBooks});
+  $Res call({String id, String name, String nameIgnorePrefix, int? numBooks});
 }
 
 /// @nodoc
@@ -112,7 +112,7 @@ class __$$CollapsedSeriesImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? nameIgnorePrefix = null,
-    Object? numBooks = null,
+    Object? numBooks = freezed,
   }) {
     return _then(_$CollapsedSeriesImpl(
       id: null == id
@@ -127,10 +127,10 @@ class __$$CollapsedSeriesImplCopyWithImpl<$Res>
           ? _value.nameIgnorePrefix
           : nameIgnorePrefix // ignore: cast_nullable_to_non_nullable
               as String,
-      numBooks: null == numBooks
+      numBooks: freezed == numBooks
           ? _value.numBooks
           : numBooks // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
     ));
   }
 }
@@ -142,7 +142,7 @@ class _$CollapsedSeriesImpl implements _CollapsedSeries {
       {required this.id,
       required this.name,
       required this.nameIgnorePrefix,
-      required this.numBooks});
+      this.numBooks});
 
   factory _$CollapsedSeriesImpl.fromJson(Map<String, dynamic> json) =>
       _$$CollapsedSeriesImplFromJson(json);
@@ -154,7 +154,7 @@ class _$CollapsedSeriesImpl implements _CollapsedSeries {
   @override
   final String nameIgnorePrefix;
   @override
-  final int numBooks;
+  final int? numBooks;
 
   @override
   String toString() {
@@ -201,7 +201,7 @@ abstract class _CollapsedSeries implements CollapsedSeries {
       {required final String id,
       required final String name,
       required final String nameIgnorePrefix,
-      required final int numBooks}) = _$CollapsedSeriesImpl;
+      final int? numBooks}) = _$CollapsedSeriesImpl;
 
   factory _CollapsedSeries.fromJson(Map<String, dynamic> json) =
       _$CollapsedSeriesImpl.fromJson;
@@ -213,7 +213,7 @@ abstract class _CollapsedSeries implements CollapsedSeries {
   @override
   String get nameIgnorePrefix;
   @override
-  int get numBooks;
+  int? get numBooks;
 
   /// Create a copy of CollapsedSeries
   /// with the given fields replaced by the non-null parameter values.

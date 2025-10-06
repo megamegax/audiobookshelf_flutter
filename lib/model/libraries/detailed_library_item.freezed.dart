@@ -32,14 +32,15 @@ mixin _$DetailedLibraryItem {
   int get birthtimeMs => throw _privateConstructorUsedError;
   int get addedAt => throw _privateConstructorUsedError;
   int get updatedAt => throw _privateConstructorUsedError;
-  int get lastScan => throw _privateConstructorUsedError;
-  String get scanVersion => throw _privateConstructorUsedError;
+  int? get lastScan => throw _privateConstructorUsedError;
+  String? get scanVersion => throw _privateConstructorUsedError;
   bool get isMissing => throw _privateConstructorUsedError;
   bool get isInvalid => throw _privateConstructorUsedError;
   String get mediaType => throw _privateConstructorUsedError;
   DetailedMedia get media => throw _privateConstructorUsedError;
   List<FileMetadata>? get libraryFiles => throw _privateConstructorUsedError;
-  int get size => throw _privateConstructorUsedError;
+  int? get numFiles => throw _privateConstructorUsedError;
+  int? get size => throw _privateConstructorUsedError;
   CollapsedSeries? get collapsedSeries => throw _privateConstructorUsedError;
 
   /// Serializes this DetailedLibraryItem to a JSON map.
@@ -71,14 +72,15 @@ abstract class $DetailedLibraryItemCopyWith<$Res> {
       int birthtimeMs,
       int addedAt,
       int updatedAt,
-      int lastScan,
-      String scanVersion,
+      int? lastScan,
+      String? scanVersion,
       bool isMissing,
       bool isInvalid,
       String mediaType,
       DetailedMedia media,
       List<FileMetadata>? libraryFiles,
-      int size,
+      int? numFiles,
+      int? size,
       CollapsedSeries? collapsedSeries});
 
   $DetailedMediaCopyWith<$Res> get media;
@@ -112,14 +114,15 @@ class _$DetailedLibraryItemCopyWithImpl<$Res, $Val extends DetailedLibraryItem>
     Object? birthtimeMs = null,
     Object? addedAt = null,
     Object? updatedAt = null,
-    Object? lastScan = null,
-    Object? scanVersion = null,
+    Object? lastScan = freezed,
+    Object? scanVersion = freezed,
     Object? isMissing = null,
     Object? isInvalid = null,
     Object? mediaType = null,
     Object? media = null,
     Object? libraryFiles = freezed,
-    Object? size = null,
+    Object? numFiles = freezed,
+    Object? size = freezed,
     Object? collapsedSeries = freezed,
   }) {
     return _then(_value.copyWith(
@@ -171,14 +174,14 @@ class _$DetailedLibraryItemCopyWithImpl<$Res, $Val extends DetailedLibraryItem>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as int,
-      lastScan: null == lastScan
+      lastScan: freezed == lastScan
           ? _value.lastScan
           : lastScan // ignore: cast_nullable_to_non_nullable
-              as int,
-      scanVersion: null == scanVersion
+              as int?,
+      scanVersion: freezed == scanVersion
           ? _value.scanVersion
           : scanVersion // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       isMissing: null == isMissing
           ? _value.isMissing
           : isMissing // ignore: cast_nullable_to_non_nullable
@@ -199,10 +202,14 @@ class _$DetailedLibraryItemCopyWithImpl<$Res, $Val extends DetailedLibraryItem>
           ? _value.libraryFiles
           : libraryFiles // ignore: cast_nullable_to_non_nullable
               as List<FileMetadata>?,
-      size: null == size
+      numFiles: freezed == numFiles
+          ? _value.numFiles
+          : numFiles // ignore: cast_nullable_to_non_nullable
+              as int?,
+      size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       collapsedSeries: freezed == collapsedSeries
           ? _value.collapsedSeries
           : collapsedSeries // ignore: cast_nullable_to_non_nullable
@@ -256,14 +263,15 @@ abstract class _$$DetailedLibraryItemImplCopyWith<$Res>
       int birthtimeMs,
       int addedAt,
       int updatedAt,
-      int lastScan,
-      String scanVersion,
+      int? lastScan,
+      String? scanVersion,
       bool isMissing,
       bool isInvalid,
       String mediaType,
       DetailedMedia media,
       List<FileMetadata>? libraryFiles,
-      int size,
+      int? numFiles,
+      int? size,
       CollapsedSeries? collapsedSeries});
 
   @override
@@ -297,14 +305,15 @@ class __$$DetailedLibraryItemImplCopyWithImpl<$Res>
     Object? birthtimeMs = null,
     Object? addedAt = null,
     Object? updatedAt = null,
-    Object? lastScan = null,
-    Object? scanVersion = null,
+    Object? lastScan = freezed,
+    Object? scanVersion = freezed,
     Object? isMissing = null,
     Object? isInvalid = null,
     Object? mediaType = null,
     Object? media = null,
     Object? libraryFiles = freezed,
-    Object? size = null,
+    Object? numFiles = freezed,
+    Object? size = freezed,
     Object? collapsedSeries = freezed,
   }) {
     return _then(_$DetailedLibraryItemImpl(
@@ -356,14 +365,14 @@ class __$$DetailedLibraryItemImplCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as int,
-      lastScan: null == lastScan
+      lastScan: freezed == lastScan
           ? _value.lastScan
           : lastScan // ignore: cast_nullable_to_non_nullable
-              as int,
-      scanVersion: null == scanVersion
+              as int?,
+      scanVersion: freezed == scanVersion
           ? _value.scanVersion
           : scanVersion // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       isMissing: null == isMissing
           ? _value.isMissing
           : isMissing // ignore: cast_nullable_to_non_nullable
@@ -384,10 +393,14 @@ class __$$DetailedLibraryItemImplCopyWithImpl<$Res>
           ? _value._libraryFiles
           : libraryFiles // ignore: cast_nullable_to_non_nullable
               as List<FileMetadata>?,
-      size: null == size
+      numFiles: freezed == numFiles
+          ? _value.numFiles
+          : numFiles // ignore: cast_nullable_to_non_nullable
+              as int?,
+      size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       collapsedSeries: freezed == collapsedSeries
           ? _value.collapsedSeries
           : collapsedSeries // ignore: cast_nullable_to_non_nullable
@@ -412,13 +425,14 @@ class _$DetailedLibraryItemImpl implements _DetailedLibraryItem {
       required this.birthtimeMs,
       required this.addedAt,
       required this.updatedAt,
-      required this.lastScan,
-      required this.scanVersion,
+      this.lastScan,
+      this.scanVersion,
       required this.isMissing,
       required this.isInvalid,
       required this.mediaType,
       required this.media,
       required final List<FileMetadata>? libraryFiles,
+      required this.numFiles,
       required this.size,
       required this.collapsedSeries})
       : _libraryFiles = libraryFiles;
@@ -451,9 +465,9 @@ class _$DetailedLibraryItemImpl implements _DetailedLibraryItem {
   @override
   final int updatedAt;
   @override
-  final int lastScan;
+  final int? lastScan;
   @override
-  final String scanVersion;
+  final String? scanVersion;
   @override
   final bool isMissing;
   @override
@@ -473,13 +487,15 @@ class _$DetailedLibraryItemImpl implements _DetailedLibraryItem {
   }
 
   @override
-  final int size;
+  final int? numFiles;
+  @override
+  final int? size;
   @override
   final CollapsedSeries? collapsedSeries;
 
   @override
   String toString() {
-    return 'DetailedLibraryItem(id: $id, ino: $ino, libraryId: $libraryId, folderId: $folderId, path: $path, relPath: $relPath, isFile: $isFile, mtimeMs: $mtimeMs, ctimeMs: $ctimeMs, birthtimeMs: $birthtimeMs, addedAt: $addedAt, updatedAt: $updatedAt, lastScan: $lastScan, scanVersion: $scanVersion, isMissing: $isMissing, isInvalid: $isInvalid, mediaType: $mediaType, media: $media, libraryFiles: $libraryFiles, size: $size, collapsedSeries: $collapsedSeries)';
+    return 'DetailedLibraryItem(id: $id, ino: $ino, libraryId: $libraryId, folderId: $folderId, path: $path, relPath: $relPath, isFile: $isFile, mtimeMs: $mtimeMs, ctimeMs: $ctimeMs, birthtimeMs: $birthtimeMs, addedAt: $addedAt, updatedAt: $updatedAt, lastScan: $lastScan, scanVersion: $scanVersion, isMissing: $isMissing, isInvalid: $isInvalid, mediaType: $mediaType, media: $media, libraryFiles: $libraryFiles, numFiles: $numFiles, size: $size, collapsedSeries: $collapsedSeries)';
   }
 
   @override
@@ -516,6 +532,8 @@ class _$DetailedLibraryItemImpl implements _DetailedLibraryItem {
             (identical(other.media, media) || other.media == media) &&
             const DeepCollectionEquality()
                 .equals(other._libraryFiles, _libraryFiles) &&
+            (identical(other.numFiles, numFiles) ||
+                other.numFiles == numFiles) &&
             (identical(other.size, size) || other.size == size) &&
             (identical(other.collapsedSeries, collapsedSeries) ||
                 other.collapsedSeries == collapsedSeries));
@@ -544,6 +562,7 @@ class _$DetailedLibraryItemImpl implements _DetailedLibraryItem {
         mediaType,
         media,
         const DeepCollectionEquality().hash(_libraryFiles),
+        numFiles,
         size,
         collapsedSeries
       ]);
@@ -579,14 +598,15 @@ abstract class _DetailedLibraryItem implements DetailedLibraryItem {
           required final int birthtimeMs,
           required final int addedAt,
           required final int updatedAt,
-          required final int lastScan,
-          required final String scanVersion,
+          final int? lastScan,
+          final String? scanVersion,
           required final bool isMissing,
           required final bool isInvalid,
           required final String mediaType,
           required final DetailedMedia media,
           required final List<FileMetadata>? libraryFiles,
-          required final int size,
+          required final int? numFiles,
+          required final int? size,
           required final CollapsedSeries? collapsedSeries}) =
       _$DetailedLibraryItemImpl;
 
@@ -618,9 +638,9 @@ abstract class _DetailedLibraryItem implements DetailedLibraryItem {
   @override
   int get updatedAt;
   @override
-  int get lastScan;
+  int? get lastScan;
   @override
-  String get scanVersion;
+  String? get scanVersion;
   @override
   bool get isMissing;
   @override
@@ -632,7 +652,9 @@ abstract class _DetailedLibraryItem implements DetailedLibraryItem {
   @override
   List<FileMetadata>? get libraryFiles;
   @override
-  int get size;
+  int? get numFiles;
+  @override
+  int? get size;
   @override
   CollapsedSeries? get collapsedSeries;
 

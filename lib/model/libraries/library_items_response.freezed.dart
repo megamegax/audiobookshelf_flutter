@@ -14,13 +14,9 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-LibraryItemsResponse _$LibraryItemsResponseFromJson(Map<String, dynamic> json) {
-  return _LibraryItemsResponse.fromJson(json);
-}
-
 /// @nodoc
 mixin _$LibraryItemsResponse {
-  List<LibraryItem> get results => throw _privateConstructorUsedError;
+  List<LibraryItemNew> get results => throw _privateConstructorUsedError;
   int get total => throw _privateConstructorUsedError;
   int? get limit => throw _privateConstructorUsedError;
   int? get page => throw _privateConstructorUsedError;
@@ -31,9 +27,6 @@ mixin _$LibraryItemsResponse {
   bool get minified => throw _privateConstructorUsedError;
   bool get collapseseries => throw _privateConstructorUsedError;
   String? get include => throw _privateConstructorUsedError;
-
-  /// Serializes this LibraryItemsResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of LibraryItemsResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -49,7 +42,7 @@ abstract class $LibraryItemsResponseCopyWith<$Res> {
       _$LibraryItemsResponseCopyWithImpl<$Res, LibraryItemsResponse>;
   @useResult
   $Res call(
-      {List<LibraryItem> results,
+      {List<LibraryItemNew> results,
       int total,
       int? limit,
       int? page,
@@ -94,7 +87,7 @@ class _$LibraryItemsResponseCopyWithImpl<$Res,
       results: null == results
           ? _value.results
           : results // ignore: cast_nullable_to_non_nullable
-              as List<LibraryItem>,
+              as List<LibraryItemNew>,
       total: null == total
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
@@ -148,7 +141,7 @@ abstract class _$$LibraryItemsResponseImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<LibraryItem> results,
+      {List<LibraryItemNew> results,
       int total,
       int? limit,
       int? page,
@@ -190,7 +183,7 @@ class __$$LibraryItemsResponseImplCopyWithImpl<$Res>
       results: null == results
           ? _value._results
           : results // ignore: cast_nullable_to_non_nullable
-              as List<LibraryItem>,
+              as List<LibraryItemNew>,
       total: null == total
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
@@ -236,10 +229,10 @@ class __$$LibraryItemsResponseImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$LibraryItemsResponseImpl implements _LibraryItemsResponse {
   const _$LibraryItemsResponseImpl(
-      {required final List<LibraryItem> results,
+      {required final List<LibraryItemNew> results,
       required this.total,
       this.limit,
       this.page,
@@ -252,12 +245,9 @@ class _$LibraryItemsResponseImpl implements _LibraryItemsResponse {
       this.include})
       : _results = results;
 
-  factory _$LibraryItemsResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$LibraryItemsResponseImplFromJson(json);
-
-  final List<LibraryItem> _results;
+  final List<LibraryItemNew> _results;
   @override
-  List<LibraryItem> get results {
+  List<LibraryItemNew> get results {
     if (_results is EqualUnmodifiableListView) return _results;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_results);
@@ -312,7 +302,6 @@ class _$LibraryItemsResponseImpl implements _LibraryItemsResponse {
             (identical(other.include, include) || other.include == include));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -337,18 +326,11 @@ class _$LibraryItemsResponseImpl implements _LibraryItemsResponse {
       get copyWith =>
           __$$LibraryItemsResponseImplCopyWithImpl<_$LibraryItemsResponseImpl>(
               this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$LibraryItemsResponseImplToJson(
-      this,
-    );
-  }
 }
 
 abstract class _LibraryItemsResponse implements LibraryItemsResponse {
   const factory _LibraryItemsResponse(
-      {required final List<LibraryItem> results,
+      {required final List<LibraryItemNew> results,
       required final int total,
       final int? limit,
       final int? page,
@@ -360,11 +342,8 @@ abstract class _LibraryItemsResponse implements LibraryItemsResponse {
       required final bool collapseseries,
       final String? include}) = _$LibraryItemsResponseImpl;
 
-  factory _LibraryItemsResponse.fromJson(Map<String, dynamic> json) =
-      _$LibraryItemsResponseImpl.fromJson;
-
   @override
-  List<LibraryItem> get results;
+  List<LibraryItemNew> get results;
   @override
   int get total;
   @override

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'dart:ui';
 
 class PdfReaderWidget extends StatefulWidget {
   final String filePath;
@@ -151,18 +152,90 @@ class _PdfReaderWidgetState extends State<PdfReaderWidget> {
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Page $_currentPage of $_totalPages'),
-        actions: [
-          IconButton(
-            onPressed: _showPageNavigator,
-            icon: const Icon(Icons.list),
-            tooltip: 'Go to Page',
+        title: Text(
+          'Page $_currentPage of $_totalPages',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.5,
           ),
-          IconButton(
-            onPressed: _openWithExternalApp,
-            icon: const Icon(Icons.open_in_new),
-            tooltip: 'Open with External App',
+        ),
+        backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.8),
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
+        elevation: 0,
+        scrolledUnderElevation: 8,
+        surfaceTintColor: Colors.transparent,
+        flexibleSpace: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).colorScheme.surface.withOpacity(0.9),
+                    Theme.of(context).colorScheme.surface.withOpacity(0.7),
+                  ],
+                ),
+                border: Border(
+                  bottom: BorderSide(
+                    color:
+                        Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                    width: 1,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 4),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: IconButton(
+              onPressed: _showPageNavigator,
+              icon: const Icon(Icons.list),
+              tooltip: 'Go to Page',
+              style: IconButton.styleFrom(
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHigh,
+                foregroundColor: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: IconButton(
+              onPressed: _openWithExternalApp,
+              icon: const Icon(Icons.open_in_new),
+              tooltip: 'Open with External App',
+              style: IconButton.styleFrom(
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHigh,
+                foregroundColor: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
           ),
         ],
       ),

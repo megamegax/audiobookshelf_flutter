@@ -21,8 +21,8 @@ _$DetailedLibraryItemImpl _$$DetailedLibraryItemImplFromJson(
       birthtimeMs: (json['birthtimeMs'] as num).toInt(),
       addedAt: (json['addedAt'] as num).toInt(),
       updatedAt: (json['updatedAt'] as num).toInt(),
-      lastScan: (json['lastScan'] as num).toInt(),
-      scanVersion: json['scanVersion'] as String,
+      lastScan: (json['lastScan'] as num?)?.toInt(),
+      scanVersion: json['scanVersion'] as String?,
       isMissing: json['isMissing'] as bool,
       isInvalid: json['isInvalid'] as bool,
       mediaType: json['mediaType'] as String,
@@ -30,7 +30,8 @@ _$DetailedLibraryItemImpl _$$DetailedLibraryItemImplFromJson(
       libraryFiles: (json['libraryFiles'] as List<dynamic>?)
           ?.map((e) => FileMetadata.fromJson(e as Map<String, dynamic>))
           .toList(),
-      size: (json['size'] as num).toInt(),
+      numFiles: (json['numFiles'] as num?)?.toInt(),
+      size: (json['size'] as num?)?.toInt(),
       collapsedSeries: json['collapsedSeries'] == null
           ? null
           : CollapsedSeries.fromJson(
@@ -59,6 +60,7 @@ Map<String, dynamic> _$$DetailedLibraryItemImplToJson(
       'mediaType': instance.mediaType,
       'media': instance.media,
       'libraryFiles': instance.libraryFiles,
+      'numFiles': instance.numFiles,
       'size': instance.size,
       'collapsedSeries': instance.collapsedSeries,
     };

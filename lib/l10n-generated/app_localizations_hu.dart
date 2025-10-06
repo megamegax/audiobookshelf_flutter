@@ -53,4 +53,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get headerNewestAuthors => 'Legújabb szerzők';
+
+  @override
+  String get headerNewestEpisodes => 'Legújabb epizódok';
+
+  @override
+  String get headerContinuePodcast => 'Podcast folytatása';
+
+  @override
+  String get headerRecentPodcasts => 'Legutóbbi podcastok';
 }

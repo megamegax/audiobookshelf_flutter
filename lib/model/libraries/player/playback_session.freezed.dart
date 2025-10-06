@@ -38,15 +38,12 @@ mixin _$PlaybackSession {
   int get timeListening => throw _privateConstructorUsedError;
   List<AudioTrack> get audioTracks => throw _privateConstructorUsedError;
   double get currentTime => throw _privateConstructorUsedError;
-  LibraryItem? get libraryItem =>
+  LibraryItemNew? get libraryItem =>
       throw _privateConstructorUsedError; //LocalLibraryItem? localLibraryItem,
   String? get localEpisodeId => throw _privateConstructorUsedError;
   String? get serverConnectionConfigId => throw _privateConstructorUsedError;
   String? get serverAddress => throw _privateConstructorUsedError;
   String? get mediaPlayer => throw _privateConstructorUsedError;
-
-  /// Serializes this PlaybackSession to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of PlaybackSession
   /// with the given fields replaced by the non-null parameter values.
@@ -79,14 +76,14 @@ abstract class $PlaybackSessionCopyWith<$Res> {
       int timeListening,
       List<AudioTrack> audioTracks,
       double currentTime,
-      LibraryItem? libraryItem,
+      LibraryItemNew? libraryItem,
       String? localEpisodeId,
       String? serverConnectionConfigId,
       String? serverAddress,
       String? mediaPlayer});
 
   $DeviceInfoResponseCopyWith<$Res> get deviceInfo;
-  $LibraryItemCopyWith<$Res>? get libraryItem;
+  $LibraryItemNewCopyWith<$Res>? get libraryItem;
 }
 
 /// @nodoc
@@ -199,7 +196,7 @@ class _$PlaybackSessionCopyWithImpl<$Res, $Val extends PlaybackSession>
       libraryItem: freezed == libraryItem
           ? _value.libraryItem
           : libraryItem // ignore: cast_nullable_to_non_nullable
-              as LibraryItem?,
+              as LibraryItemNew?,
       localEpisodeId: freezed == localEpisodeId
           ? _value.localEpisodeId
           : localEpisodeId // ignore: cast_nullable_to_non_nullable
@@ -233,12 +230,12 @@ class _$PlaybackSessionCopyWithImpl<$Res, $Val extends PlaybackSession>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $LibraryItemCopyWith<$Res>? get libraryItem {
+  $LibraryItemNewCopyWith<$Res>? get libraryItem {
     if (_value.libraryItem == null) {
       return null;
     }
 
-    return $LibraryItemCopyWith<$Res>(_value.libraryItem!, (value) {
+    return $LibraryItemNewCopyWith<$Res>(_value.libraryItem!, (value) {
       return _then(_value.copyWith(libraryItem: value) as $Val);
     });
   }
@@ -270,7 +267,7 @@ abstract class _$$PlaybackSessionImplCopyWith<$Res>
       int timeListening,
       List<AudioTrack> audioTracks,
       double currentTime,
-      LibraryItem? libraryItem,
+      LibraryItemNew? libraryItem,
       String? localEpisodeId,
       String? serverConnectionConfigId,
       String? serverAddress,
@@ -279,7 +276,7 @@ abstract class _$$PlaybackSessionImplCopyWith<$Res>
   @override
   $DeviceInfoResponseCopyWith<$Res> get deviceInfo;
   @override
-  $LibraryItemCopyWith<$Res>? get libraryItem;
+  $LibraryItemNewCopyWith<$Res>? get libraryItem;
 }
 
 /// @nodoc
@@ -390,7 +387,7 @@ class __$$PlaybackSessionImplCopyWithImpl<$Res>
       libraryItem: freezed == libraryItem
           ? _value.libraryItem
           : libraryItem // ignore: cast_nullable_to_non_nullable
-              as LibraryItem?,
+              as LibraryItemNew?,
       localEpisodeId: freezed == localEpisodeId
           ? _value.localEpisodeId
           : localEpisodeId // ignore: cast_nullable_to_non_nullable
@@ -412,7 +409,7 @@ class __$$PlaybackSessionImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class _$PlaybackSessionImpl implements _PlaybackSession {
   const _$PlaybackSessionImpl(
       {required this.id,
@@ -491,7 +488,7 @@ class _$PlaybackSessionImpl implements _PlaybackSession {
   @override
   final double currentTime;
   @override
-  final LibraryItem? libraryItem;
+  final LibraryItemNew? libraryItem;
 //LocalLibraryItem? localLibraryItem,
   @override
   final String? localEpisodeId;
@@ -592,13 +589,6 @@ class _$PlaybackSessionImpl implements _PlaybackSession {
   _$$PlaybackSessionImplCopyWith<_$PlaybackSessionImpl> get copyWith =>
       __$$PlaybackSessionImplCopyWithImpl<_$PlaybackSessionImpl>(
           this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PlaybackSessionImplToJson(
-      this,
-    );
-  }
 }
 
 abstract class _PlaybackSession implements PlaybackSession {
@@ -620,7 +610,7 @@ abstract class _PlaybackSession implements PlaybackSession {
       required final int timeListening,
       required final List<AudioTrack> audioTracks,
       required final double currentTime,
-      final LibraryItem? libraryItem,
+      final LibraryItemNew? libraryItem,
       final String? localEpisodeId,
       final String? serverConnectionConfigId,
       final String? serverAddress,
@@ -664,7 +654,7 @@ abstract class _PlaybackSession implements PlaybackSession {
   @override
   double get currentTime;
   @override
-  LibraryItem? get libraryItem; //LocalLibraryItem? localLibraryItem,
+  LibraryItemNew? get libraryItem; //LocalLibraryItem? localLibraryItem,
   @override
   String? get localEpisodeId;
   @override

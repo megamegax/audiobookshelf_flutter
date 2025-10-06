@@ -74,5 +74,20 @@
     "@headerNewestAuthors": {
         "description": "Section title at Home screen",
         "type": "text"
+    },
+    "headerNewestEpisodes": "Legújabb epizódok",
+    "@headerNewestEpisodes": {
+        "description": "Section title at Home screen for podcasts",
+        "type": "text"
+    },
+    "headerContinuePodcast": "Podcast folytatása",
+    "@headerContinuePodcast": {
+        "description": "Section title at Home screen for podcasts",
+        "type": "text"
+    },
+    "headerRecentPodcasts": "Legutóbbi podcastok",
+    "@headerRecentPodcasts": {
+        "description": "Section title at Home screen for podcasts",
+        "type": "text"
     }
 }

@@ -42,9 +42,9 @@ final availableLibrariesProvider = FutureProvider<List<Library>>((ref) async {
   }
 });
 
-/// Provider for library selector widget
-final librarySelectorProvider = Provider<LibrarySelector>((ref) {
-  return LibrarySelector(ref);
+/// Provider for library selector notifier
+final librarySelectorProvider = Provider<SelectedLibraryNotifier>((ref) {
+  return ref.read(selectedLibraryProvider.notifier);
 });
 
 class LibrarySelector {

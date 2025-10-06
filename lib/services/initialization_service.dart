@@ -9,6 +9,7 @@ import 'package:audiobookshelf_flutter/provider/credential_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:audiobookshelf_flutter/provider/background_library_loading_provider.dart';
+import 'package:audiobookshelf_flutter/services/background_library_loading_service.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
 import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
@@ -32,6 +33,7 @@ final initializationProvider =
   final backgroundLoadingNotifier =
       ref.read(backgroundLibraryLoadingStateProvider.notifier);
   return InitializationService(
+      ref: ref,
       serverAddress: serverAddress,
       loginService: loginService,
       libraryService: libraryService,
@@ -46,6 +48,7 @@ final initializationProvider =
 });
 
 class InitializationService {
+  final Ref ref;
   final String serverAddress;
   final LoginService loginService;
   final LibraryService libraryService;
@@ -58,6 +61,7 @@ class InitializationService {
   final String username;
   final String password;
   InitializationService({
+    required this.ref,
     required this.serverAddress,
     required this.loginService,
     required this.libraryService,
@@ -137,7 +141,13 @@ class InitializationService {
 
                   // Start background loading for all libraries
                   // This will load the selected library first, then others in background
-                  backgroundLoadingNotifier.startBackgroundLoading();
+                  final backgroundLoadingService =
+                      this.ref.read(backgroundLibraryLoadingServiceProvider);
+                  await backgroundLoadingService.loadAllLibrariesInBackground(
+                    loginResponse.user,
+                    libraries,
+                    libraries.first.id, // Use first library as selected
+                  );
                 }
 
                 if (kDebugMode) {

@@ -11,6 +11,18 @@ class SyncIndicator extends ConsumerWidget {
     final syncState = ref.watch(syncStateProvider);
     final syncNotifier = ref.read(syncStateProvider.notifier);
 
+    // Only show sync indicator when:
+    // 1. Currently syncing
+    // 2. Sync failed (needs attention)
+    // 3. There are pending items that need sync
+    final shouldShow = syncState.isSyncing ||
+        syncState.lastSyncStatus == SyncStatus.failed ||
+        syncNotifier.isSyncNeeded;
+
+    if (!shouldShow) {
+      return const SizedBox.shrink(); // Hide when no sync needed
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(

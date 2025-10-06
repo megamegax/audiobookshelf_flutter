@@ -1,6 +1,8 @@
 import 'package:audiobookshelf_flutter/services/background_download_service.dart';
 import 'package:audiobookshelf_flutter/provider/background_download_provider.dart';
-import 'package:audiobookshelf_flutter/drawer/book_drawer.dart';
+import 'package:audiobookshelf_flutter/layouts/responsive_layout.dart';
+import 'package:audiobookshelf_flutter/widgets/morphing_navigation_drawer.dart';
+import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,48 +12,56 @@ class DownloadQueuePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final backgroundDownloadState = ref.watch(backgroundDownloadStateProvider);
-    final backgroundDownloadNotifier = ref.read(backgroundDownloadStateProvider.notifier);
+    final backgroundDownloadNotifier =
+        ref.read(backgroundDownloadStateProvider.notifier);
+    final serverSettings = ref.read(serverSettingsNotifierProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Download Queue'),
-        actions: [
-          if (backgroundDownloadState.activeDownloads.isNotEmpty)
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert),
-              onSelected: (value) async {
-                switch (value) {
-                  case 'pause_all':
-                    // Pause all downloads
-                    for (final task in backgroundDownloadState.activeDownloads.values) {
-                      await backgroundDownloadNotifier.pauseItemDownload(task.libraryItemId);
-                    }
-                    break;
-                  case 'cancel_all':
-                    await backgroundDownloadNotifier.cancelAllDownloads();
-                    break;
-                }
-              },
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'pause_all',
-                  child: Text('Pause All'),
-                ),
-                const PopupMenuItem(
-                  value: 'cancel_all',
-                  child: Text('Cancel All'),
-                ),
-              ],
-            ),
-        ],
-      ),
-      drawer: const BookDrawer(selectedItem: SelectedItem.downloads, serverSettings: null),
-      body: _buildBody(context, backgroundDownloadState, backgroundDownloadNotifier),
+    return ResponsiveLayout(
+      body: _buildBody(
+          context, ref, backgroundDownloadState, backgroundDownloadNotifier),
+      title: 'Download Queue',
+      selectedDrawerItem: SelectedItem.downloadQueue,
+      serverSettings: serverSettings,
+      appBarActions: [
+        if (backgroundDownloadState.activeDownloads.isNotEmpty)
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) async {
+              switch (value) {
+                case 'pause_all':
+                  // Pause all downloads
+                  for (final task
+                      in backgroundDownloadState.activeDownloads.values) {
+                    await backgroundDownloadNotifier
+                        .pauseItemDownload(task.libraryItemId);
+                  }
+                  break;
+                case 'cancel_all':
+                  await backgroundDownloadNotifier.cancelAllDownloads();
+                  break;
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'pause_all',
+                child: Text('Pause All'),
+              ),
+              const PopupMenuItem(
+                value: 'cancel_all',
+                child: Text('Cancel All'),
+              ),
+            ],
+          ),
+      ],
     );
   }
 
-  Widget _buildBody(BuildContext context, BackgroundDownloadState state, BackgroundDownloadStateNotifier notifier) {
-    if (state.activeDownloads.isEmpty) {
+  Widget _buildBody(
+      BuildContext context,
+      WidgetRef ref,
+      BackgroundDownloadState backgroundDownloadState,
+      backgroundDownloadNotifier) {
+    if (backgroundDownloadState.activeDownloads.isEmpty) {
       return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -84,7 +94,7 @@ class DownloadQueuePage extends ConsumerWidget {
 
     // Group downloads by library item
     final groupedDownloads = <String, List<DownloadTask>>{};
-    for (final task in state.activeDownloads.values) {
+    for (final task in backgroundDownloadState.activeDownloads.values) {
       groupedDownloads.putIfAbsent(task.libraryItemId, () => []).add(task);
     }
 
@@ -94,8 +104,9 @@ class DownloadQueuePage extends ConsumerWidget {
         final libraryItemId = groupedDownloads.keys.elementAt(index);
         final tasks = groupedDownloads[libraryItemId]!;
         final firstTask = tasks.first;
-        
-        return _buildLibraryItemCard(context, libraryItemId, firstTask.libraryItemTitle, tasks, notifier);
+
+        return _buildLibraryItemCard(context, libraryItemId,
+            firstTask.libraryItemTitle, tasks, backgroundDownloadNotifier);
       },
     );
   }
@@ -108,13 +119,19 @@ class DownloadQueuePage extends ConsumerWidget {
     BackgroundDownloadStateNotifier notifier,
   ) {
     final totalTracks = tasks.length;
-    final completedTracks = tasks.where((task) => task.status == DownloadStatus.completed).length;
-    final downloadingTracks = tasks.where((task) => task.status == DownloadStatus.downloading).length;
-    final failedTracks = tasks.where((task) => task.status == DownloadStatus.failed).length;
-    final pausedTracks = tasks.where((task) => task.status == DownloadStatus.paused).length;
-    
-    final overallProgress = tasks.fold<double>(0.0, (sum, task) => sum + task.progress) / totalTracks;
-    
+    final completedTracks =
+        tasks.where((task) => task.status == DownloadStatus.completed).length;
+    final downloadingTracks =
+        tasks.where((task) => task.status == DownloadStatus.downloading).length;
+    final failedTracks =
+        tasks.where((task) => task.status == DownloadStatus.failed).length;
+    final pausedTracks =
+        tasks.where((task) => task.status == DownloadStatus.paused).length;
+
+    final overallProgress =
+        tasks.fold<double>(0.0, (sum, task) => sum + task.progress) /
+            totalTracks;
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ExpansionTile(
@@ -134,8 +151,12 @@ class DownloadQueuePage extends ConsumerWidget {
           children: [
             Text('$completedTracks/$totalTracks tracks completed'),
             if (downloadingTracks > 0) Text('$downloadingTracks downloading'),
-            if (failedTracks > 0) Text('$failedTracks failed', style: const TextStyle(color: Colors.red)),
-            if (pausedTracks > 0) Text('$pausedTracks paused', style: const TextStyle(color: Colors.orange)),
+            if (failedTracks > 0)
+              Text('$failedTracks failed',
+                  style: const TextStyle(color: Colors.red)),
+            if (pausedTracks > 0)
+              Text('$pausedTracks paused',
+                  style: const TextStyle(color: Colors.orange)),
             const SizedBox(height: 8),
             LinearProgressIndicator(
               value: overallProgress,
@@ -177,12 +198,15 @@ class DownloadQueuePage extends ConsumerWidget {
             ),
           ],
         ),
-        children: tasks.map((task) => _buildTrackTile(context, task, notifier)).toList(),
+        children: tasks
+            .map((task) => _buildTrackTile(context, task, notifier))
+            .toList(),
       ),
     );
   }
 
-  Widget _buildTrackTile(BuildContext context, DownloadTask task, BackgroundDownloadStateNotifier notifier) {
+  Widget _buildTrackTile(BuildContext context, DownloadTask task,
+      BackgroundDownloadStateNotifier notifier) {
     return ListTile(
       leading: _getStatusIcon(task.status),
       title: Text('Track ${task.track.index ?? 1}'),

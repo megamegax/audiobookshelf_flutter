@@ -10,7 +10,7 @@ class LibrarySelector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final librariesAsync = ref.watch(availableLibrariesProvider);
     final selectedLibrary = ref.watch(selectedLibraryProvider);
-    final librarySelector = ref.watch(librarySelectorProvider);
+    final librarySelector = ref.read(librarySelectorProvider);
 
     return librariesAsync.when(
       data: (libraries) {
@@ -84,7 +84,7 @@ class CompactLibrarySelector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final librariesAsync = ref.watch(availableLibrariesProvider);
     final selectedLibrary = ref.watch(selectedLibraryProvider);
-    final librarySelector = ref.watch(librarySelectorProvider);
+    final librarySelector = ref.read(librarySelectorProvider);
 
     return librariesAsync.when(
       data: (libraries) {

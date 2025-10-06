@@ -476,11 +476,11 @@ class __$$FileMetadataImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$FileMetadataImpl implements _FileMetadata {
   const _$FileMetadataImpl(
-      {required this.filename,
-      required this.ext,
-      required this.path,
+      {this.filename,
+      this.ext,
+      this.path,
       this.relPath,
-      required this.size,
+      this.size,
       this.mtimeMs,
       this.ctimeMs,
       this.birthtimeMs});
@@ -550,11 +550,11 @@ class _$FileMetadataImpl implements _FileMetadata {
 
 abstract class _FileMetadata implements FileMetadata {
   const factory _FileMetadata(
-      {required final String? filename,
-      required final String? ext,
-      required final String? path,
+      {final String? filename,
+      final String? ext,
+      final String? path,
       final String? relPath,
-      required final int? size,
+      final int? size,
       final int? mtimeMs,
       final int? ctimeMs,
       final int? birthtimeMs}) = _$FileMetadataImpl;

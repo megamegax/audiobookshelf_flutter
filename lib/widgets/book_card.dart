@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/pages/book_details.dart';
 import 'package:audiobookshelf_flutter/provider/download_provider.dart';
+import 'package:audiobookshelf_flutter/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,35 +25,17 @@ class BookCard extends ConsumerWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
-            Navigator.of(context).push(
-              PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    BookDetails(
-                  item: libraryItem,
-                ),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(
-                      position: animation.drive(
-                        Tween(begin: const Offset(0.0, 0.1), end: Offset.zero)
-                            .chain(CurveTween(curve: Curves.easeOutCubic)),
-                      ),
-                      child: child,
-                    ),
-                  );
-                },
-                transitionDuration: const Duration(milliseconds: 300),
-                reverseTransitionDuration: const Duration(milliseconds: 250),
-              ),
+            NavigationService.pushWithHero(
+              context,
+              BookDetails(item: libraryItem),
+              'book-cover-${libraryItem.id}',
             );
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Hero(
-                  tag: 'bookImageCard${libraryItem.itemId}',
+                  tag: 'book-cover-${libraryItem.id}',
                   child: Stack(
                     children: [
                       ClipRRect(

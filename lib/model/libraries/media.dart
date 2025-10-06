@@ -10,18 +10,18 @@ part 'media.g.dart';
 class Media with _$Media {
   const factory Media({
     required Metadata metadata,
-    required String coverPath,
+    String? coverPath,
     // ignore: invalid_annotation_target
     @JsonKey(includeFromJson: false, includeToJson: false)
     Uint8List? coverBytes,
     List<String>? tags,
-    required int? numTracks,
-    required int? numAudioFiles,
-    required int? numChapters,
-    required int? numMissingParts,
-    required int? numInvalidAudioFiles,
-    required double duration,
-    required int size,
+    int? numTracks,
+    int? numAudioFiles,
+    int? numChapters,
+    int? numMissingParts,
+    int? numInvalidAudioFiles,
+    double? duration,
+    int? size,
     String? ebookFileFormat,
   }) = _Media;
 

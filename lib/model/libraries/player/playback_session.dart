@@ -1,4 +1,4 @@
-import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
+import 'package:audiobookshelf_flutter/model/libraries/library_item_new.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/audio_track.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/book_chapter.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/device_info_response.dart';
@@ -7,7 +7,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'playback_session.freezed.dart';
 part 'playback_session.g.dart';
 
-@freezed
+@Freezed(toJson: false)
 class PlaybackSession with _$PlaybackSession {
   const factory PlaybackSession(
       {required String id,
@@ -28,7 +28,7 @@ class PlaybackSession with _$PlaybackSession {
       required int timeListening,
       required List<AudioTrack> audioTracks,
       required double currentTime,
-      LibraryItem? libraryItem,
+      LibraryItemNew? libraryItem,
       //LocalLibraryItem? localLibraryItem,
       String? localEpisodeId,
       String? serverConnectionConfigId,

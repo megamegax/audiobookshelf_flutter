@@ -33,36 +33,10 @@ _$PlaybackSessionImpl _$$PlaybackSessionImplFromJson(
       currentTime: (json['currentTime'] as num).toDouble(),
       libraryItem: json['libraryItem'] == null
           ? null
-          : LibraryItem.fromJson(json['libraryItem'] as Map<String, dynamic>),
+          : LibraryItemNew.fromJson(
+              json['libraryItem'] as Map<String, dynamic>),
       localEpisodeId: json['localEpisodeId'] as String?,
       serverConnectionConfigId: json['serverConnectionConfigId'] as String?,
       serverAddress: json['serverAddress'] as String?,
       mediaPlayer: json['mediaPlayer'] as String?,
     );
-
-Map<String, dynamic> _$$PlaybackSessionImplToJson(
-        _$PlaybackSessionImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'userId': instance.userId,
-      'libraryItemId': instance.libraryItemId,
-      'episodeId': instance.episodeId,
-      'mediaType': instance.mediaType,
-      'deviceInfo': instance.deviceInfo,
-      'chapters': instance.chapters,
-      'displayTitle': instance.displayTitle,
-      'displayAuthor': instance.displayAuthor,
-      'coverPath': instance.coverPath,
-      'duration': instance.duration,
-      'playMethod': instance.playMethod,
-      'startedAt': instance.startedAt,
-      'updatedAt': instance.updatedAt,
-      'timeListening': instance.timeListening,
-      'audioTracks': instance.audioTracks,
-      'currentTime': instance.currentTime,
-      'libraryItem': instance.libraryItem,
-      'localEpisodeId': instance.localEpisodeId,
-      'serverConnectionConfigId': instance.serverConnectionConfigId,
-      'serverAddress': instance.serverAddress,
-      'mediaPlayer': instance.mediaPlayer,
-    };

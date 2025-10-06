@@ -21,14 +21,15 @@ class DetailedLibraryItem with _$DetailedLibraryItem {
     required int birthtimeMs,
     required int addedAt,
     required int updatedAt,
-    required int lastScan,
-    required String scanVersion,
+    int? lastScan,
+    String? scanVersion,
     required bool isMissing,
     required bool isInvalid,
     required String mediaType,
     required DetailedMedia media,
     required List<FileMetadata>? libraryFiles,
-    required int size,
+    required int? numFiles,
+    required int? size,
     required CollapsedSeries? collapsedSeries,
   }) = _DetailedLibraryItem;
 

@@ -21,7 +21,7 @@ Media _$MediaFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Media {
   Metadata get metadata => throw _privateConstructorUsedError;
-  String get coverPath =>
+  String? get coverPath =>
       throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(includeFromJson: false, includeToJson: false)
   Uint8List? get coverBytes => throw _privateConstructorUsedError;
@@ -31,8 +31,8 @@ mixin _$Media {
   int? get numChapters => throw _privateConstructorUsedError;
   int? get numMissingParts => throw _privateConstructorUsedError;
   int? get numInvalidAudioFiles => throw _privateConstructorUsedError;
-  double get duration => throw _privateConstructorUsedError;
-  int get size => throw _privateConstructorUsedError;
+  double? get duration => throw _privateConstructorUsedError;
+  int? get size => throw _privateConstructorUsedError;
   String? get ebookFileFormat => throw _privateConstructorUsedError;
 
   /// Serializes this Media to a JSON map.
@@ -51,7 +51,7 @@ abstract class $MediaCopyWith<$Res> {
   @useResult
   $Res call(
       {Metadata metadata,
-      String coverPath,
+      String? coverPath,
       @JsonKey(includeFromJson: false, includeToJson: false)
       Uint8List? coverBytes,
       List<String>? tags,
@@ -60,8 +60,8 @@ abstract class $MediaCopyWith<$Res> {
       int? numChapters,
       int? numMissingParts,
       int? numInvalidAudioFiles,
-      double duration,
-      int size,
+      double? duration,
+      int? size,
       String? ebookFileFormat});
 
   $MetadataCopyWith<$Res> get metadata;
@@ -83,7 +83,7 @@ class _$MediaCopyWithImpl<$Res, $Val extends Media>
   @override
   $Res call({
     Object? metadata = null,
-    Object? coverPath = null,
+    Object? coverPath = freezed,
     Object? coverBytes = freezed,
     Object? tags = freezed,
     Object? numTracks = freezed,
@@ -91,8 +91,8 @@ class _$MediaCopyWithImpl<$Res, $Val extends Media>
     Object? numChapters = freezed,
     Object? numMissingParts = freezed,
     Object? numInvalidAudioFiles = freezed,
-    Object? duration = null,
-    Object? size = null,
+    Object? duration = freezed,
+    Object? size = freezed,
     Object? ebookFileFormat = freezed,
   }) {
     return _then(_value.copyWith(
@@ -100,10 +100,10 @@ class _$MediaCopyWithImpl<$Res, $Val extends Media>
           ? _value.metadata
           : metadata // ignore: cast_nullable_to_non_nullable
               as Metadata,
-      coverPath: null == coverPath
+      coverPath: freezed == coverPath
           ? _value.coverPath
           : coverPath // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       coverBytes: freezed == coverBytes
           ? _value.coverBytes
           : coverBytes // ignore: cast_nullable_to_non_nullable
@@ -132,14 +132,14 @@ class _$MediaCopyWithImpl<$Res, $Val extends Media>
           ? _value.numInvalidAudioFiles
           : numInvalidAudioFiles // ignore: cast_nullable_to_non_nullable
               as int?,
-      duration: null == duration
+      duration: freezed == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
-              as double,
-      size: null == size
+              as double?,
+      size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       ebookFileFormat: freezed == ebookFileFormat
           ? _value.ebookFileFormat
           : ebookFileFormat // ignore: cast_nullable_to_non_nullable
@@ -167,7 +167,7 @@ abstract class _$$MediaImplCopyWith<$Res> implements $MediaCopyWith<$Res> {
   @useResult
   $Res call(
       {Metadata metadata,
-      String coverPath,
+      String? coverPath,
       @JsonKey(includeFromJson: false, includeToJson: false)
       Uint8List? coverBytes,
       List<String>? tags,
@@ -176,8 +176,8 @@ abstract class _$$MediaImplCopyWith<$Res> implements $MediaCopyWith<$Res> {
       int? numChapters,
       int? numMissingParts,
       int? numInvalidAudioFiles,
-      double duration,
-      int size,
+      double? duration,
+      int? size,
       String? ebookFileFormat});
 
   @override
@@ -198,7 +198,7 @@ class __$$MediaImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? metadata = null,
-    Object? coverPath = null,
+    Object? coverPath = freezed,
     Object? coverBytes = freezed,
     Object? tags = freezed,
     Object? numTracks = freezed,
@@ -206,8 +206,8 @@ class __$$MediaImplCopyWithImpl<$Res>
     Object? numChapters = freezed,
     Object? numMissingParts = freezed,
     Object? numInvalidAudioFiles = freezed,
-    Object? duration = null,
-    Object? size = null,
+    Object? duration = freezed,
+    Object? size = freezed,
     Object? ebookFileFormat = freezed,
   }) {
     return _then(_$MediaImpl(
@@ -215,10 +215,10 @@ class __$$MediaImplCopyWithImpl<$Res>
           ? _value.metadata
           : metadata // ignore: cast_nullable_to_non_nullable
               as Metadata,
-      coverPath: null == coverPath
+      coverPath: freezed == coverPath
           ? _value.coverPath
           : coverPath // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       coverBytes: freezed == coverBytes
           ? _value.coverBytes
           : coverBytes // ignore: cast_nullable_to_non_nullable
@@ -247,14 +247,14 @@ class __$$MediaImplCopyWithImpl<$Res>
           ? _value.numInvalidAudioFiles
           : numInvalidAudioFiles // ignore: cast_nullable_to_non_nullable
               as int?,
-      duration: null == duration
+      duration: freezed == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
-              as double,
-      size: null == size
+              as double?,
+      size: freezed == size
           ? _value.size
           : size // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       ebookFileFormat: freezed == ebookFileFormat
           ? _value.ebookFileFormat
           : ebookFileFormat // ignore: cast_nullable_to_non_nullable
@@ -268,16 +268,16 @@ class __$$MediaImplCopyWithImpl<$Res>
 class _$MediaImpl implements _Media {
   const _$MediaImpl(
       {required this.metadata,
-      required this.coverPath,
+      this.coverPath,
       @JsonKey(includeFromJson: false, includeToJson: false) this.coverBytes,
       final List<String>? tags,
-      required this.numTracks,
-      required this.numAudioFiles,
-      required this.numChapters,
-      required this.numMissingParts,
-      required this.numInvalidAudioFiles,
-      required this.duration,
-      required this.size,
+      this.numTracks,
+      this.numAudioFiles,
+      this.numChapters,
+      this.numMissingParts,
+      this.numInvalidAudioFiles,
+      this.duration,
+      this.size,
       this.ebookFileFormat})
       : _tags = tags;
 
@@ -287,7 +287,7 @@ class _$MediaImpl implements _Media {
   @override
   final Metadata metadata;
   @override
-  final String coverPath;
+  final String? coverPath;
 // ignore: invalid_annotation_target
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -313,9 +313,9 @@ class _$MediaImpl implements _Media {
   @override
   final int? numInvalidAudioFiles;
   @override
-  final double duration;
+  final double? duration;
   @override
-  final int size;
+  final int? size;
   @override
   final String? ebookFileFormat;
 
@@ -389,17 +389,17 @@ class _$MediaImpl implements _Media {
 abstract class _Media implements Media {
   const factory _Media(
       {required final Metadata metadata,
-      required final String coverPath,
+      final String? coverPath,
       @JsonKey(includeFromJson: false, includeToJson: false)
       final Uint8List? coverBytes,
       final List<String>? tags,
-      required final int? numTracks,
-      required final int? numAudioFiles,
-      required final int? numChapters,
-      required final int? numMissingParts,
-      required final int? numInvalidAudioFiles,
-      required final double duration,
-      required final int size,
+      final int? numTracks,
+      final int? numAudioFiles,
+      final int? numChapters,
+      final int? numMissingParts,
+      final int? numInvalidAudioFiles,
+      final double? duration,
+      final int? size,
       final String? ebookFileFormat}) = _$MediaImpl;
 
   factory _Media.fromJson(Map<String, dynamic> json) = _$MediaImpl.fromJson;
@@ -407,7 +407,7 @@ abstract class _Media implements Media {
   @override
   Metadata get metadata;
   @override
-  String get coverPath; // ignore: invalid_annotation_target
+  String? get coverPath; // ignore: invalid_annotation_target
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   Uint8List? get coverBytes;
@@ -424,9 +424,9 @@ abstract class _Media implements Media {
   @override
   int? get numInvalidAudioFiles;
   @override
-  double get duration;
+  double? get duration;
   @override
-  int get size;
+  int? get size;
   @override
   String? get ebookFileFormat;
 

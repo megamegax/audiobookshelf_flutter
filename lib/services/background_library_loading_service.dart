@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
-import 'package:audiobookshelf_flutter/model/libraries/library_item.dart';
+import 'package:audiobookshelf_flutter/model/libraries/library_item_new.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
 import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
@@ -129,12 +129,34 @@ class BackgroundLibraryLoadingService {
       _updateProgress(libraryId, 0.1, LibraryLoadingStatus.loading, 0, 0);
 
       // Load library items
+      if (kDebugMode) {
+        print(
+            '[BACKGROUND_LOADING] ${library.name}: Starting to fetch library items...');
+      }
+
       final libraryItems =
           await libraryService.fetchLibraryItems(userModel, libraryId);
 
       if (kDebugMode) {
         print(
             '[BACKGROUND_LOADING] ${library.name}: ${libraryItems.length} items found');
+        print('[BACKGROUND_LOADING] ${library.name}: Library ID: $libraryId');
+        print(
+            '[BACKGROUND_LOADING] ${library.name}: Media types: ${libraryItems.map((item) => item.mediaType).toSet()}');
+
+        // Debug first few items to see their structure
+        if (libraryItems.isNotEmpty) {
+          final firstItem = libraryItems.first;
+          print('[BACKGROUND_LOADING] ${library.name}: First item debug:');
+          print('  - ID: ${firstItem.id}');
+          print('  - MediaType: ${firstItem.mediaType}');
+          print('  - MtimeMs: ${firstItem.mtimeMs}');
+          print('  - CtimeMs: ${firstItem.ctimeMs}');
+          print('  - BirthtimeMs: ${firstItem.birthtimeMs}');
+          print('  - AddedAt: ${firstItem.addedAt}');
+          print('  - UpdatedAt: ${firstItem.updatedAt}');
+          print('  - Size: ${firstItem.size}');
+        }
       }
 
       // Update progress: Items found
@@ -142,12 +164,29 @@ class BackgroundLibraryLoadingService {
           libraryId, 0.3, LibraryLoadingStatus.loading, 0, libraryItems.length);
 
       // Load series
+      if (kDebugMode) {
+        print(
+            '[BACKGROUND_LOADING] ${library.name}: Starting to fetch series...');
+      }
+
       final seriesItems =
           await libraryService.fetchSeries(userModel, libraryId);
 
       if (kDebugMode) {
         print(
             '[BACKGROUND_LOADING] ${library.name}: ${seriesItems.length} series found');
+
+        // Debug first series to see its structure
+        if (seriesItems.isNotEmpty) {
+          final firstSeries = seriesItems.first;
+          print('[BACKGROUND_LOADING] ${library.name}: First series debug:');
+          print('  - ID: ${firstSeries.id}');
+          print('  - Name: ${firstSeries.name}');
+          print('  - AddedAt: ${firstSeries.addedAt}');
+          print('  - UpdatedAt: ${firstSeries.updatedAt}');
+          print('  - Description: ${firstSeries.description}');
+          print('  - Books count: ${firstSeries.books.length}');
+        }
       }
 
       // Update progress: Series loaded
@@ -155,7 +194,7 @@ class BackgroundLibraryLoadingService {
           libraryId, 0.5, LibraryLoadingStatus.loading, 0, libraryItems.length);
 
       // Load covers for items (this is the most time-consuming part)
-      final libraryItemsWithCover = <LibraryItem>[];
+      final libraryItemsWithCover = <LibraryItemNew>[];
       final repository = await libraryItemsRepository;
 
       for (int i = 0; i < libraryItems.length; i++) {
@@ -164,20 +203,104 @@ class BackgroundLibraryLoadingService {
         // Check if we already have a cached version with cover
         final cachedLibraryItem = await repository.getBook(libraryItem.id);
         if (cachedLibraryItem?.media.coverBytes == null ||
-            libraryItem.updatedAt > (cachedLibraryItem?.updatedAt ?? 0)) {
+            (libraryItem.updatedAt ?? 0) >
+                (cachedLibraryItem?.updatedAt ?? 0)) {
           try {
             final cover =
                 await libraryService.fetchCover(libraryItem, userModel);
             if (cover != null) {
               final mediaWithCover =
                   libraryItem.media.copyWith(coverBytes: cover);
-              libraryItemsWithCover
-                  .add(libraryItem.copyWith(media: mediaWithCover));
+
+              // Handle union type with pattern matching
+              final itemWithCover = libraryItem.when(
+                book: (id,
+                        ino,
+                        libraryId,
+                        folderId,
+                        path,
+                        relPath,
+                        isFile,
+                        mtimeMs,
+                        ctimeMs,
+                        birthtimeMs,
+                        addedAt,
+                        updatedAt,
+                        isMissing,
+                        isInvalid,
+                        mediaType,
+                        media,
+                        numFiles,
+                        size,
+                        collapsedSeries) =>
+                    LibraryItemNew.book(
+                  id: id,
+                  ino: ino,
+                  libraryId: libraryId,
+                  folderId: folderId,
+                  path: path,
+                  relPath: relPath,
+                  isFile: isFile,
+                  mtimeMs: mtimeMs,
+                  ctimeMs: ctimeMs,
+                  birthtimeMs: birthtimeMs,
+                  addedAt: addedAt,
+                  updatedAt: updatedAt,
+                  isMissing: isMissing,
+                  isInvalid: isInvalid,
+                  mediaType: mediaType,
+                  media: mediaWithCover,
+                  numFiles: numFiles,
+                  size: size,
+                  collapsedSeries: collapsedSeries,
+                ),
+                podcast: (id,
+                        ino,
+                        libraryId,
+                        folderId,
+                        path,
+                        relPath,
+                        isFile,
+                        mtimeMs,
+                        ctimeMs,
+                        birthtimeMs,
+                        addedAt,
+                        updatedAt,
+                        isMissing,
+                        isInvalid,
+                        mediaType,
+                        media,
+                        numFiles,
+                        size,
+                        collapsedSeries) =>
+                    LibraryItemNew.podcast(
+                  id: id,
+                  ino: ino,
+                  libraryId: libraryId,
+                  folderId: folderId,
+                  path: path,
+                  relPath: relPath,
+                  isFile: isFile,
+                  mtimeMs: mtimeMs,
+                  ctimeMs: ctimeMs,
+                  birthtimeMs: birthtimeMs,
+                  addedAt: addedAt,
+                  updatedAt: updatedAt,
+                  isMissing: isMissing,
+                  isInvalid: isInvalid,
+                  mediaType: mediaType,
+                  media: mediaWithCover,
+                  numFiles: numFiles,
+                  size: size,
+                  collapsedSeries: collapsedSeries,
+                ),
+              );
+              libraryItemsWithCover.add(itemWithCover);
             }
           } catch (e) {
             if (kDebugMode) {
               print(
-                  '[BACKGROUND_LOADING] Failed to fetch cover for ${libraryItem.media.metadata?.title ?? 'Unknown'}: $e');
+                  '[BACKGROUND_LOADING] Failed to fetch cover for ${libraryItem.media.metadata.title ?? 'Unknown'}: $e');
             }
             // Continue without cover
             libraryItemsWithCover.add(libraryItem);
