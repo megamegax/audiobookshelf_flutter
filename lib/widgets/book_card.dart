@@ -4,6 +4,7 @@ import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/pages/book_details.dart';
 import 'package:audiobookshelf_flutter/provider/download_provider.dart';
 import 'package:audiobookshelf_flutter/services/navigation_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -27,7 +28,8 @@ class BookCard extends ConsumerWidget {
           onTap: () {
             NavigationService.pushWithHero(
               context,
-              BookDetails(item: libraryItem),
+              BookDetails(
+                  item: libraryItem, heroTag: 'book-cover-${libraryItem.id}'),
               'book-cover-${libraryItem.id}',
             );
           },
@@ -35,24 +37,46 @@ class BookCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Hero(
-                  tag: 'book-cover-${libraryItem.id}',
-                  child: Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          topRight: Radius.circular(12),
-                        ),
-                        child: SizedBox(
-                          width: 180,
-                          height: 180,
-                          child: libraryItem.media.coverBytes?.isNotEmpty ==
-                                  true
-                              ? Image.memory(
-                                  Uint8List.fromList(
-                                      libraryItem.media.coverBytes!),
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
+                tag: 'book-cover-${libraryItem.id}',
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
+                      child: SizedBox(
+                        width: 180,
+                        height: 180,
+                        child: libraryItem.media.coverBytes?.isNotEmpty == true
+                            ? Builder(
+                                builder: (context) {
+                                  try {
+                                    return Image.memory(
+                                      Uint8List.fromList(
+                                          libraryItem.media.coverBytes!),
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Container(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surfaceContainerHighest,
+                                          child: Icon(
+                                            Icons.library_music,
+                                            size: 48,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  } catch (e) {
+                                    if (kDebugMode) {
+                                      print(
+                                          '[BOOK_CARD] Error creating MemoryImage for book ${libraryItem.id}: $e');
+                                    }
                                     return Container(
                                       color: Theme.of(context)
                                           .colorScheme
@@ -65,73 +89,74 @@ class BookCard extends ConsumerWidget {
                                             .onSurfaceVariant,
                                       ),
                                     );
-                                  },
-                                )
-                              : Container(
+                                  }
+                                },
+                              )
+                            : Container(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHighest,
+                                child: Icon(
+                                  Icons.library_music,
+                                  size: 48,
                                   color: Theme.of(context)
                                       .colorScheme
-                                      .surfaceContainerHighest,
+                                      .onSurfaceVariant,
+                                ),
+                              ),
+                      ),
+                    ),
+                    // Download indicator
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final downloadedItemsAsync =
+                            ref.watch(downloadedItemsProvider);
+                        return downloadedItemsAsync.when(
+                          data: (items) {
+                            final isDownloaded = items.any((item) =>
+                                item.id == libraryItem.itemId ||
+                                item.title ==
+                                    libraryItem.media.metadata?.title);
+                            if (isDownloaded) {
+                              return Positioned(
+                                top: 8,
+                                right: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .shadow
+                                            .withOpacity(0.2),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
                                   child: Icon(
-                                    Icons.library_music,
-                                    size: 48,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
+                                    Icons.download_done,
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                    size: 16,
                                   ),
                                 ),
-                        ),
-                      ),
-                      // Download indicator
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final downloadedItemsAsync =
-                              ref.watch(downloadedItemsProvider);
-                          return downloadedItemsAsync.when(
-                            data: (items) {
-                              final isDownloaded = items.any((item) =>
-                                  item.id == libraryItem.itemId ||
-                                  item.title ==
-                                      libraryItem.media.metadata?.title);
-                              if (isDownloaded) {
-                                return Positioned(
-                                  top: 8,
-                                  right: 8,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(6),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      borderRadius: BorderRadius.circular(16),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .shadow
-                                              .withOpacity(0.2),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Icon(
-                                      Icons.download_done,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary,
-                                      size: 16,
-                                    ),
-                                  ),
-                                );
-                              }
-                              return const SizedBox.shrink();
-                            },
-                            loading: () => const SizedBox.shrink(),
-                            error: (_, __) => const SizedBox.shrink(),
-                          );
-                        },
-                      ),
-                    ],
-                  )),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                          loading: () => const SizedBox.shrink(),
+                          error: (_, __) => const SizedBox.shrink(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
               if (progress > 0)
                 Container(
                   height: 3,
@@ -155,22 +180,19 @@ class BookCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Hero(
-                          tag: 'bookTitleCard${libraryItem.itemId}',
-                          child: Text(
-                            libraryItem.media.metadata?.title ?? "-",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                  fontWeight: FontWeight.w600,
-                                  height: 1.2,
-                                ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          )),
+                      Text(
+                        libraryItem.media.metadata?.title ?? "-",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontWeight: FontWeight.w600,
+                              height: 1.2,
+                            ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       const SizedBox(height: 6),
                       Text(
                         libraryItem.media.metadata?.authorName ?? "-",

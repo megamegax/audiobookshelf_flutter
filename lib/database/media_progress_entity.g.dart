@@ -48,23 +48,28 @@ const MediaProgressEntitySchema = Schema(
       name: r'itemId',
       type: IsarType.string,
     ),
-    r'lastUpdate': PropertySchema(
+    r'lastAccessedAt': PropertySchema(
       id: 7,
+      name: r'lastAccessedAt',
+      type: IsarType.long,
+    ),
+    r'lastUpdate': PropertySchema(
+      id: 8,
       name: r'lastUpdate',
       type: IsarType.long,
     ),
     r'mediaItemType': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'mediaItemType',
       type: IsarType.string,
     ),
     r'progress': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'progress',
       type: IsarType.double,
     ),
     r'startedAt': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'startedAt',
       type: IsarType.long,
     )
@@ -109,10 +114,11 @@ void _mediaProgressEntitySerialize(
   writer.writeBool(offsets[4], object.hideFromContinueListening);
   writer.writeBool(offsets[5], object.isFinished);
   writer.writeString(offsets[6], object.itemId);
-  writer.writeLong(offsets[7], object.lastUpdate);
-  writer.writeString(offsets[8], object.mediaItemType);
-  writer.writeDouble(offsets[9], object.progress);
-  writer.writeLong(offsets[10], object.startedAt);
+  writer.writeLong(offsets[7], object.lastAccessedAt);
+  writer.writeLong(offsets[8], object.lastUpdate);
+  writer.writeString(offsets[9], object.mediaItemType);
+  writer.writeDouble(offsets[10], object.progress);
+  writer.writeLong(offsets[11], object.startedAt);
 }
 
 MediaProgressEntity _mediaProgressEntityDeserialize(
@@ -129,10 +135,11 @@ MediaProgressEntity _mediaProgressEntityDeserialize(
     hideFromContinueListening: reader.readBoolOrNull(offsets[4]) ?? false,
     isFinished: reader.readBoolOrNull(offsets[5]) ?? false,
     itemId: reader.readStringOrNull(offsets[6]),
-    lastUpdate: reader.readLongOrNull(offsets[7]),
-    mediaItemType: reader.readStringOrNull(offsets[8]),
-    progress: reader.readDoubleOrNull(offsets[9]),
-    startedAt: reader.readLongOrNull(offsets[10]),
+    lastAccessedAt: reader.readLongOrNull(offsets[7]),
+    lastUpdate: reader.readLongOrNull(offsets[8]),
+    mediaItemType: reader.readStringOrNull(offsets[9]),
+    progress: reader.readDoubleOrNull(offsets[10]),
+    startedAt: reader.readLongOrNull(offsets[11]),
   );
   return object;
 }
@@ -161,10 +168,12 @@ P _mediaProgressEntityDeserializeProp<P>(
     case 7:
       return (reader.readLongOrNull(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 9:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 11:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -669,6 +678,80 @@ extension MediaProgressEntityQueryFilter on QueryBuilder<MediaProgressEntity,
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'itemId',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
+      lastAccessedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastAccessedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
+      lastAccessedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastAccessedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
+      lastAccessedAtEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastAccessedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
+      lastAccessedAtGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastAccessedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
+      lastAccessedAtLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastAccessedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<MediaProgressEntity, MediaProgressEntity, QAfterFilterCondition>
+      lastAccessedAtBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastAccessedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }

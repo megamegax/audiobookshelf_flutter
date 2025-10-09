@@ -15,10 +15,10 @@ class SeriesCard extends StatelessWidget {
       child: Card(
         child: InkWell(
           onTap: () {
-            NavigationService.pushHierarchical(
+            NavigationService.pushWithHero(
               context,
               SeriesDetails(series: series),
-              heroTag: 'series-${series.id}',
+              'series-cover-${series.seriesId}',
             );
           },
           child: Column(
@@ -26,7 +26,7 @@ class SeriesCard extends StatelessWidget {
             children: [
               // Series cover with Hero animation
               Hero(
-                tag: 'seriesImage${series.seriesId}',
+                tag: 'series-cover-${series.seriesId}',
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(12),
@@ -44,21 +44,16 @@ class SeriesCard extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Hero(
-                      tag: 'seriesTitle${series.seriesId}',
-                      child: Text(
-                        series.name,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              fontWeight: FontWeight.w600,
-                              height: 1.2,
-                            ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      )),
+                  child: Text(
+                    series.name,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontWeight: FontWeight.w600,
+                          height: 1.2,
+                        ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ],

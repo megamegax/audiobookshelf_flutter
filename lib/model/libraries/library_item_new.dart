@@ -1,5 +1,8 @@
+import 'dart:typed_data';
 import 'package:audiobookshelf_flutter/model/libraries/collapsed_series.dart';
 import 'package:audiobookshelf_flutter/model/libraries/media.dart';
+import 'package:audiobookshelf_flutter/model/libraries/meta_data.dart';
+import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'library_item_new.freezed.dart';
@@ -138,4 +141,100 @@ String? _parseIno(dynamic value) {
   if (value is String) return value;
   if (value is int) return value.toString();
   return value.toString();
+}
+
+/// Extension to convert LibraryItemEntity to LibraryItemNew
+extension LibraryItemEntityToNew on LibraryItemEntity {
+  LibraryItemNew toLibraryItemNew() {
+    // Convert MediaEntity to Media - simplified version
+    final mediaEntity = this.media;
+    final media = Media(
+      metadata: Metadata(
+        title: mediaEntity.metadata?.title,
+        subtitle: mediaEntity.metadata?.subtitle,
+        authorName: mediaEntity.metadata?.authorName,
+        narratorName: mediaEntity.metadata?.narratorName,
+        seriesName: mediaEntity.metadata?.seriesName,
+        genres: mediaEntity.metadata?.genres,
+        publishedYear: mediaEntity.metadata?.publishedYear != null
+            ? int.tryParse(mediaEntity.metadata!.publishedYear!)
+            : null,
+        publishedDate: mediaEntity.metadata?.publishedDate,
+        publisher: mediaEntity.metadata?.publisher,
+        description: mediaEntity.metadata?.description,
+        isbn: mediaEntity.metadata?.isbn,
+        asin: mediaEntity.metadata?.asin,
+        language: mediaEntity.metadata?.language,
+        explicit: mediaEntity.metadata?.explicit ?? false,
+      ),
+      coverPath: mediaEntity.coverPath,
+      coverBytes: mediaEntity.coverBytes != null
+          ? Uint8List.fromList(mediaEntity.coverBytes!)
+          : null,
+      tags: mediaEntity.tags,
+      duration: mediaEntity.duration,
+      size: mediaEntity.size,
+    );
+
+    // Convert CollapsedSeriesEntity to CollapsedSeries if present
+    CollapsedSeries? collapsedSeries;
+    if (this.collapsedSeries != null) {
+      collapsedSeries = CollapsedSeries(
+        id: this.collapsedSeries!.id ?? '',
+        name: this.collapsedSeries!.name ?? '',
+        nameIgnorePrefix: this.collapsedSeries!.nameIgnorePrefix ?? '',
+        numBooks: this.collapsedSeries!.numBooks,
+      );
+    }
+
+    // Create the appropriate LibraryItemNew based on mediaType
+    switch (mediaType) {
+      case 'book':
+        return LibraryItemNew.book(
+          id: itemId,
+          ino: ino,
+          libraryId: libraryId,
+          folderId: folderId,
+          path: path,
+          relPath: relPath,
+          isFile: isFile,
+          mtimeMs: mtimeMs,
+          ctimeMs: ctimeMs,
+          birthtimeMs: birthtimeMs,
+          addedAt: addedAt,
+          updatedAt: updatedAt,
+          isMissing: isMissing,
+          isInvalid: isInvalid,
+          mediaType: mediaType,
+          media: media,
+          numFiles: numFiles,
+          size: size,
+          collapsedSeries: collapsedSeries,
+        );
+      case 'podcast':
+        return LibraryItemNew.podcast(
+          id: itemId,
+          ino: ino,
+          libraryId: libraryId,
+          folderId: folderId,
+          path: path,
+          relPath: relPath,
+          isFile: isFile,
+          mtimeMs: mtimeMs,
+          ctimeMs: ctimeMs,
+          birthtimeMs: birthtimeMs,
+          addedAt: addedAt,
+          updatedAt: updatedAt,
+          isMissing: isMissing,
+          isInvalid: isInvalid,
+          mediaType: mediaType,
+          media: media,
+          numFiles: numFiles,
+          size: size,
+          collapsedSeries: collapsedSeries,
+        );
+      default:
+        throw ArgumentError('Unknown mediaType: $mediaType');
+    }
+  }
 }

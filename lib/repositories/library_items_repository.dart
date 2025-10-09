@@ -33,6 +33,17 @@ class LibraryItemsRepository {
     return libraryItems;
   }
 
+  /// Gets all books by library ID (for incremental sync)
+  Future<List<LibraryItemEntity>> getBooksByLibraryId(String libraryId) async {
+    final List<LibraryItemEntity> libraryItems = await _isar.libraryItemEntitys
+        .where()
+        .filter()
+        .libraryIdEqualTo(libraryId)
+        .findAll();
+
+    return libraryItems;
+  }
+
   Future<LibraryItemEntity?> getBook(String itemId) async {
     final LibraryItemEntity? item = await _isar.libraryItemEntitys
         .where()
@@ -282,24 +293,42 @@ class LibraryItemsRepository {
   }
 
   Future<List<Series>> getSeries(String libraryId) async {
-    final List<SeriesItemEntity> seriesItems = await _isar.seriesItemEntitys
-        .where()
-        .filter()
-        .seriesIdEqualTo(libraryId)
-        .findAll();
-    final series = seriesItems
-        .map((series) async => Series(
-            addedAt: series.addedAt,
-            description: series.description,
-            id: series.id,
-            name: series.name,
-            nameIgnorePrefix: series.nameIgnorePrefix,
-            updatedAt: series.updatedAt,
-            seriesId: series.seriesId!,
-            books: await Future.wait(
-                series.books.map((book) async => (await getBook(book))!))))
-        .toList();
-    return Future.wait(series);
+    // Get all series items
+    final List<SeriesItemEntity> allSeriesItems =
+        await _isar.seriesItemEntitys.where().findAll();
+
+    // Filter series that have books in the specified library
+    final List<Series> series = [];
+    for (final seriesItem in allSeriesItems) {
+      // Get books for this series
+      final books = await Future.wait(
+          seriesItem.books.map((bookId) async => await getBook(bookId)));
+
+      // Filter out null books and check if any book belongs to the library
+      final validBooks =
+          books.where((book) => book != null).cast<LibraryItemEntity>();
+      final booksInLibrary =
+          validBooks.where((book) => book.libraryId == libraryId);
+
+      if (booksInLibrary.isNotEmpty) {
+        series.add(Series(
+            addedAt: seriesItem.addedAt,
+            description: seriesItem.description,
+            id: seriesItem.id,
+            name: seriesItem.name,
+            nameIgnorePrefix: seriesItem.nameIgnorePrefix,
+            updatedAt: seriesItem.updatedAt,
+            seriesId: seriesItem.seriesId!,
+            books: booksInLibrary.toList()));
+      }
+    }
+
+    return series;
+  }
+
+  /// Gets all series items from the database (for debugging)
+  Future<List<SeriesItemEntity>> getAllSeriesItems() async {
+    return await _isar.seriesItemEntitys.where().findAll();
   }
 
   void saveSeriesItems(List<SeriesItem> seriesItems) async {
@@ -335,5 +364,155 @@ class LibraryItemsRepository {
         }
       }
     }
+  }
+
+  /// Deletes a book by item ID
+  Future<void> deleteBook(String itemId) async {
+    await _isar.writeTxn(() async {
+      await _isar.libraryItemEntitys
+          .where()
+          .filter()
+          .itemIdEqualTo(itemId)
+          .deleteAll();
+    });
+  }
+
+  /// Gets the last sync timestamp for a library
+  Future<int?> getLastSyncTimestamp(String libraryId) async {
+    // For now, we'll use a simple approach by getting the latest updatedAt
+    // In a real implementation, you'd have a separate sync tracking table
+    final latestItem = await _isar.libraryItemEntitys
+        .where()
+        .filter()
+        .libraryIdEqualTo(libraryId)
+        .sortByUpdatedAtDesc()
+        .findFirst();
+
+    return latestItem?.updatedAt;
+  }
+
+  /// Updates the last sync timestamp for a library
+  Future<void> updateLastSyncTimestamp(String libraryId, int timestamp) async {
+    // For now, this is a placeholder
+    // In a real implementation, you'd store this in a separate sync tracking table
+  }
+
+  /// Search books by author name in local database
+  Future<List<LibraryItemEntity>> searchBooksByAuthor(
+      String libraryId, String authorName) async {
+    final List<LibraryItemEntity> books = await _isar.libraryItemEntitys
+        .where()
+        .filter()
+        .libraryIdEqualTo(libraryId)
+        .mediaTypeEqualTo("book")
+        .findAll();
+
+    // Filter by author name (case-insensitive)
+    return books.where((book) {
+      final metadata = book.media.metadata;
+      if (metadata == null) return false;
+
+      final author = metadata.authorName?.toLowerCase() ?? '';
+      final searchAuthor = authorName.toLowerCase();
+
+      return author.contains(searchAuthor);
+    }).toList();
+  }
+
+  /// Search books by title in local database
+  Future<List<LibraryItemEntity>> searchBooksByTitle(
+      String libraryId, String title) async {
+    final List<LibraryItemEntity> books = await _isar.libraryItemEntitys
+        .where()
+        .filter()
+        .libraryIdEqualTo(libraryId)
+        .mediaTypeEqualTo("book")
+        .findAll();
+
+    // Filter by title (case-insensitive)
+    return books.where((book) {
+      final metadata = book.media.metadata;
+      if (metadata == null) return false;
+
+      final bookTitle = metadata.title?.toLowerCase() ?? '';
+      final searchTitle = title.toLowerCase();
+
+      return bookTitle.contains(searchTitle);
+    }).toList();
+  }
+
+  /// Search books by narrator name in local database
+  Future<List<LibraryItemEntity>> searchBooksByNarrator(
+      String libraryId, String narratorName) async {
+    final List<LibraryItemEntity> books = await _isar.libraryItemEntitys
+        .where()
+        .filter()
+        .libraryIdEqualTo(libraryId)
+        .mediaTypeEqualTo("book")
+        .findAll();
+
+    // Filter by narrator name (case-insensitive)
+    return books.where((book) {
+      final metadata = book.media.metadata;
+      if (metadata == null) return false;
+
+      final narrator = metadata.narratorName?.toLowerCase() ?? '';
+      final searchNarrator = narratorName.toLowerCase();
+
+      return narrator.contains(searchNarrator);
+    }).toList();
+  }
+
+  /// Search books by series name in local database
+  Future<List<LibraryItemEntity>> searchBooksBySeries(
+      String libraryId, String seriesName) async {
+    final List<LibraryItemEntity> books = await _isar.libraryItemEntitys
+        .where()
+        .filter()
+        .libraryIdEqualTo(libraryId)
+        .mediaTypeEqualTo("book")
+        .findAll();
+
+    // Filter by series name (case-insensitive)
+    return books.where((book) {
+      final metadata = book.media.metadata;
+      if (metadata == null) return false;
+
+      final series = metadata.seriesName?.toLowerCase() ?? '';
+      final searchSeries = seriesName.toLowerCase();
+
+      return series.contains(searchSeries);
+    }).toList();
+  }
+
+  /// General search in local database
+  Future<List<LibraryItemEntity>> searchBooks(
+      String libraryId, String query) async {
+    final List<LibraryItemEntity> books = await _isar.libraryItemEntitys
+        .where()
+        .filter()
+        .libraryIdEqualTo(libraryId)
+        .mediaTypeEqualTo("book")
+        .findAll();
+
+    if (query.isEmpty) return books;
+
+    final searchQuery = query.toLowerCase();
+
+    // Filter by title, author, narrator, or series (case-insensitive)
+    return books.where((book) {
+      final metadata = book.media.metadata;
+      if (metadata == null) return false;
+
+      final title = metadata.title?.toLowerCase() ?? '';
+      final author = metadata.authorName?.toLowerCase() ?? '';
+      final narrator = metadata.narratorName?.toLowerCase() ?? '';
+      final series = metadata.seriesName?.toLowerCase() ?? '';
+
+      return title.contains(searchQuery) ||
+          author.contains(searchQuery) ||
+          narrator.contains(searchQuery) ||
+          series.contains(searchQuery);
+    }).toList();
   }
 }

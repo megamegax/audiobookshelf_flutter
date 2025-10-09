@@ -1,5 +1,6 @@
 import 'dart:developer' as dev;
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
 import 'package:audiobookshelf_flutter/pages/book_details.dart';
 import 'package:audiobookshelf_flutter/layouts/responsive_layout.dart';
@@ -11,7 +12,7 @@ import 'package:audiobookshelf_flutter/provider/library_selector_provider.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
 import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
 import 'package:audiobookshelf_flutter/widgets/library_selector.dart';
-import 'package:flutter/foundation.dart';
+import 'package:audiobookshelf_flutter/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -102,22 +103,46 @@ class BookshelfScreenState extends ConsumerState<BookshelfScreen> {
 
                     return ListTile(
                       onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => BookDetails(
-                                    item: libraryItem,
-                                  )),
+                        NavigationService.pushWithHero(
+                          context,
+                          BookDetails(item: libraryItem),
+                          'book-cover-${libraryItem.id}',
                         );
                       },
                       leading: Hero(
-                          tag: 'bookImage${libraryItem.itemId}',
+                          tag: 'book-cover-${libraryItem.id}',
                           child: SizedBox(
                             width: 50,
                             height: 50,
-                            child: Image.memory(
-                                Uint8List.fromList(
-                                    libraryItem.media.coverBytes ?? []),
-                                fit: BoxFit.scaleDown),
+                            child: () {
+                              try {
+                                return Image.memory(
+                                  Uint8List.fromList(
+                                      libraryItem.media.coverBytes ?? []),
+                                  fit: BoxFit.scaleDown,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: 50,
+                                      height: 50,
+                                      color: Colors.grey[300],
+                                      child:
+                                          Icon(Icons.library_music, size: 24),
+                                    );
+                                  },
+                                );
+                              } catch (e) {
+                                if (kDebugMode) {
+                                  print(
+                                      '[BOOKSHELF_SCREEN] Error creating Image.memory: $e');
+                                }
+                                return Container(
+                                  width: 50,
+                                  height: 50,
+                                  color: Colors.grey[300],
+                                  child: Icon(Icons.library_music, size: 24),
+                                );
+                              }
+                            }(),
                           )),
                       title: Hero(
                           tag: 'bookTitle${libraryItem.itemId}',

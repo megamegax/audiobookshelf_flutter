@@ -1,11 +1,15 @@
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
+import 'package:audiobookshelf_flutter/model/libraries/library_item_new.dart';
 import 'package:audiobookshelf_flutter/pages/book_details.dart';
+import 'package:audiobookshelf_flutter/provider/cover_image_provider.dart';
 import 'package:audiobookshelf_flutter/services/navigation_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MorphingBookCard extends StatefulWidget {
+class MorphingBookCard extends ConsumerStatefulWidget {
   final LibraryItemEntity libraryItem;
   final VoidCallback? onTap;
   final String? heroTag;
@@ -18,10 +22,10 @@ class MorphingBookCard extends StatefulWidget {
   });
 
   @override
-  State<MorphingBookCard> createState() => _MorphingBookCardState();
+  ConsumerState<MorphingBookCard> createState() => _MorphingBookCardState();
 }
 
-class _MorphingBookCardState extends State<MorphingBookCard>
+class _MorphingBookCardState extends ConsumerState<MorphingBookCard>
     with TickerProviderStateMixin {
   late AnimationController _hoverController;
   late AnimationController _pressController;
@@ -96,11 +100,39 @@ class _MorphingBookCardState extends State<MorphingBookCard>
     // Don't start shimmer animation automatically - only when needed
 
     // Cache the image provider to prevent recreation during hover
-    if (widget.libraryItem.media?.coverBytes?.isNotEmpty == true) {
-      _cachedImageProvider = MemoryImage(
-        Uint8List.fromList(widget.libraryItem.media!.coverBytes!),
-      );
+    if (widget.libraryItem.media.coverBytes?.isNotEmpty == true) {
+      if (kDebugMode) {
+        print(
+            '[MORPHING_BOOK_CARD] Attempting to create MemoryImage for book: ${widget.libraryItem.media.metadata?.title} (ID: ${widget.libraryItem.id})');
+        print(
+            '[MORPHING_BOOK_CARD] CoverBytes length: ${widget.libraryItem.media.coverBytes!.length}');
+      }
+      try {
+        _cachedImageProvider = MemoryImage(
+          Uint8List.fromList(widget.libraryItem.media.coverBytes!),
+        );
+        if (kDebugMode) {
+          print(
+              '[MORPHING_BOOK_CARD] Successfully created MemoryImage for book: ${widget.libraryItem.media.metadata?.title}');
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print(
+              '[MORPHING_BOOK_CARD] Error creating MemoryImage for book ${widget.libraryItem.id}: $e');
+          print('[MORPHING_BOOK_CARD] Error type: ${e.runtimeType}');
+          print(
+              '[MORPHING_BOOK_CARD] CoverBytes first 20 bytes: ${widget.libraryItem.media.coverBytes!.take(20).toList()}');
+        }
+        _cachedImageProvider = null;
+      }
     }
+
+    // Check if cover is missing and trigger download after the widget tree is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _checkAndDownloadCover();
+      }
+    });
   }
 
   @override
@@ -109,6 +141,30 @@ class _MorphingBookCardState extends State<MorphingBookCard>
     _pressController.dispose();
     _shimmerController.dispose();
     super.dispose();
+  }
+
+  void _checkAndDownloadCover() {
+    // Check if cover is missing and trigger download
+    if (widget.libraryItem.media.coverBytes?.isEmpty != false) {
+      _downloadCover();
+    }
+  }
+
+  Future<void> _downloadCover() async {
+    try {
+      // Convert LibraryItemEntity to LibraryItemNew for the cover download
+      final libraryItemNew = widget.libraryItem.toLibraryItemNew();
+
+      // Trigger cover download
+      await ref
+          .read(coverImageProvider.notifier)
+          .downloadCoverForItem(libraryItemNew);
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+            '[MORPHING_BOOK_CARD] Error downloading cover for book ${widget.libraryItem.id}: $e');
+      }
+    }
   }
 
   void _handleHover(bool isHovered) {
@@ -133,6 +189,26 @@ class _MorphingBookCardState extends State<MorphingBookCard>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    // Listen to cover image state changes and update cached image if needed
+    ref.listen(coverImageProvider, (previous, next) {
+      if (next.isCompleted &&
+          next.itemId == widget.libraryItem.itemId &&
+          next.coverBytes != null) {
+        // Cover download completed, update cached image
+        setState(() {
+          try {
+            _cachedImageProvider = MemoryImage(next.coverBytes!);
+          } catch (e) {
+            if (kDebugMode) {
+              print(
+                  '[MORPHING_BOOK_CARD] Error creating MemoryImage from downloaded cover: $e');
+            }
+            _cachedImageProvider = null;
+          }
+        });
+      }
+    });
 
     return AnimatedBuilder(
       animation: Listenable.merge(
@@ -162,6 +238,7 @@ class _MorphingBookCardState extends State<MorphingBookCard>
                     context,
                     BookDetails(
                       item: widget.libraryItem,
+                      heroTag: uniqueHeroTag,
                     ),
                     uniqueHeroTag,
                   );
@@ -321,7 +398,7 @@ class _MorphingBookCardState extends State<MorphingBookCard>
                                                 ],
                                               ),
                                               child: LinearProgressIndicator(
-                                                value: widget.libraryItem.media!
+                                                value: widget.libraryItem.media
                                                     .progress?.progress,
                                                 backgroundColor:
                                                     Colors.transparent,
@@ -405,7 +482,7 @@ class _MorphingBookCardState extends State<MorphingBookCard>
                                           height: 1.1,
                                         ),
                                         child: Text(
-                                          widget.libraryItem.media?.metadata
+                                          widget.libraryItem.media.metadata
                                                   ?.title ??
                                               'Unknown Title',
                                           maxLines: 2,
@@ -427,7 +504,7 @@ class _MorphingBookCardState extends State<MorphingBookCard>
                                           height: 1.5,
                                         ),
                                         child: Text(
-                                          widget.libraryItem.media?.metadata
+                                          widget.libraryItem.media.metadata
                                                   ?.authorName ??
                                               'Unknown Author',
                                           maxLines: 1,

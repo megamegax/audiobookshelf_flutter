@@ -62,7 +62,10 @@ class DesktopLayout extends StatelessWidget {
               children: [
                 // AppBar for the detail area
                 if (appBar != null)
-                  appBar!
+                  SizedBox(
+                    height: kToolbarHeight + (appBar!.preferredSize.height - kToolbarHeight),
+                    child: appBar!,
+                  )
                 else
                   AppBar(
                     title: Text(title),

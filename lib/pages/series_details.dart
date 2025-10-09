@@ -10,25 +10,25 @@ class SeriesDetails extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-        appBar: AppBar(
-          title: Hero(
-              tag: 'seriesTitle${series.seriesId}',
-              child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(series.name,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(color: Colors.white)))),
-        ),
-        body: SingleChildScrollView(
-            child: Column(
+      appBar: AppBar(
+        title: Hero(
+            tag: 'seriesTitle${series.seriesId}',
+            child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(series.name,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: Colors.white)))),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
           children: [
             // Series cover image with Hero animation
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: Hero(
-                tag: 'seriesImage${series.seriesId}',
+                tag: 'series-cover-${series.seriesId}',
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
@@ -70,7 +70,9 @@ class SeriesDetails extends ConsumerWidget {
               ),
             ),
           ],
-        )));
+        ),
+      ),
+    );
   }
 
   String durationToReadable(double durationInt) {

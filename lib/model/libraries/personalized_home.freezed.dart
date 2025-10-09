@@ -14,18 +14,11 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-PersonalizedHome _$PersonalizedHomeFromJson(Map<String, dynamic> json) {
-  return _PersonalizedHome.fromJson(json);
-}
-
 /// @nodoc
 mixin _$PersonalizedHome {
   SectionType get id => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
   List<PersonalizedEntity> get entities => throw _privateConstructorUsedError;
-
-  /// Serializes this PersonalizedHome to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of PersonalizedHome
   /// with the given fields replaced by the non-null parameter values.
@@ -125,16 +118,13 @@ class __$$PersonalizedHomeImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$PersonalizedHomeImpl implements _PersonalizedHome {
   const _$PersonalizedHomeImpl(
       {required this.id,
       required this.type,
       required final List<PersonalizedEntity> entities})
       : _entities = entities;
-
-  factory _$PersonalizedHomeImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PersonalizedHomeImplFromJson(json);
 
   @override
   final SectionType id;
@@ -163,7 +153,6 @@ class _$PersonalizedHomeImpl implements _PersonalizedHome {
             const DeepCollectionEquality().equals(other._entities, _entities));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, id, type, const DeepCollectionEquality().hash(_entities));
@@ -176,13 +165,6 @@ class _$PersonalizedHomeImpl implements _PersonalizedHome {
   _$$PersonalizedHomeImplCopyWith<_$PersonalizedHomeImpl> get copyWith =>
       __$$PersonalizedHomeImplCopyWithImpl<_$PersonalizedHomeImpl>(
           this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PersonalizedHomeImplToJson(
-      this,
-    );
-  }
 }
 
 abstract class _PersonalizedHome implements PersonalizedHome {
@@ -191,9 +173,6 @@ abstract class _PersonalizedHome implements PersonalizedHome {
           required final String type,
           required final List<PersonalizedEntity> entities}) =
       _$PersonalizedHomeImpl;
-
-  factory _PersonalizedHome.fromJson(Map<String, dynamic> json) =
-      _$PersonalizedHomeImpl.fromJson;
 
   @override
   SectionType get id;
@@ -388,16 +367,9 @@ abstract class _PersonalizedHomeEntity implements PersonalizedHomeEntity {
       get copyWith => throw _privateConstructorUsedError;
 }
 
-PersonalizedEntity _$PersonalizedEntityFromJson(Map<String, dynamic> json) {
-  return _PersonalizedEntity.fromJson(json);
-}
-
 /// @nodoc
 mixin _$PersonalizedEntity {
   String get id => throw _privateConstructorUsedError;
-
-  /// Serializes this PersonalizedEntity to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of PersonalizedEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -477,12 +449,9 @@ class __$$PersonalizedEntityImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$PersonalizedEntityImpl implements _PersonalizedEntity {
   const _$PersonalizedEntityImpl({required this.id});
-
-  factory _$PersonalizedEntityImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PersonalizedEntityImplFromJson(json);
 
   @override
   final String id;
@@ -500,7 +469,6 @@ class _$PersonalizedEntityImpl implements _PersonalizedEntity {
             (identical(other.id, id) || other.id == id));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id);
 
@@ -512,21 +480,11 @@ class _$PersonalizedEntityImpl implements _PersonalizedEntity {
   _$$PersonalizedEntityImplCopyWith<_$PersonalizedEntityImpl> get copyWith =>
       __$$PersonalizedEntityImplCopyWithImpl<_$PersonalizedEntityImpl>(
           this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PersonalizedEntityImplToJson(
-      this,
-    );
-  }
 }
 
 abstract class _PersonalizedEntity implements PersonalizedEntity {
   const factory _PersonalizedEntity({required final String id}) =
       _$PersonalizedEntityImpl;
-
-  factory _PersonalizedEntity.fromJson(Map<String, dynamic> json) =
-      _$PersonalizedEntityImpl.fromJson;
 
   @override
   String get id;

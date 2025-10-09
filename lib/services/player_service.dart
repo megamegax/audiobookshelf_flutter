@@ -16,6 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:http/http.dart' as http;
 
 final playerServiceProvider = Provider<PlayerService>((ref) {
   final audioPlayer = ref.read(audioPlayerProvider);
@@ -91,20 +92,115 @@ class PlayerService {
     init(playbackSession, startTime);
 
     // Build the correct streaming URL based on the track content
+    final track = currentTrack();
+    if (track == null) {
+      dev.log(
+          '[PLAYER_SERVICE] ERROR: No current track found, cannot create stream URL');
+      throw Exception('No audio track available for playback');
+    }
+
     String streamUrl;
-    if (currentTrack()?.contentUrl?.startsWith('/hls') == true) {
-      streamUrl = "$serverAddress${currentTrack()?.contentUrl}";
-      dev.log('[PLAYER_SERVICE] Using HLS URL: $streamUrl');
-    } else {
+    dev.log('[PLAYER_SERVICE] Track contentUrl: ${track.contentUrl}');
+    dev.log('[PLAYER_SERVICE] Track index: ${track.index}');
+    dev.log('[PLAYER_SERVICE] Session ID: ${_playbackSession.id}');
+    dev.log('[PLAYER_SERVICE] Play method: ${_playbackSession.playMethod}');
+
+    // Follow the same logic as the original Audiobookshelf app
+    // Check if this is direct play or transcode based on playMethod
+    final isDirectPlay =
+        _playbackSession.playMethod == 1; // PlayMethod.DIRECTPLAY = 1
+    dev.log('[PLAYER_SERVICE] Is direct play: $isDirectPlay');
+
+    if (isDirectPlay) {
+      // Direct play: use session URL with track index
       streamUrl =
-          "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack()?.index ?? 1}";
-      dev.log('[PLAYER_SERVICE] Using track URL: $streamUrl');
+          "$serverAddress/public/session/${_playbackSession.id}/track/${track.index}";
+      dev.log('[PLAYER_SERVICE] Using direct play session URL: $streamUrl');
+    } else {
+      // Transcode: use contentUrl (HLS)
+      if (track.contentUrl?.isNotEmpty == true) {
+        if (track.contentUrl!.startsWith('http')) {
+          // Full URL
+          streamUrl = track.contentUrl!;
+          dev.log(
+              '[PLAYER_SERVICE] Using full transcode contentUrl: $streamUrl');
+        } else if (track.contentUrl!.startsWith('/')) {
+          // Relative URL
+          streamUrl = "$serverAddress${track.contentUrl}";
+          dev.log(
+              '[PLAYER_SERVICE] Using relative transcode contentUrl: $streamUrl');
+        } else {
+          // Fallback to session URL
+          streamUrl =
+              "$serverAddress/public/session/${_playbackSession.id}/track/${track.index}";
+          dev.log(
+              '[PLAYER_SERVICE] Using fallback transcode session URL: $streamUrl');
+        }
+      } else {
+        // No contentUrl, use session URL
+        streamUrl =
+            "$serverAddress/public/session/${_playbackSession.id}/track/${track.index}";
+        dev.log(
+            '[PLAYER_SERVICE] Using transcode session URL (no contentUrl): $streamUrl');
+      }
+    }
+
+    // Validate URL before using it
+    String fullUrl = "$streamUrl?token=${userModel.token}";
+    dev.log('[PLAYER_SERVICE] Full streaming URL: $fullUrl');
+
+    // Test URL accessibility
+    try {
+      final uri = Uri.parse(fullUrl);
+      dev.log('[PLAYER_SERVICE] Parsed URI: $uri');
+      dev.log('[PLAYER_SERVICE] URI scheme: ${uri.scheme}');
+      dev.log('[PLAYER_SERVICE] URI host: ${uri.host}');
+      dev.log('[PLAYER_SERVICE] URI port: ${uri.port}');
+      dev.log('[PLAYER_SERVICE] URI path: ${uri.path}');
+      dev.log('[PLAYER_SERVICE] URI query: ${uri.query}');
+    } catch (e) {
+      dev.log('[PLAYER_SERVICE] ERROR: Invalid URL format: $e');
+      throw Exception('Invalid streaming URL format: $e');
+    }
+
+    // Test URL accessibility with HTTP HEAD request
+    try {
+      dev.log('[PLAYER_SERVICE] Testing URL accessibility...');
+      final httpClient = http.Client();
+      final response = await httpClient.head(Uri.parse(fullUrl));
+      dev.log(
+          '[PLAYER_SERVICE] HTTP HEAD response status: ${response.statusCode}');
+      dev.log(
+          '[PLAYER_SERVICE] HTTP HEAD response headers: ${response.headers}');
+      httpClient.close();
+
+      if (response.statusCode != 200) {
+        dev.log(
+            '[PLAYER_SERVICE] WARNING: URL not accessible (${response.statusCode}), trying alternative method...');
+        // Try alternative URL construction
+        final alternativeUrl =
+            "$serverAddress/api/items/${_libraryItem!.itemId}/play/${track.index ?? 1}?token=${userModel.token}";
+        dev.log('[PLAYER_SERVICE] Trying alternative URL: $alternativeUrl');
+
+        final altResponse = await httpClient.head(Uri.parse(alternativeUrl));
+        if (altResponse.statusCode == 200) {
+          dev.log('[PLAYER_SERVICE] Alternative URL works, using it');
+          // Update the fullUrl to use the alternative
+          fullUrl = alternativeUrl;
+        } else {
+          dev.log(
+              '[PLAYER_SERVICE] Alternative URL also failed: ${altResponse.statusCode}');
+        }
+      }
+    } catch (e) {
+      dev.log('[PLAYER_SERVICE] WARNING: URL accessibility test failed: $e');
+      // Don't throw here, let the audio player try anyway
     }
 
     dev.log(
         '[PLAYER_SERVICE] Setting audio source with URL: $streamUrl?token=***');
     await audioPlayer.setAudioSource(AudioSource.uri(
-      Uri.parse("$streamUrl?token=${userModel.token}"),
+      Uri.parse(fullUrl),
       tag: MediaItem(
           id: libraryItem.itemId.toString(),
           album: libraryItem.media.metadata?.seriesName,
@@ -130,23 +226,45 @@ class PlayerService {
     }
 
     // Calculate the correct seek position within the current track
-    final currentTrackStartOffset =
-        _playbackSession.audioTracks[currentTrackIndex()].startOffset ?? 0.0;
+    final currentTrackStartOffset = track.startOffset ?? 0.0;
     final seekTimeInTrack = max(0, startTime - currentTrackStartOffset);
     final position = Duration(seconds: seekTimeInTrack.floor());
+
+    dev.log(
+        '[PLAYER_SERVICE] Track start offset: $currentTrackStartOffset, seek time in track: $seekTimeInTrack');
 
     dev.log(
         '[PLAYER_SERVICE] Calculated seek position: ${position.inSeconds}s within track');
 
     // Wait for the audio source to be loaded before seeking
     dev.log('[PLAYER_SERVICE] Loading audio source...');
-    await audioPlayer.load();
-    dev.log('[PLAYER_SERVICE] Audio source loaded, seeking to position');
-    await audioPlayer.seek(position);
+    try {
+      await audioPlayer.load();
+      dev.log('[PLAYER_SERVICE] Audio source loaded successfully');
+    } catch (e) {
+      dev.log('[PLAYER_SERVICE] ERROR: Failed to load audio source: $e');
+      throw Exception('Failed to load audio stream: $e');
+    }
+
+    try {
+      dev.log('[PLAYER_SERVICE] Seeking to position: ${position.inSeconds}s');
+      await audioPlayer.seek(position);
+      dev.log('[PLAYER_SERVICE] Seek completed successfully');
+    } catch (e) {
+      dev.log(
+          '[PLAYER_SERVICE] WARNING: Seek failed, continuing from start: $e');
+      // Continue without seeking if it fails
+    }
 
     if (autoStart) {
       dev.log('[PLAYER_SERVICE] Auto-starting playback');
-      await audioPlayer.play();
+      try {
+        await audioPlayer.play();
+        dev.log('[PLAYER_SERVICE] Playback started successfully');
+      } catch (e) {
+        dev.log('[PLAYER_SERVICE] ERROR: Failed to start playback: $e');
+        throw Exception('Failed to start playback: $e');
+      }
     }
 
     dev.log('[PLAYER_SERVICE] preparePlayer completed, calling onPrepared');
@@ -158,12 +276,20 @@ class PlayerService {
   }
 
   int currentTrackIndex() {
-    final currentTrackIndex = max(
-        0,
-        _playbackSession.audioTracks.indexWhere((t) =>
-            (t.startOffset?.floor() ?? 0) <= _startTime &&
-            ((t.startOffset ?? 0) + (t.duration ?? 0)).floor() > _startTime));
+    if (_playbackSession.audioTracks.isEmpty) {
+      dev.log('[PLAYER_SERVICE] No audio tracks available');
+      return 0;
+    }
 
+    final trackIndex = _playbackSession.audioTracks.indexWhere((t) =>
+        (t.startOffset?.floor() ?? 0) <= _startTime &&
+        ((t.startOffset ?? 0) + (t.duration ?? 0)).floor() > _startTime);
+
+    // If no track found, use the first track
+    final currentTrackIndex = trackIndex >= 0 ? trackIndex : 0;
+
+    dev.log(
+        '[PLAYER_SERVICE] Current track index: $currentTrackIndex (startTime: $_startTime)');
     return currentTrackIndex;
   }
 
@@ -188,7 +314,13 @@ class PlayerService {
   }
 
   AudioTrack? currentTrack() {
-    return _playbackSession.audioTracks[currentTrackIndex()];
+    final index = currentTrackIndex();
+    if (index >= 0 && index < _playbackSession.audioTracks.length) {
+      return _playbackSession.audioTracks[index];
+    }
+    dev.log(
+        '[PLAYER_SERVICE] Invalid track index: $index, tracks count: ${_playbackSession.audioTracks.length}');
+    return null;
   }
 
   /// Get the duration of the current track/chapter in seconds
@@ -215,11 +347,26 @@ class PlayerService {
     if (newTrackIndex != currentTrackIndex()) {
       final currentTrack = _playbackSession.audioTracks[newTrackIndex];
       String streamUrl;
-      if (currentTrack.contentUrl?.startsWith('/hls') == true) {
-        streamUrl = "$serverAddress${currentTrack.contentUrl}";
-      } else {
+
+      // Use the same logic as preparePlayer
+      final isDirectPlay = _playbackSession.playMethod == 1;
+      if (isDirectPlay) {
         streamUrl =
-            "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack.index ?? 1}";
+            "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack.index}";
+      } else {
+        if (currentTrack.contentUrl?.isNotEmpty == true) {
+          if (currentTrack.contentUrl!.startsWith('http')) {
+            streamUrl = currentTrack.contentUrl!;
+          } else if (currentTrack.contentUrl!.startsWith('/')) {
+            streamUrl = "$serverAddress${currentTrack.contentUrl}";
+          } else {
+            streamUrl =
+                "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack.index}";
+          }
+        } else {
+          streamUrl =
+              "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack.index}";
+        }
       }
 
       await audioPlayer.setAudioSource(AudioSource.uri(
@@ -288,28 +435,49 @@ class PlayerService {
 
   Future<void> updateMediaProgress() async {
     final currentTime = overallCurrentTime();
+    final progress = currentTime / _libraryItem!.media.duration!;
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    // Check if progress is 100% and should be marked as finished
+    final shouldMarkAsFinished = progress >= 1.0;
+
     final updatePayload = {
       "currentTime": currentTime,
-      "progress": currentTime / _libraryItem!.media.duration!,
-      "lastUpdate": DateTime.now().millisecondsSinceEpoch
+      "progress": progress,
+      "lastUpdate": now,
+      if (shouldMarkAsFinished) "isFinished": true,
+      if (shouldMarkAsFinished) "finishedAt": now,
     };
+
     await libraryService.updateMediaProgress(userModel, _libraryItem!.itemId,
         updatePayload: updatePayload);
+
     final List<MediaProgress>? mediaProgress =
         userModel.mediaProgress?.map((MediaProgress element) {
       MediaProgress? updatedElement;
       if (element.libraryItemId == _libraryItem!.itemId) {
         updatedElement = element.copyWith(
             currentTime: currentTime,
-            progress: currentTime / _libraryItem!.media.duration!,
-            lastUpdate: DateTime.now().millisecondsSinceEpoch);
+            progress: progress,
+            lastUpdate: now,
+            isFinished: shouldMarkAsFinished,
+            finishedAt: shouldMarkAsFinished ? now : element.finishedAt);
       } else {
         updatedElement = element;
       }
       return updatedElement;
     }).toList();
+
     final updatedUserModel = userModel.copyWith(mediaProgress: mediaProgress);
     (await libraryItemsRepository).saveMediaProgresses(updatedUserModel);
+
+    // Log when a book is marked as finished
+    if (shouldMarkAsFinished) {
+      if (kDebugMode) {
+        print(
+            '[PLAYER_SERVICE] Book marked as finished: ${_libraryItem!.media.metadata?.title}');
+      }
+    }
   }
 
   /// Skip forward by specified seconds

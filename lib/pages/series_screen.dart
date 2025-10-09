@@ -4,48 +4,55 @@ import 'package:audiobookshelf_flutter/widgets/morphing_navigation_drawer.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/services/series_cover_service.dart';
 import 'package:audiobookshelf_flutter/services/navigation_service.dart';
+import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
+import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
+import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Mock data for now - will be replaced with actual API calls
-final mockSeries = [
-  Series(
-    id: 'series1',
-    name: 'Harry Potter',
-    description: 'The beloved fantasy series about a young wizard.',
-    numBooks: 7,
-  ),
-  Series(
-    id: 'series2',
-    name: 'The Dark Tower',
-    description: 'Stephen King\'s epic fantasy western series.',
-    numBooks: 8,
-  ),
-  Series(
-    id: 'series3',
-    name: 'A Song of Ice and Fire',
-    description: 'The epic fantasy series that inspired Game of Thrones.',
-    numBooks: 5,
-  ),
-  Series(
-    id: 'series4',
-    name: 'Discworld',
-    description: 'Terry Pratchett\'s humorous fantasy series.',
-    numBooks: 41,
-  ),
-  Series(
-    id: 'series5',
-    name: 'The Wheel of Time',
-    description: 'Robert Jordan\'s epic high fantasy series.',
-    numBooks: 14,
-  ),
-  Series(
-    id: 'series6',
-    name: 'Foundation',
-    description: 'Isaac Asimov\'s science fiction series about psychohistory.',
-    numBooks: 7,
-  ),
-];
+// Provider for real series data
+final seriesProvider = FutureProvider<List<Series>>((ref) async {
+  final libraryItemsRepository =
+      await ref.read(libraryItemsRepositoryProvider.future);
+  // For now, let's get series from all libraries by getting all books and extracting unique series
+  // This is a simplified approach - in a real app you might want to store series separately
+  final libraryRepository = await ref.read(libraryRepositoryProvider.future);
+  final libraries = await libraryRepository.getLibrary();
+  final allBooks = <LibraryItemEntity>[];
+
+  // Get books from all libraries
+  for (final library in libraries) {
+    if (library.libraryId != null) {
+      final books =
+          await libraryItemsRepository.getBooksByLibraryId(library.libraryId!);
+      allBooks.addAll(books);
+    }
+  }
+  final seriesMap = <String, Series>{};
+
+  for (final book in allBooks) {
+    final seriesName = book.media.metadata?.seriesName;
+    if (seriesName != null && seriesName.isNotEmpty) {
+      if (!seriesMap.containsKey(seriesName)) {
+        seriesMap[seriesName] = Series(
+          id: seriesName.toLowerCase().replaceAll(' ', '_'),
+          name: seriesName,
+          description: null,
+          numBooks: 1,
+        );
+      } else {
+        seriesMap[seriesName] = Series(
+          id: seriesMap[seriesName]!.id,
+          name: seriesName,
+          description: seriesMap[seriesName]!.description,
+          numBooks: seriesMap[seriesName]!.numBooks + 1,
+        );
+      }
+    }
+  }
+
+  return seriesMap.values.toList();
+});
 
 class SeriesScreen extends ConsumerWidget {
   const SeriesScreen({super.key});
@@ -55,35 +62,85 @@ class SeriesScreen extends ConsumerWidget {
     final serverSettings = ref.read(serverSettingsNotifierProvider);
 
     return ResponsiveLayout(
-      body: _buildBody(context),
+      body: _buildBody(context, ref),
       title: 'Series',
       selectedDrawerItem: SelectedItem.series,
       serverSettings: serverSettings,
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.all(16),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.8,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+  Widget _buildBody(BuildContext context, WidgetRef ref) {
+    final seriesAsync = ref.watch(seriesProvider);
+
+    return seriesAsync.when(
+      data: (series) {
+        if (series.isEmpty) {
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.library_books_outlined,
+                    size: 64, color: Colors.grey),
+                SizedBox(height: 16),
+                Text(
+                  'No series found',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Series will appear here once books are loaded',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
             ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final series = mockSeries[index];
-                return _buildSeriesCard(context, series);
-              },
-              childCount: mockSeries.length,
+          );
+        }
+
+        return CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.8,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final seriesItem = series[index];
+                    return _buildSeriesCard(context, seriesItem);
+                  },
+                  childCount: series.length,
+                ),
+              ),
             ),
-          ),
+          ],
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(
+              'Error loading series',
+              style: TextStyle(fontSize: 18, color: Colors.red[700]),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error.toString(),
+              style: const TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -139,14 +196,11 @@ class SeriesScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Series cover using same style as Home screen with Hero animation
-              Hero(
-                tag: 'series-cover-${series.id}',
-                child: SeriesCoverService.buildSeriesCover(
-                  context,
-                  series.id,
-                  series.name,
-                  series.numBooks,
-                ),
+              SeriesCoverService.buildSeriesCover(
+                context,
+                series.id,
+                series.name,
+                series.numBooks,
               ),
               // Series info
               Expanded(

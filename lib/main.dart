@@ -3,9 +3,17 @@ import 'package:audiobookshelf_flutter/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize just_audio_background
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.audiobookshelf.flutter.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
 
   // Set system UI overlay style for immersive experience
   SystemChrome.setSystemUIOverlayStyle(
@@ -16,6 +24,17 @@ void main() async {
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
+
+  // Add global error handler for debugging
+  FlutterError.onError = (FlutterErrorDetails details) {
+    if (details.exception is FormatException) {
+      print(
+          '[GLOBAL_ERROR_HANDLER] FormatException caught: ${details.exception}');
+      print('[GLOBAL_ERROR_HANDLER] Stack trace: ${details.stack}');
+      print('[GLOBAL_ERROR_HANDLER] Context: ${details.context}');
+    }
+    FlutterError.presentError(details);
+  };
 
   runApp(const ProviderScope(child: MyApp()));
 }

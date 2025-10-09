@@ -9,7 +9,7 @@ import 'package:audiobookshelf_flutter/provider/credential_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:audiobookshelf_flutter/provider/background_library_loading_provider.dart';
-import 'package:audiobookshelf_flutter/services/background_library_loading_service.dart';
+import 'package:audiobookshelf_flutter/services/optimized_background_loading_service.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
 import 'package:audiobookshelf_flutter/repositories/library_repository.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
@@ -142,7 +142,7 @@ class InitializationService {
                   // Start background loading for all libraries
                   // This will load the selected library first, then others in background
                   final backgroundLoadingService =
-                      this.ref.read(backgroundLibraryLoadingServiceProvider);
+                      ref.read(optimizedBackgroundLoadingServiceProvider);
                   await backgroundLoadingService.loadAllLibrariesInBackground(
                     loginResponse.user,
                     libraries,

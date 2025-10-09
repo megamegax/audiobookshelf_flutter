@@ -15,6 +15,7 @@ class MediaProgressEntity {
   int? lastUpdate;
   int? startedAt;
   int? finishedAt;
+  int? lastAccessedAt;
 
   MediaProgressEntity(
       {this.itemId,
@@ -27,5 +28,6 @@ class MediaProgressEntity {
       this.ebookProgress,
       this.lastUpdate,
       this.startedAt,
-      this.finishedAt});
+      this.finishedAt,
+      this.lastAccessedAt});
 }

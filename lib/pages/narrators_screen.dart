@@ -1,43 +1,18 @@
-import 'package:audiobookshelf_flutter/model/narrator.dart';
+import 'package:audiobookshelf_flutter/database/narrator_entity.dart';
 import 'package:audiobookshelf_flutter/layouts/responsive_layout.dart';
 import 'package:audiobookshelf_flutter/widgets/morphing_navigation_drawer.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
+import 'package:audiobookshelf_flutter/repositories/narrators_repository.dart';
+import 'package:audiobookshelf_flutter/widgets/narrator_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Mock data for now - will be replaced with actual API calls
-final mockNarrators = [
-  Narrator(
-    id: 'narrator1',
-    name: 'Jim Dale',
-    numBooks: 7,
-  ),
-  Narrator(
-    id: 'narrator2',
-    name: 'Roy Dotrice',
-    numBooks: 5,
-  ),
-  Narrator(
-    id: 'narrator3',
-    name: 'Scott Brick',
-    numBooks: 12,
-  ),
-  Narrator(
-    id: 'narrator4',
-    name: 'Kate Reading',
-    numBooks: 8,
-  ),
-  Narrator(
-    id: 'narrator5',
-    name: 'Michael Kramer',
-    numBooks: 10,
-  ),
-  Narrator(
-    id: 'narrator6',
-    name: 'Marc Thompson',
-    numBooks: 15,
-  ),
-];
+// Provider for real narrators data
+final narratorsProvider = FutureProvider<List<NarratorEntity>>((ref) async {
+  final narratorsRepository =
+      await ref.read(narratorsRepositoryProvider.future);
+  return await narratorsRepository.getAllNarrators();
+});
 
 class NarratorsScreen extends ConsumerWidget {
   const NarratorsScreen({super.key});
@@ -47,111 +22,92 @@ class NarratorsScreen extends ConsumerWidget {
     final serverSettings = ref.read(serverSettingsNotifierProvider);
 
     return ResponsiveLayout(
-      body: _buildBody(context),
+      body: _buildBody(context, ref),
       title: 'Narrators',
       selectedDrawerItem: SelectedItem.narrators,
       serverSettings: serverSettings,
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.all(16),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.8,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final narrator = mockNarrators[index];
-                return _buildNarratorCard(context, narrator);
-              },
-              childCount: mockNarrators.length,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildBody(BuildContext context, WidgetRef ref) {
+    final narratorsAsync = ref.watch(narratorsProvider);
 
-  Widget _buildNarratorCard(BuildContext context, Narrator narrator) {
-    return Hero(
-      tag: 'narrator-${narrator.id}',
-      child: Card(
-        elevation: 4,
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () {
-            // TODO: Navigate to narrator detail screen
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Navigate to ${narrator.name}\'s books'),
-                duration: const Duration(seconds: 1),
-              ),
-            );
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Narrator avatar/placeholder
-              Container(
-                height: 120,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Theme.of(context).colorScheme.primaryContainer,
-                      Theme.of(context).colorScheme.secondaryContainer,
-                    ],
-                  ),
+    return narratorsAsync.when(
+      data: (narrators) {
+        if (narrators.isEmpty) {
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.mic_outlined, size: 64, color: Colors.grey),
+                SizedBox(height: 16),
+                Text(
+                  'No narrators found',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
                 ),
-                child: Icon(
-                  Icons.record_voice_over,
-                  size: 48,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onPrimaryContainer
-                      .withOpacity(0.7),
+                SizedBox(height: 8),
+                Text(
+                  'Narrators will appear here once books are loaded',
+                  style: TextStyle(color: Colors.grey),
                 ),
-              ),
-              // Narrator info
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        narrator.name,
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${narrator.numBooks} book${narrator.numBooks != 1 ? 's' : ''}',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                      ),
-                    ],
-                  ),
+              ],
+            ),
+          );
+        }
+
+        return CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio:
+                      1.5, // Increased to make cards even shorter (max 80px height)
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final narrator = narrators[index];
+                    return NarratorCard(
+                      narrator: narrator,
+                      isCompact: true,
+                      onTap: () {
+                        // TODO: Navigate to narrator details page
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Narrator: ${narrator.name}')),
+                        );
+                      },
+                    );
+                  },
+                  childCount: narrators.length,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(
+              'Error loading narrators',
+              style: TextStyle(fontSize: 18, color: Colors.red[700]),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error.toString(),
+              style: const TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

@@ -1,40 +1,18 @@
-import 'package:audiobookshelf_flutter/model/author.dart';
+import 'package:audiobookshelf_flutter/database/author_entity.dart';
 import 'package:audiobookshelf_flutter/layouts/responsive_layout.dart';
 import 'package:audiobookshelf_flutter/widgets/morphing_navigation_drawer.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
+import 'package:audiobookshelf_flutter/repositories/authors_repository.dart';
+import 'package:audiobookshelf_flutter/widgets/author_card.dart';
+import 'package:audiobookshelf_flutter/pages/author_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Mock data for now - will be replaced with actual API calls
-final mockAuthors = [
-  Author(
-    id: '1',
-    name: 'J.K. Rowling',
-    description:
-        'British author, best known for the Harry Potter fantasy series.',
-    addedAt: DateTime.now().millisecondsSinceEpoch,
-    updatedAt: DateTime.now().millisecondsSinceEpoch,
-    numBooks: 7,
-  ),
-  Author(
-    id: '2',
-    name: 'Stephen King',
-    description:
-        'American author of horror, supernatural fiction, and suspense.',
-    addedAt: DateTime.now().millisecondsSinceEpoch,
-    updatedAt: DateTime.now().millisecondsSinceEpoch,
-    numBooks: 12,
-  ),
-  Author(
-    id: '3',
-    name: 'George R.R. Martin',
-    description:
-        'American novelist and short story writer, known for A Song of Ice and Fire.',
-    addedAt: DateTime.now().millisecondsSinceEpoch,
-    updatedAt: DateTime.now().millisecondsSinceEpoch,
-    numBooks: 5,
-  ),
-];
+// Provider for real authors data
+final authorsProvider = FutureProvider<List<AuthorEntity>>((ref) async {
+  final authorsRepository = await ref.read(authorsRepositoryProvider.future);
+  return await authorsRepository.getAllAuthors();
+});
 
 class AuthorsScreen extends ConsumerWidget {
   const AuthorsScreen({super.key});
@@ -44,126 +22,96 @@ class AuthorsScreen extends ConsumerWidget {
     final serverSettings = ref.read(serverSettingsNotifierProvider);
 
     return ResponsiveLayout(
-      body: _buildBody(context),
+      body: _buildBody(context, ref),
       title: 'Authors',
       selectedDrawerItem: SelectedItem.authors,
       serverSettings: serverSettings,
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.all(16),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.8,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final author = mockAuthors[index];
-                return _buildAuthorCard(context, author);
-              },
-              childCount: mockAuthors.length,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildBody(BuildContext context, WidgetRef ref) {
+    final authorsAsync = ref.watch(authorsProvider);
 
-  Widget _buildAuthorCard(BuildContext context, Author author) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          // TODO: Navigate to author details page
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Author: ${author.name}')),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Author avatar/icon
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colorScheme.primaryContainer,
-                ),
-                child: Hero(
-                  tag: 'author-avatar-${author.id}',
-                  child: Icon(
-                    Icons.person,
-                    size: 32,
-                    color: colorScheme.onPrimaryContainer,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Author name
-              Text(
-                author.name,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 8),
-
-              // Number of books
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  '${author.numBooks} ${author.numBooks == 1 ? 'book' : 'books'}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSecondaryContainer,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const Spacer(),
-
-              // Description (if available)
-              if (author.description.isNotEmpty)
+    return authorsAsync.when(
+      data: (authors) {
+        if (authors.isEmpty) {
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.person_outline, size: 64, color: Colors.grey),
+                SizedBox(height: 16),
                 Text(
-                  author.description,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+                  'No authors found',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
                 ),
-            ],
-          ),
+                SizedBox(height: 8),
+                Text(
+                  'Authors will appear here once books are loaded',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio:
+                      1.5, // Increased to make cards even shorter (max 80px height)
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final author = authors[index];
+                    return AuthorCard(
+                      author: author,
+                      isCompact: true,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AuthorDetailsPage(author: author),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  childCount: authors.length,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(
+              'Error loading authors',
+              style: TextStyle(fontSize: 18, color: Colors.red[700]),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error.toString(),
+              style: const TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
-// Provider for authors (will be implemented with real API later)
-final authorsProvider = FutureProvider<List<Author>>((ref) async {
-  // TODO: Replace with actual API call
-  await Future.delayed(const Duration(milliseconds: 500));
-  return mockAuthors;
-});

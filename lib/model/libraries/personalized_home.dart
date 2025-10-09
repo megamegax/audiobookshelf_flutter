@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'personalized_home.freezed.dart';
-part 'personalized_home.g.dart';
+// part 'personalized_home.g.dart'; // Temporarily commented out due to build issues
 
 enum SectionType {
   @JsonValue("continue-listening")
@@ -34,8 +34,8 @@ class PersonalizedHome with _$PersonalizedHome {
     required List<PersonalizedEntity> entities,
   }) = _PersonalizedHome;
 
-  factory PersonalizedHome.fromJson(Map<String, dynamic> json) =>
-      _$PersonalizedHomeFromJson(json);
+  // factory PersonalizedHome.fromJson(Map<String, dynamic> json) =>
+  //     _$PersonalizedHomeFromJson(json); // Temporarily commented out due to build issues
 }
 
 @freezed
@@ -53,6 +53,6 @@ class PersonalizedEntity with _$PersonalizedEntity {
     required String id,
   }) = _PersonalizedEntity;
 
-  factory PersonalizedEntity.fromJson(Map<String, dynamic> json) =>
-      _$PersonalizedEntityFromJson(json);
+  // factory PersonalizedEntity.fromJson(Map<String, dynamic> json) =>
+  //     _$PersonalizedEntityFromJson(json); // Temporarily commented out due to build issues
 }

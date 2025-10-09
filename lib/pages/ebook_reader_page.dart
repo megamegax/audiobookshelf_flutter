@@ -6,7 +6,7 @@ import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:audiobookshelf_flutter/services/ebook_progress_service.dart';
 import 'package:audiobookshelf_flutter/services/ebook_reader_service.dart';
-import 'package:audiobookshelf_flutter/widgets/pdf_reader_widget.dart';
+import 'package:audiobookshelf_flutter/widgets/embeddable_pdf_reader_widget.dart';
 import 'package:audiobookshelf_flutter/widgets/epub_reader_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -212,7 +212,7 @@ class _EbookReaderPageState extends ConsumerState<EbookReaderPage> {
         ? ebookReaderService.parsePdfLocation(_location)
         : 1;
 
-    return PdfReaderWidget(
+    return EmbeddablePdfReaderWidget(
       filePath: _localFilePath!,
       initialPage: initialPage,
       onPageChanged: (pageNumber) {
