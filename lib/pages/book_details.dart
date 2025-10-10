@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dart';
@@ -112,19 +113,64 @@ class BookDetailsState extends ConsumerState<BookDetails> {
             style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
           ),
         ),
-        backgroundColor: colorScheme.surfaceContainerHigh,
-        foregroundColor: colorScheme.onSurface,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-            bottom: _audioPlayer.audioSource != null ? 100.0 : 0,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: isWideScreen ? _buildWideLayout() : _buildMobileLayout(),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        flexibleSpace: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.7),
+                    Colors.black.withOpacity(0.3),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
+      ),
+      body: Stack(
+        children: [
+          // Blurred background cover
+          if (widget.item.media.coverBytes?.isNotEmpty == true)
+            Positioned.fill(
+              child: Image.memory(
+                Uint8List.fromList(widget.item.media.coverBytes!),
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: colorScheme.surface,
+                ),
+              ),
+            ),
+
+          // Blurred overlay
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
+                color: colorScheme.surface.withOpacity(0.8),
+              ),
+            ),
+          ),
+
+          // Main content
+          SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: _audioPlayer.audioSource != null ? 100.0 : 0,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: isWideScreen ? _buildWideLayout() : _buildMobileLayout(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
