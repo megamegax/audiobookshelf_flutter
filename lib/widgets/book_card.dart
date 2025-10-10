@@ -1,21 +1,169 @@
 import 'dart:typed_data';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
+import 'package:audiobookshelf_flutter/model/libraries/library_item_new.dart';
+import 'package:audiobookshelf_flutter/model/libraries/media.dart';
+import 'package:audiobookshelf_flutter/model/libraries/collapsed_series.dart';
+import 'package:audiobookshelf_flutter/model/libraries/meta_data.dart';
 import 'package:audiobookshelf_flutter/pages/book_details.dart';
 import 'package:audiobookshelf_flutter/provider/download_provider.dart';
+import 'package:audiobookshelf_flutter/provider/cover_image_provider.dart';
 import 'package:audiobookshelf_flutter/services/navigation_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BookCard extends ConsumerWidget {
+class BookCard extends ConsumerStatefulWidget {
   final LibraryItemEntity libraryItem;
   const BookCard({super.key, required this.libraryItem});
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final double progress = libraryItem.media.progress == null
+  ConsumerState<BookCard> createState() => _BookCardState();
+}
+
+class _BookCardState extends ConsumerState<BookCard> {
+  ImageProvider? _cachedImageProvider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Cache the image provider to prevent recreation
+    if (widget.libraryItem.media.coverBytes?.isNotEmpty == true) {
+      try {
+        _cachedImageProvider = MemoryImage(
+          Uint8List.fromList(widget.libraryItem.media.coverBytes!),
+        );
+      } catch (e) {
+        if (kDebugMode) {
+          print(
+              '[BOOK_CARD] Error creating MemoryImage for book ${widget.libraryItem.id}: $e');
+        }
+        _cachedImageProvider = null;
+      }
+    }
+
+    // Check if cover is missing and trigger download after the widget tree is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _checkAndDownloadCover();
+      }
+    });
+  }
+
+  void _checkAndDownloadCover() {
+    // Check if cover is missing and trigger download
+    if (widget.libraryItem.media.coverBytes?.isEmpty != false) {
+      _downloadCover();
+    }
+  }
+
+  Future<void> _downloadCover() async {
+    try {
+      // Convert LibraryItemEntity to LibraryItemNew for the cover download
+      final libraryItemNew = LibraryItemNew.book(
+        id: widget.libraryItem.itemId,
+        ino: widget.libraryItem.ino,
+        libraryId: widget.libraryItem.libraryId,
+        folderId: widget.libraryItem.folderId,
+        path: widget.libraryItem.path,
+        relPath: widget.libraryItem.relPath,
+        isFile: widget.libraryItem.isFile,
+        mtimeMs: widget.libraryItem.mtimeMs,
+        ctimeMs: widget.libraryItem.ctimeMs,
+        birthtimeMs: widget.libraryItem.birthtimeMs,
+        addedAt: widget.libraryItem.addedAt,
+        updatedAt: widget.libraryItem.updatedAt,
+        isMissing: widget.libraryItem.isMissing,
+        isInvalid: widget.libraryItem.isInvalid,
+        mediaType: widget.libraryItem.mediaType,
+        media: Media(
+          metadata: Metadata(
+            title: widget.libraryItem.media.metadata?.title,
+            titleIgnorePrefix:
+                widget.libraryItem.media.metadata?.titleIgnorePrefix,
+            subtitle: widget.libraryItem.media.metadata?.subtitle,
+            authorName: widget.libraryItem.media.metadata?.authorName,
+            narratorName: widget.libraryItem.media.metadata?.narratorName,
+            seriesName: widget.libraryItem.media.metadata?.seriesName,
+            genres: widget.libraryItem.media.metadata?.genres,
+            publishedYear:
+                widget.libraryItem.media.metadata?.publishedYear != null
+                    ? int.tryParse(
+                        widget.libraryItem.media.metadata!.publishedYear!)
+                    : null,
+            publishedDate: widget.libraryItem.media.metadata?.publishedDate,
+            publisher: widget.libraryItem.media.metadata?.publisher,
+            description: widget.libraryItem.media.metadata?.description,
+            isbn: widget.libraryItem.media.metadata?.isbn,
+            asin: widget.libraryItem.media.metadata?.asin,
+            language: widget.libraryItem.media.metadata?.language,
+            explicit: widget.libraryItem.media.metadata?.explicit ?? false,
+          ),
+          coverPath: widget.libraryItem.media.coverPath,
+          coverBytes: widget.libraryItem.media.coverBytes != null
+              ? Uint8List.fromList(widget.libraryItem.media.coverBytes!)
+              : null,
+          tags: widget.libraryItem.media.tags,
+          numTracks: widget.libraryItem.media.numTracks,
+          numAudioFiles: widget.libraryItem.media.numAudioFiles,
+          numChapters: widget.libraryItem.media.numChapters,
+          numMissingParts: widget.libraryItem.media.numMissingParts,
+          numInvalidAudioFiles: widget.libraryItem.media.numInvalidAudioFiles,
+          duration: widget.libraryItem.media.duration,
+          size: widget.libraryItem.media.size,
+          ebookFileFormat: widget.libraryItem.media.ebookFileFormat,
+        ),
+        numFiles: widget.libraryItem.numFiles,
+        size: widget.libraryItem.size,
+        collapsedSeries: widget.libraryItem.collapsedSeries != null
+            ? CollapsedSeries(
+                id: widget.libraryItem.collapsedSeries!.id ?? '',
+                name: widget.libraryItem.collapsedSeries!.name ?? '',
+                nameIgnorePrefix:
+                    widget.libraryItem.collapsedSeries!.nameIgnorePrefix ?? '',
+                numBooks: widget.libraryItem.collapsedSeries!.numBooks,
+              )
+            : null,
+      );
+
+      // Trigger cover download
+      await ref
+          .read(coverImageProvider.notifier)
+          .downloadCoverForItem(libraryItemNew);
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+            '[BOOK_CARD] Error downloading cover for book ${widget.libraryItem.id}: $e');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double progress = widget.libraryItem.media.progress == null
         ? 0
-        : libraryItem.media.progress!.progress!;
+        : widget.libraryItem.media.progress!.progress!;
+
+    // Listen to cover image state changes and update cached image if needed
+    ref.listen(coverImageProvider, (previous, next) {
+      if (next.isCompleted &&
+          next.itemId == widget.libraryItem.itemId &&
+          next.coverBytes != null) {
+        // Cover download completed, update cached image
+        setState(() {
+          try {
+            _cachedImageProvider = MemoryImage(next.coverBytes!);
+          } catch (e) {
+            if (kDebugMode) {
+              print(
+                  '[BOOK_CARD] Error creating MemoryImage from downloaded cover: $e');
+            }
+            _cachedImageProvider = null;
+          }
+        });
+      }
+    });
 
     return SizedBox(
       width: 180,
@@ -26,18 +174,20 @@ class BookCard extends ConsumerWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
-            NavigationService.pushWithHero(
-              context,
-              BookDetails(
-                  item: libraryItem, heroTag: 'book-cover-${libraryItem.id}'),
-              'book-cover-${libraryItem.id}',
-            );
+            // TODO: Convert LibraryItemEntity to DetailedLibraryItem
+            // NavigationService.pushWithHero(
+            //   context,
+            //   BookDetails(
+            //       item: widget.libraryItem,
+            //       heroTag: 'book-cover-${widget.libraryItem.id}'),
+            //   'book-cover-${widget.libraryItem.id}',
+            // );
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Hero(
-                tag: 'book-cover-${libraryItem.id}',
+                tag: 'book-cover-${widget.libraryItem.id}',
                 child: Stack(
                   children: [
                     ClipRRect(
@@ -48,48 +198,23 @@ class BookCard extends ConsumerWidget {
                       child: SizedBox(
                         width: 180,
                         height: 180,
-                        child: libraryItem.media.coverBytes?.isNotEmpty == true
-                            ? Builder(
-                                builder: (context) {
-                                  try {
-                                    return Image.memory(
-                                      Uint8List.fromList(
-                                          libraryItem.media.coverBytes!),
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Container(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .surfaceContainerHighest,
-                                          child: Icon(
-                                            Icons.library_music,
-                                            size: 48,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurfaceVariant,
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  } catch (e) {
-                                    if (kDebugMode) {
-                                      print(
-                                          '[BOOK_CARD] Error creating MemoryImage for book ${libraryItem.id}: $e');
-                                    }
-                                    return Container(
+                        child: _cachedImageProvider != null
+                            ? Image(
+                                image: _cachedImageProvider!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHighest,
+                                    child: Icon(
+                                      Icons.library_music,
+                                      size: 48,
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .surfaceContainerHighest,
-                                      child: Icon(
-                                        Icons.library_music,
-                                        size: 48,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant,
-                                      ),
-                                    );
-                                  }
+                                          .onSurfaceVariant,
+                                    ),
+                                  );
                                 },
                               )
                             : Container(
@@ -114,9 +239,9 @@ class BookCard extends ConsumerWidget {
                         return downloadedItemsAsync.when(
                           data: (items) {
                             final isDownloaded = items.any((item) =>
-                                item.id == libraryItem.itemId ||
+                                item.id == widget.libraryItem.itemId ||
                                 item.title ==
-                                    libraryItem.media.metadata?.title);
+                                    widget.libraryItem.media.metadata?.title);
                             if (isDownloaded) {
                               return Positioned(
                                 top: 8,
@@ -181,7 +306,7 @@ class BookCard extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        libraryItem.media.metadata?.title ?? "-",
+                        widget.libraryItem.media.metadata?.title ?? "-",
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium
@@ -195,7 +320,7 @@ class BookCard extends ConsumerWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        libraryItem.media.metadata?.authorName ?? "-",
+                        widget.libraryItem.media.metadata?.authorName ?? "-",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme

@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SeriesDetails extends ConsumerWidget {
   final Series series;
-  const SeriesDetails({super.key, required this.series});
+  final String? heroTag;
+  const SeriesDetails({super.key, required this.series, this.heroTag});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -28,7 +29,7 @@ class SeriesDetails extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: Hero(
-                tag: 'series-cover-${series.seriesId}',
+                tag: heroTag ?? 'series-cover-${series.seriesId}',
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),

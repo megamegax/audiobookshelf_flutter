@@ -41,7 +41,18 @@ class LibraryService {
 
   LibraryService(this.httpClient, this.serverAddress, this.loginService);
 
-  /// Make an authenticated HTTP request with automatic token refresh
+  /// Make an authenticated HTTP request with automatic token refresh (public)
+  Future<http.Response> makeAuthenticatedRequest(
+    String method,
+    String endpoint, {
+    Map<String, String>? headers,
+    String? body,
+    UserModel? userModel,
+  }) async {
+    return _makeAuthenticatedRequest(method, endpoint, headers: headers, body: body, userModel: userModel);
+  }
+
+  /// Make an authenticated HTTP request with automatic token refresh (private)
   Future<http.Response> _makeAuthenticatedRequest(
     String method,
     String endpoint, {

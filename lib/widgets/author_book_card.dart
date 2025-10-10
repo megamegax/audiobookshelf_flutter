@@ -193,15 +193,16 @@ class _AuthorBookCardState extends ConsumerState<AuthorBookCard>
                   onTapUp: (_) => _handlePress(false),
                   onTapCancel: () => _handlePress(false),
                   onTap: () {
-                    final uniqueHeroTag = widget.heroTag ??
-                        'author-book-cover-${widget.libraryItem.id}-${widget.hashCode}';
-                    NavigationService.pushWithHero(
-                      context,
-                      BookDetails(
-                        item: widget.libraryItem,
-                      ),
-                      uniqueHeroTag,
-                    );
+                    // TODO: Convert LibraryItemEntity to DetailedLibraryItem
+                    // final uniqueHeroTag = widget.heroTag ??
+                    //     'author-book-cover-${widget.libraryItem.id}-${widget.hashCode}';
+                    // NavigationService.pushWithHero(
+                    //   context,
+                    //   BookDetails(
+                    //     item: widget.libraryItem,
+                    //   ),
+                    //   uniqueHeroTag,
+                    // );
                   },
                   child: Stack(
                     children: [

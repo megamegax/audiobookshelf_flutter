@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -138,7 +139,7 @@ void main() {
 
       // Simulate hover
       await tester.sendEventToBinding(
-        PointerEnterEvent(position: Offset(100, 100)),
+        const PointerEnterEvent(),
       );
       await tester.pump();
 
@@ -150,9 +151,9 @@ void main() {
       // Verify rebuilds occurred
       expect(buildCount, greaterThan(initialBuildCount));
 
-      // Simulate hover exit
+      // Simulate mouse exit
       await tester.sendEventToBinding(
-        PointerExitEvent(position: Offset(0, 0)),
+        const PointerExitEvent(),
       );
       await tester.pump();
 
@@ -212,12 +213,12 @@ void main() {
       // Rapid hover events
       for (int i = 0; i < 5; i++) {
         await tester.sendEventToBinding(
-          PointerEnterEvent(position: Offset(50, 50)),
+          const PointerEnterEvent(),
         );
         await tester.pump();
 
         await tester.sendEventToBinding(
-          PointerExitEvent(position: Offset(0, 0)),
+          const PointerExitEvent(),
         );
         await tester.pump();
       }
@@ -229,5 +230,4 @@ void main() {
     });
   });
 }
-
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audiobookshelf_flutter/widgets/morphing_navigation_drawer.dart';
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
 import 'package:audiobookshelf_flutter/layouts/layout_constants.dart';
@@ -11,9 +12,11 @@ import 'package:audiobookshelf_flutter/pages/download_queue_page.dart';
 import 'package:audiobookshelf_flutter/pages/series_screen.dart';
 import 'package:audiobookshelf_flutter/pages/authors_screen.dart';
 import 'package:audiobookshelf_flutter/pages/narrators_screen.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
+import 'package:audiobookshelf_flutter/widgets/player.dart';
 
 /// Desktop master-detail layout with permanent sidebar
-class DesktopLayout extends StatelessWidget {
+class DesktopLayout extends ConsumerWidget {
   final Widget body;
   final String title;
   final PreferredSizeWidget? appBar;
@@ -32,51 +35,65 @@ class DesktopLayout extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final audioPlayer = ref.watch(audioPlayerProvider);
 
     return Scaffold(
-      body: Row(
+      body: Stack(
         children: [
-          // Permanent sidebar (master)
-          Container(
-            width: LayoutConstants.sidebarWidth,
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerLow,
-              border: Border(
-                right: BorderSide(
-                  color: colorScheme.outlineVariant.withOpacity(0.3),
-                  width: 1,
+          Row(
+            children: [
+              // Permanent sidebar (master)
+              Container(
+                width: LayoutConstants.sidebarWidth,
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerLow,
+                  border: Border(
+                    right: BorderSide(
+                      color: colorScheme.outlineVariant.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                ),
+                child: _SidebarContent(
+                  selectedItem: selectedDrawerItem,
+                  serverSettings: serverSettings,
                 ),
               ),
-            ),
-            child: _SidebarContent(
-              selectedItem: selectedDrawerItem,
-              serverSettings: serverSettings,
-            ),
+              // Main content area (detail)
+              Expanded(
+                child: Column(
+                  children: [
+                    // AppBar for the detail area
+                    if (appBar != null)
+                      SizedBox(
+                        height: kToolbarHeight +
+                            (appBar!.preferredSize.height - kToolbarHeight),
+                        child: appBar!,
+                      )
+                    else
+                      AppBar(
+                        title: Text(title),
+                        actions: appBarActions,
+                        automaticallyImplyLeading: false, // No hamburger menu
+                      ),
+                    // Body content
+                    Expanded(child: body),
+                  ],
+                ),
+              ),
+            ],
           ),
-          // Main content area (detail)
-          Expanded(
-            child: Column(
-              children: [
-                // AppBar for the detail area
-                if (appBar != null)
-                  SizedBox(
-                    height: kToolbarHeight + (appBar!.preferredSize.height - kToolbarHeight),
-                    child: appBar!,
-                  )
-                else
-                  AppBar(
-                    title: Text(title),
-                    actions: appBarActions,
-                    automaticallyImplyLeading: false, // No hamburger menu
-                  ),
-                // Body content
-                Expanded(child: body),
-              ],
+          // Global floating player - visible on all screens when playing
+          if (audioPlayer.audioSource != null)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Player(source: audioPlayer.audioSource!),
             ),
-          ),
         ],
       ),
     );

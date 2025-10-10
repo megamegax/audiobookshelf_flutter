@@ -295,6 +295,7 @@ class HomeContentWidget extends ConsumerWidget {
     } else if (entity is Series) {
       return SeriesCard(
         series: entity,
+        heroTag: 'series-cover-${entity.id}-${homeSection.id.name}-$index',
       );
     } else if (entity is AuthorEntity) {
       return AuthorCard(

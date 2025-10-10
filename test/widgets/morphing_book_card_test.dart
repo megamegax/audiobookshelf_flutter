@@ -89,7 +89,7 @@ void main() {
 
       // Simulate mouse enter
       await tester.sendEventToBinding(
-        PointerEnterEvent(position: Offset.zero),
+        const PointerEnterEvent(),
       );
       await tester.pump();
 
@@ -150,7 +150,7 @@ void main() {
       // Simulate hover
       final mouseRegion = find.byType(MouseRegion);
       await tester.sendEventToBinding(
-        PointerEnterEvent(position: Offset.zero),
+        const PointerEnterEvent(),
       );
       await tester.pump();
 
@@ -248,7 +248,7 @@ void main() {
       // Simulate hover to trigger animation
       final mouseRegion = find.byType(MouseRegion);
       await tester.sendEventToBinding(
-        PointerEnterEvent(position: Offset.zero),
+        const PointerEnterEvent(),
       );
       await tester.pump();
 

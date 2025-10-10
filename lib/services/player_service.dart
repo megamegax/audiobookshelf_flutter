@@ -2,12 +2,12 @@ import 'dart:math';
 import 'dart:developer' as dev;
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
-import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/audio_track.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/playback_session.dart';
 import 'package:audiobookshelf_flutter/model/login/media_progress.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
+import 'package:audiobookshelf_flutter/provider/book_progress_provider.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
@@ -17,8 +17,39 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-final playerServiceProvider = Provider<PlayerService>((ref) {
+// Player state for StateNotifier
+class PlayerState {
+  final double playbackSpeed;
+  final bool isPlaying;
+  final Duration? position;
+  final Duration? duration;
+
+  const PlayerState({
+    this.playbackSpeed = 1.0,
+    this.isPlaying = false,
+    this.position,
+    this.duration,
+  });
+
+  PlayerState copyWith({
+    double? playbackSpeed,
+    bool? isPlaying,
+    Duration? position,
+    Duration? duration,
+  }) {
+    return PlayerState(
+      playbackSpeed: playbackSpeed ?? this.playbackSpeed,
+      isPlaying: isPlaying ?? this.isPlaying,
+      position: position ?? this.position,
+      duration: duration ?? this.duration,
+    );
+  }
+}
+
+final playerServiceProvider =
+    StateNotifierProvider<PlayerService, PlayerState>((ref) {
   final audioPlayer = ref.read(audioPlayerProvider);
   final serverAddress = ref.read(serverAddressProvider);
   final userModel = ref.read(userModelNotifierProvider)!;
@@ -30,31 +61,54 @@ final playerServiceProvider = Provider<PlayerService>((ref) {
       serverAddress: serverAddress,
       libraryService: ref.read(libraryServiceProvider),
       userModel: userModel,
-      libraryItemsRepository: libraryItemsRepository);
+      libraryItemsRepository: libraryItemsRepository,
+      container: null); // TODO: Fix container access
 });
 
-class PlayerService {
+class PlayerService extends StateNotifier<PlayerState> {
   final AudioPlayer audioPlayer;
   late PlaybackSession _playbackSession;
   final LibraryService libraryService;
   final String serverAddress;
   late double _startTime;
   LibraryItemEntity? _libraryItem;
-  DetailedLibraryItem? _detailed;
   final UserModel userModel;
-  Future<LibraryItemsRepository> libraryItemsRepository;
+  final Future<LibraryItemsRepository> libraryItemsRepository;
+  final ProviderContainer? container;
+
   PlayerService(
       {required this.audioPlayer,
       required this.serverAddress,
       required this.libraryService,
       required this.userModel,
-      required this.libraryItemsRepository});
+      required this.libraryItemsRepository,
+      this.container})
+      : super(const PlayerState());
   void init(PlaybackSession playbackSession, double startTime) {
     _playbackSession = playbackSession;
     _startTime = startTime;
   }
 
-  preparePlayer(LibraryItemEntity libraryItem, detailed,
+  /// Update the progress provider with current playback state
+  void _updateProgressProvider() {
+    if (container != null && _libraryItem != null) {
+      final progressNotifier = container!.read(bookProgressProvider.notifier);
+      final currentPosition = audioPlayer.position.inSeconds.toDouble();
+      final duration = audioPlayer.duration?.inSeconds.toDouble() ?? 0.0;
+      final progress = duration > 0 ? currentPosition / duration : 0.0;
+      final isPlaying = audioPlayer.playing;
+
+      progressNotifier.updateProgress(
+        itemId: _libraryItem!.itemId,
+        progress: progress,
+        currentTime: currentPosition,
+        duration: duration,
+        isPlaying: isPlaying,
+      );
+    }
+  }
+
+  Future<void> preparePlayer(LibraryItemEntity libraryItem,
       {bool autoStart = false, Function? onPrepared}) async {
     dev.log(
         '[PLAYER_SERVICE] preparePlayer called for: ${libraryItem.media.metadata?.title}');
@@ -63,7 +117,6 @@ class PlayerService {
         '[PLAYER_SERVICE] current audioPlayer.playing: ${audioPlayer.playing}');
 
     _libraryItem = libraryItem;
-    _detailed = detailed;
 
     // Check if we're already playing this item
     if (audioPlayer.playing && _libraryItem?.itemId == libraryItem.itemId) {
@@ -92,16 +145,17 @@ class PlayerService {
     init(playbackSession, startTime);
 
     // Build the correct streaming URL based on the track content
-    final track = currentTrack();
-    if (track == null) {
+    final currentTrackData = currentTrack();
+    if (currentTrackData == null) {
       dev.log(
           '[PLAYER_SERVICE] ERROR: No current track found, cannot create stream URL');
       throw Exception('No audio track available for playback');
     }
 
     String streamUrl;
-    dev.log('[PLAYER_SERVICE] Track contentUrl: ${track.contentUrl}');
-    dev.log('[PLAYER_SERVICE] Track index: ${track.index}');
+    dev.log(
+        '[PLAYER_SERVICE] Track contentUrl: ${currentTrackData.contentUrl}');
+    dev.log('[PLAYER_SERVICE] Track index: ${currentTrackData.index}');
     dev.log('[PLAYER_SERVICE] Session ID: ${_playbackSession.id}');
     dev.log('[PLAYER_SERVICE] Play method: ${_playbackSession.playMethod}');
 
@@ -114,32 +168,32 @@ class PlayerService {
     if (isDirectPlay) {
       // Direct play: use session URL with track index
       streamUrl =
-          "$serverAddress/public/session/${_playbackSession.id}/track/${track.index}";
+          "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrackData.index}";
       dev.log('[PLAYER_SERVICE] Using direct play session URL: $streamUrl');
     } else {
       // Transcode: use contentUrl (HLS)
-      if (track.contentUrl?.isNotEmpty == true) {
-        if (track.contentUrl!.startsWith('http')) {
+      if (currentTrackData.contentUrl?.isNotEmpty == true) {
+        if (currentTrackData.contentUrl!.startsWith('http')) {
           // Full URL
-          streamUrl = track.contentUrl!;
+          streamUrl = currentTrackData.contentUrl!;
           dev.log(
               '[PLAYER_SERVICE] Using full transcode contentUrl: $streamUrl');
-        } else if (track.contentUrl!.startsWith('/')) {
+        } else if (currentTrackData.contentUrl!.startsWith('/')) {
           // Relative URL
-          streamUrl = "$serverAddress${track.contentUrl}";
+          streamUrl = "$serverAddress${currentTrackData.contentUrl}";
           dev.log(
               '[PLAYER_SERVICE] Using relative transcode contentUrl: $streamUrl');
         } else {
           // Fallback to session URL
           streamUrl =
-              "$serverAddress/public/session/${_playbackSession.id}/track/${track.index}";
+              "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrackData.index}";
           dev.log(
               '[PLAYER_SERVICE] Using fallback transcode session URL: $streamUrl');
         }
       } else {
         // No contentUrl, use session URL
         streamUrl =
-            "$serverAddress/public/session/${_playbackSession.id}/track/${track.index}";
+            "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrackData.index}";
         dev.log(
             '[PLAYER_SERVICE] Using transcode session URL (no contentUrl): $streamUrl');
       }
@@ -179,7 +233,7 @@ class PlayerService {
             '[PLAYER_SERVICE] WARNING: URL not accessible (${response.statusCode}), trying alternative method...');
         // Try alternative URL construction
         final alternativeUrl =
-            "$serverAddress/api/items/${_libraryItem!.itemId}/play/${track.index ?? 1}?token=${userModel.token}";
+            "$serverAddress/api/items/${_libraryItem!.itemId}/play/${currentTrackData.index ?? 1}?token=${userModel.token}";
         dev.log('[PLAYER_SERVICE] Trying alternative URL: $alternativeUrl');
 
         final altResponse = await httpClient.head(Uri.parse(alternativeUrl));
@@ -219,14 +273,9 @@ class PlayerService {
 
     // Configure audio player settings
     audioPlayer.setCanUseNetworkResourcesForLiveStreamingWhilePaused(true);
-    final bitRate = _detailed?.media.audioFiles?[0].bitRate?.toDouble();
-    if (bitRate != null) {
-      dev.log('[PLAYER_SERVICE] Setting preferred bit rate: $bitRate');
-      audioPlayer.setPreferredPeakBitRate(bitRate);
-    }
 
     // Calculate the correct seek position within the current track
-    final currentTrackStartOffset = track.startOffset ?? 0.0;
+    final currentTrackStartOffset = currentTrackData.startOffset ?? 0.0;
     final seekTimeInTrack = max(0, startTime - currentTrackStartOffset);
     final position = Duration(seconds: seekTimeInTrack.floor());
 
@@ -255,6 +304,9 @@ class PlayerService {
           '[PLAYER_SERVICE] WARNING: Seek failed, continuing from start: $e');
       // Continue without seeking if it fails
     }
+
+    // Initialize playback speed from preferences
+    await _initializePlaybackSpeed();
 
     if (autoStart) {
       dev.log('[PLAYER_SERVICE] Auto-starting playback');
@@ -478,6 +530,9 @@ class PlayerService {
             '[PLAYER_SERVICE] Book marked as finished: ${_libraryItem!.media.metadata?.title}');
       }
     }
+
+    // Update the progress provider for UI updates
+    _updateProgressProvider();
   }
 
   /// Skip forward by specified seconds
@@ -522,14 +577,14 @@ class PlayerService {
     final currentIndex = currentTrackIndex();
     final nextIndex = currentIndex + 1;
 
-    dev.log('[PLAYER_SERVICE] Next chapter: ${currentIndex} -> ${nextIndex}');
+    dev.log('[PLAYER_SERVICE] Next chapter: $currentIndex -> $nextIndex');
 
     if (nextIndex < _playbackSession.audioTracks.length) {
       final nextTrack = _playbackSession.audioTracks[nextIndex];
       final startTime = nextTrack.startOffset ?? 0.0;
 
       dev.log(
-          '[PLAYER_SERVICE] Switching to track ${nextIndex} at offset ${startTime}s');
+          '[PLAYER_SERVICE] Switching to track $nextIndex at offset ${startTime}s');
       await seekTo(startTime);
     } else {
       dev.log('[PLAYER_SERVICE] Already at last chapter');
@@ -542,7 +597,7 @@ class PlayerService {
     final currentPosition = audioPlayer.position.inSeconds;
 
     dev.log(
-        '[PLAYER_SERVICE] Previous chapter: current track ${currentIndex}, position ${currentPosition}s');
+        '[PLAYER_SERVICE] Previous chapter: current track $currentIndex, position ${currentPosition}s');
 
     // If we're more than 3 seconds into the track, restart current track
     if (currentPosition > 3) {
@@ -555,7 +610,7 @@ class PlayerService {
       final startTime = previousTrack.startOffset ?? 0.0;
 
       dev.log(
-          '[PLAYER_SERVICE] Switching to previous track ${previousIndex} at offset ${startTime}s');
+          '[PLAYER_SERVICE] Switching to previous track $previousIndex at offset ${startTime}s');
       await seekTo(startTime);
     } else {
       dev.log('[PLAYER_SERVICE] Already at first chapter, restarting');
@@ -571,5 +626,144 @@ class PlayerService {
   /// Check if previous chapter is available
   bool hasPreviousChapter() {
     return currentTrackIndex() > 0 || audioPlayer.position.inSeconds > 3;
+  }
+
+  /// Get current playback speed
+  double get playbackSpeed => state.playbackSpeed;
+
+  /// Set playback speed
+  Future<void> setPlaybackSpeed(double speed) async {
+    if (kDebugMode) {
+      dev.log('[PLAYER_SERVICE] Setting playback speed to ${speed}x');
+    }
+
+    // Update state to notify listeners
+    state = state.copyWith(playbackSpeed: speed);
+
+    await audioPlayer.setSpeed(speed);
+
+    // Save to user preferences
+    await _savePlaybackSpeed(speed);
+
+    // Update MediaItem with playback speed info
+    await updateMediaItemInfo(playbackSpeed: speed);
+  }
+
+  /// Set volume (for fade out effect)
+  Future<void> setVolume(double volume) async {
+    if (kDebugMode) {
+      dev.log(
+          '[PLAYER_SERVICE] Setting volume to ${(volume * 100).toStringAsFixed(1)}%');
+    }
+    await audioPlayer.setVolume(volume);
+  }
+
+  /// Save playback speed to preferences
+  Future<void> _savePlaybackSpeed(double speed) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble('playback_speed', speed);
+
+      // Also save per-book speed if we have a current item
+      if (_libraryItem != null) {
+        await prefs.setDouble('playback_speed_${_libraryItem!.itemId}', speed);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        dev.log('[PLAYER_SERVICE] Error saving playback speed: $e');
+      }
+    }
+  }
+
+  /// Load playback speed from preferences
+  Future<double> _loadPlaybackSpeed() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      // Try to load per-book speed first
+      if (_libraryItem != null) {
+        final bookSpeed =
+            prefs.getDouble('playback_speed_${_libraryItem!.itemId}');
+        if (bookSpeed != null) {
+          return bookSpeed;
+        }
+      }
+
+      // Fall back to global speed
+      return prefs.getDouble('playback_speed') ?? 1.0;
+    } catch (e) {
+      if (kDebugMode) {
+        dev.log('[PLAYER_SERVICE] Error loading playback speed: $e');
+      }
+      return 1.0;
+    }
+  }
+
+  /// Initialize playback speed when preparing player
+  Future<void> _initializePlaybackSpeed() async {
+    final savedSpeed = await _loadPlaybackSpeed();
+    if (savedSpeed != state.playbackSpeed) {
+      await setPlaybackSpeed(savedSpeed);
+    }
+  }
+
+  /// Update MediaItem with current sleep timer and playback speed info
+  Future<void> updateMediaItemInfo({
+    Duration? sleepTimerRemaining,
+    double? playbackSpeed,
+  }) async {
+    if (_libraryItem == null) return;
+
+    try {
+      final extras = <String, dynamic>{
+        "coverBytes": Uint8List.fromList(_libraryItem!.media.coverBytes ?? []),
+        "item": _libraryItem!,
+      };
+
+      // Add sleep timer info if provided
+      if (sleepTimerRemaining != null) {
+        extras["sleepTimerRemaining"] = sleepTimerRemaining.inMinutes;
+      }
+
+      // Add playback speed info if provided
+      if (playbackSpeed != null) {
+        extras["playbackSpeed"] = playbackSpeed;
+      }
+
+      final mediaItem = MediaItem(
+        id: _libraryItem!.itemId.toString(),
+        album: _libraryItem!.media.metadata?.seriesName,
+        title: _libraryItem!.media.metadata?.title ?? "-",
+        displayDescription: _libraryItem!.media.metadata?.authorName ?? "-",
+        extras: extras,
+        duration: Duration(seconds: _libraryItem!.media.duration?.toInt() ?? 0),
+      );
+
+      // Get current audio source URI
+      final currentSource = audioPlayer.audioSource;
+      if (currentSource is UriAudioSource) {
+        // Only update if the MediaItem actually changed to avoid unnecessary rebuilds
+        final currentMediaItem = currentSource.tag as MediaItem?;
+        if (currentMediaItem == null ||
+            currentMediaItem.extras?["sleepTimerRemaining"] !=
+                extras["sleepTimerRemaining"] ||
+            currentMediaItem.extras?["playbackSpeed"] !=
+                extras["playbackSpeed"]) {
+          await audioPlayer.setAudioSource(AudioSource.uri(
+            currentSource.uri,
+            tag: mediaItem,
+          ));
+        }
+      }
+
+      if (kDebugMode) {
+        dev.log(
+            '[PLAYER_SERVICE] Updated MediaItem with sleep timer: ${sleepTimerRemaining?.inMinutes}min, speed: ${playbackSpeed}x');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        dev.log('[PLAYER_SERVICE] Error updating MediaItem: $e');
+      }
+    }
   }
 }

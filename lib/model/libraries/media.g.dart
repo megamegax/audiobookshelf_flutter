@@ -34,3 +34,5 @@ Map<String, dynamic> _$$MediaImplToJson(_$MediaImpl instance) =>
       'size': instance.size,
       'ebookFileFormat': instance.ebookFileFormat,
     };
+
+

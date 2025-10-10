@@ -1,7 +1,8 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:pdfrx/pdfrx.dart';
 
 class EmbeddablePdfReaderWidget extends StatefulWidget {
   final String filePath;
@@ -23,23 +24,216 @@ class EmbeddablePdfReaderWidget extends StatefulWidget {
 }
 
 class _EmbeddablePdfReaderWidgetState extends State<EmbeddablePdfReaderWidget> {
-  late PDFViewController _pdfViewController;
+  late final PdfViewerController _controller;
+  final GlobalKey _pdfViewerKey = GlobalKey();
+  Widget? _cachedPdfViewer; // Cached PdfViewer to prevent recreation
+  String? _cachedFilePath; // Track file path changes
   int _currentPage = 1;
   int _totalPages = 0;
   bool _isLoading = true;
   String? _error;
   bool _isReady = false;
+  bool _isNavigatingProgrammatically = false;
+  bool _hasInitialized = false;
 
   @override
   void initState() {
     super.initState();
+    _controller = PdfViewerController();
     _currentPage = widget.initialPage;
+    if (kDebugMode) {
+      print(
+          '[EMBEDDABLE_PDF_READER] initState: filePath=${widget.filePath}, initialPage=$_currentPage');
+      // Check if file exists
+      final file = File(widget.filePath);
+      print('[EMBEDDABLE_PDF_READER] File exists: ${file.existsSync()}');
+      if (file.existsSync()) {
+        print('[EMBEDDABLE_PDF_READER] File size: ${file.lengthSync()} bytes');
+      }
+    }
+  }
+
+  @override
+  void didUpdateWidget(EmbeddablePdfReaderWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Reset initialization if file path changes
+    if (oldWidget.filePath != widget.filePath) {
+      _hasInitialized = false;
+      _isLoading = true;
+      _isReady = false;
+      _totalPages = 0;
+      _error = null;
+      _currentPage = widget.initialPage;
+    }
+  }
+
+  @override
+  void dispose() {
+    if (kDebugMode) {
+      print('[EMBEDDABLE_PDF_READER] Disposing widget');
+    }
+    super.dispose();
+  }
+
+  Widget _getCachedPdfViewer() {
+    // Only recreate PdfViewer if the file path changes or it hasn't been created yet
+    if (_cachedPdfViewer == null || _cachedFilePath != widget.filePath) {
+      _cachedFilePath = widget.filePath;
+      _hasInitialized = false; // Reset initialization for new file
+      _cachedPdfViewer = _buildPdfViewer();
+      if (kDebugMode) {
+        print(
+            '[EMBEDDABLE_PDF_READER] Created new cached PDF viewer for: ${widget.filePath}');
+      }
+    }
+    return _cachedPdfViewer!;
+  }
+
+  Widget _buildPdfViewer() {
+    return PdfViewer.file(
+      widget.filePath,
+      key: _pdfViewerKey,
+      controller: _controller,
+      params: PdfViewerParams(
+        // Page spacing and visual settings
+        margin: 16.0,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+
+        // Scroll physics for better user experience (from documentation)
+        scrollPhysics: const BouncingScrollPhysics(),
+
+        // Enable keyboard navigation for desktop
+        enableKeyboardNavigation: true,
+
+        // Performance optimizations
+        limitRenderingCache: true,
+        maxImageBytesCachedOnMemory: 100 * 1024 * 1024, // 100MB
+
+        // Text selection configuration to prevent crashes
+        textSelectionParams: const PdfTextSelectionParams(
+          enabled: false, // Disable text selection to prevent null check errors
+        ),
+
+        // Document ready callback with error handling
+        onViewerReady: (controller, document) {
+          try {
+            // Prevent multiple initializations
+            if (_hasInitialized) {
+              if (kDebugMode) {
+                print(
+                    '[EMBEDDABLE_PDF_READER] Document already initialized, skipping');
+              }
+              return;
+            }
+
+            if (kDebugMode) {
+              print(
+                  '[EMBEDDABLE_PDF_READER] Document loaded with ${document.pages.length} pages');
+            }
+
+            _hasInitialized = true;
+
+            // Update state safely without triggering rebuilds
+            if (mounted) {
+              _totalPages = document.pages.length;
+              _isLoading = false;
+              _isReady = true;
+
+              // Navigate to initial page if specified
+              if (widget.initialPage > 1 &&
+                  widget.initialPage <= document.pages.length) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) {
+                    _goToPage(widget.initialPage);
+                  }
+                });
+              } else {
+                // Notify parent about current page
+                widget.onPageChanged?.call(_currentPage);
+                if (_totalPages > 0) {
+                  final progress = _currentPage / _totalPages;
+                  widget.onProgressChanged?.call(progress);
+                }
+              }
+
+              // Update UI state with minimal impact
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  setState(() {
+                    // Minimal state change to update UI
+                  });
+                }
+              });
+            }
+          } catch (e) {
+            if (kDebugMode) {
+              print('[EMBEDDABLE_PDF_READER] Error in onViewerReady: $e');
+            }
+            if (mounted) {
+              setState(() {
+                _error = 'Failed to load PDF: $e';
+                _isLoading = false;
+              });
+            }
+          }
+        },
+
+        // Page change callback (user scrolling)
+        onPageChanged: (pageNumber) {
+          if (pageNumber != null &&
+              pageNumber != _currentPage &&
+              !_isNavigatingProgrammatically) {
+            if (kDebugMode) {
+              print('[EMBEDDABLE_PDF_READER] Page changed to: $pageNumber');
+            }
+
+            _currentPage = pageNumber;
+            widget.onPageChanged?.call(pageNumber);
+
+            // Update progress
+            if (_totalPages > 0) {
+              final progress = pageNumber / _totalPages;
+              widget.onProgressChanged?.call(progress);
+            }
+          }
+        },
+
+        // Use custom error handling and loading indicators
+        // (removed problematic callbacks)
+      ),
+    );
   }
 
   void _goToPage(int pageNumber) {
     if (pageNumber >= 1 && pageNumber <= _totalPages && _isReady) {
-      _pdfViewController.setPage(pageNumber - 1); // Convert to 0-based indexing
-      HapticFeedback.lightImpact();
+      if (kDebugMode) {
+        print('[EMBEDDABLE_PDF_READER] Navigating to page $pageNumber');
+      }
+
+      if (pageNumber != _currentPage) {
+        _isNavigatingProgrammatically = true;
+
+        try {
+          // Navigate immediately without waiting for UI updates
+          _controller.goToPage(pageNumber: pageNumber);
+          _currentPage = pageNumber;
+
+          // Update callbacks immediately
+          widget.onPageChanged?.call(pageNumber);
+          if (_totalPages > 0) {
+            final progress = pageNumber / _totalPages;
+            widget.onProgressChanged?.call(progress);
+          }
+
+          HapticFeedback.lightImpact();
+        } catch (e) {
+          if (kDebugMode) {
+            print('[EMBEDDABLE_PDF_READER] Navigation failed: $e');
+          }
+        } finally {
+          _isNavigatingProgrammatically = false;
+        }
+      }
     }
   }
 
@@ -108,6 +302,11 @@ class _EmbeddablePdfReaderWidgetState extends State<EmbeddablePdfReaderWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (kDebugMode) {
+      print(
+          '[EMBEDDABLE_PDF_READER] build: _isLoading=$_isLoading, _isReady=$_isReady, _error=$_error, _totalPages=$_totalPages');
+    }
+
     if (_error != null) {
       return Center(
         child: Column(
@@ -145,53 +344,8 @@ class _EmbeddablePdfReaderWidgetState extends State<EmbeddablePdfReaderWidget> {
 
     return Stack(
       children: [
-        // PDF Viewer
-        PDFView(
-          filePath: widget.filePath,
-          enableSwipe: true,
-          swipeHorizontal: false,
-          autoSpacing: false,
-          pageFling: true,
-          pageSnap: true,
-          onRender: (pages) {
-            setState(() {
-              _totalPages = pages ?? 0;
-              _isLoading = false;
-            });
-          },
-          onViewCreated: (PDFViewController controller) {
-            _pdfViewController = controller;
-            if (_currentPage > 1) {
-              _goToPage(_currentPage);
-            }
-          },
-          onPageChanged: (int? page, int? total) {
-            if (page != null) {
-              setState(() {
-                _currentPage = page + 1; // Convert from 0-based to 1-based
-              });
-              widget.onPageChanged?.call(_currentPage);
-
-              // Calculate progress
-              if (total != null && total > 0) {
-                final progress = _currentPage / total;
-                widget.onProgressChanged?.call(progress);
-              }
-            }
-          },
-          onError: (error) {
-            setState(() {
-              _error = error.toString();
-              _isLoading = false;
-            });
-          },
-          onPageError: (page, error) {
-            setState(() {
-              _error = 'Error loading page $page: ${error.toString()}';
-              _isLoading = false;
-            });
-          },
-        ),
+        // Use cached PDF Viewer to prevent rebuilds
+        _getCachedPdfViewer(),
 
         // Loading indicator
         if (_isLoading)
@@ -223,10 +377,16 @@ class _EmbeddablePdfReaderWidgetState extends State<EmbeddablePdfReaderWidget> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface.withOpacity(0.9),
+                color: Theme.of(context)
+                    .colorScheme
+                    .surface
+                    .withValues(alpha: 0.9),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .outline
+                      .withValues(alpha: 0.2),
                 ),
               ),
               child: Row(

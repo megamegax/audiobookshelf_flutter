@@ -77,16 +77,17 @@ class _SearchContentWidgetState extends ConsumerState<SearchContentWidget> {
           ),
         ),
         const SizedBox(height: 16),
-        // Search results grid
+        // Search results - vertical grid with fixed height cards
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.6,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200, // Maximum width for each card
+                childAspectRatio:
+                    0.65, // Height/Width ratio to fit BookCard properly
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
               ),
               itemCount: widget.searchResults.length,
               itemBuilder: (context, index) {

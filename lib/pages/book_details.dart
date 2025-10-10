@@ -1,19 +1,23 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
-import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dart';
-import 'package:audiobookshelf_flutter/model/libraries/player/audio_file.dart';
+
 import 'package:audiobookshelf_flutter/model/libraries/player/book_chapter.dart';
-import 'package:audiobookshelf_flutter/model/libraries/player/e_book_file.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/audio_file.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/library_file.dart';
+import 'package:audiobookshelf_flutter/model/libraries/player/e_book_file.dart';
+import 'package:audiobookshelf_flutter/model/libraries/detailed_library_item.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
+
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
+import 'package:audiobookshelf_flutter/provider/player_state_provider.dart';
+import 'package:audiobookshelf_flutter/provider/book_progress_provider.dart';
+import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
-import 'package:audiobookshelf_flutter/widgets/player.dart';
 import 'package:audiobookshelf_flutter/pages/ebook_reader_page.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,27 +30,19 @@ class BookDetails extends ConsumerStatefulWidget {
   const BookDetails({super.key, required this.item, this.heroTag});
 
   @override
-  ConsumerState<BookDetails> createState() {
-    return BookDetailsState();
-  }
+  ConsumerState<BookDetails> createState() => _BookDetailsState();
 }
 
-class BookDetailsState extends ConsumerState<BookDetails> {
+class _BookDetailsState extends ConsumerState<BookDetails>
+    with SingleTickerProviderStateMixin {
   late AudioPlayer _audioPlayer;
   late UserModel userModel;
   late LibraryService libraryService;
   late PlayerService playerService;
-  double progress = 0;
   Uint8List coverBytes = Uint8List.fromList([]);
-  bool playerPrepared = false;
-  bool playerLoading = false;
-  late StreamSubscription subscription;
-  List<BookChapter> _chapters = [];
-  List<AudioFile> _audioTracks = [];
-  List<EBookFile> _eBookFiles = [];
-  List<FileMetadata> _libraryFiles = [];
-  DetailedLibraryItem? bookDetails;
-  bool _isDescriptionExpanded = false;
+  ImageProvider? _cachedImageProvider;
+  DetailedLibraryItem? _detailedItem;
+  bool _isLoadingDetails = false;
 
   @override
   void initState() {
@@ -54,161 +50,319 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     _audioPlayer = ref.read(audioPlayerProvider);
     userModel = ref.read(userModelNotifierProvider)!;
     libraryService = ref.read(libraryServiceProvider);
-    playerService = ref.read(playerServiceProvider);
+    playerService = ref.read(playerServiceProvider.notifier);
 
-    subscription = _audioPlayer.positionStream.listen((event) {
-      setState(() {
-        progress =
-            event.inMilliseconds / (_audioPlayer.duration?.inMilliseconds ?? 1);
-      });
+    if (kDebugMode) {
+      print(
+          '[BOOK_DETAILS] initState - _audioPlayer: ${_audioPlayer.hashCode}');
+      print('[BOOK_DETAILS] initState - userModel: ${userModel.username}');
+      print(
+          '[BOOK_DETAILS] initState - libraryService: ${libraryService.hashCode}');
+      print(
+          '[BOOK_DETAILS] initState - playerService: ${playerService.hashCode}');
+    }
+
+    // Use the book from widget parameter
+    final book = widget.item;
+
+    // Use cover image bytes from the book if available
+    if (book.media.coverBytes?.isNotEmpty == true) {
+      coverBytes = Uint8List.fromList(book.media.coverBytes!);
+      _cachedImageProvider = MemoryImage(coverBytes);
+    }
+
+    // Initialize the book details provider
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Fetch detailed book information from server
+      _loadDetailedBookInfo(book);
+    });
+  }
+
+  /// Load detailed book information from server
+  Future<void> _loadDetailedBookInfo(LibraryItemEntity book) async {
+    if (_isLoadingDetails) return;
+
+    setState(() {
+      _isLoadingDetails = true;
     });
 
-    _loadBookDetails();
-  }
-
-  @override
-  void dispose() {
-    subscription.cancel();
-    super.dispose();
-  }
-
-  Future<void> _loadBookDetails() async {
     try {
-      final details = await libraryService.fetchDetailedLibraryItem(
-        userModel,
-        widget.item.itemId,
-      );
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] Fetching detailed info for book: ${book.itemId}');
+      }
+
+      _detailedItem =
+          await libraryService.fetchDetailedLibraryItem(userModel, book.itemId);
+
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] Detailed info loaded successfully');
+        print(
+            '[BOOK_DETAILS] Chapters: ${_detailedItem?.media.chapters?.length ?? 0}');
+        print(
+            '[BOOK_DETAILS] Audio files: ${_detailedItem?.media.audioFiles?.length ?? 0}');
+        print(
+            '[BOOK_DETAILS] Tracks: ${_detailedItem?.media.tracks?.length ?? 0}');
+        print(
+            '[BOOK_DETAILS] Library files: ${_detailedItem?.libraryFiles?.length ?? 0}');
+        print(
+            '[BOOK_DETAILS] Ebook file: ${_detailedItem?.media.ebookFile != null ? "Yes" : "No"}');
+      }
+
       setState(() {
-        bookDetails = details;
-        _chapters = details.media.chapters ?? [];
-        _audioTracks = details.media.audioFiles ?? [];
-        _eBookFiles =
-            details.media.ebookFile != null ? [details.media.ebookFile!] : [];
-        _libraryFiles = details.libraryFiles ?? [];
+        _isLoadingDetails = false;
       });
     } catch (e) {
       if (kDebugMode) {
-        print('Error loading book details: $e');
+        print('[BOOK_DETAILS] Error loading detailed info: $e');
+      }
+      setState(() {
+        _isLoadingDetails = false;
+      });
+    }
+  }
+
+  /// Create a book details state using detailed information when available
+  BookDetailsState _createBookDetailsState(LibraryItemEntity book) {
+    // Use detailed information if available, otherwise fall back to local data
+    if (_detailedItem != null) {
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] Using detailed information from server');
+      }
+
+      // Create ebook files from detailed data
+      List<EBookFile> ebookFiles = [];
+      if (_detailedItem!.media.ebookFile != null) {
+        ebookFiles = [_detailedItem!.media.ebookFile!];
+      }
+
+      // Use actual chapters and audio tracks from detailed data
+      List<BookChapter> chapters = _detailedItem!.media.chapters ?? [];
+      List<AudioFile> audioTracks = _detailedItem!.media.audioFiles ?? [];
+
+      return BookDetailsState(
+        playerLoading: false,
+        hasActiveAudioSource: _audioPlayer.playing,
+        chapters: chapters,
+        audioTracks: audioTracks,
+        eBookFiles: ebookFiles,
+        bookDetails: _detailedItem,
+        isDescriptionExpanded: false,
+        playerPrepared: false,
+      );
+    } else {
+      // Fallback to local data with basic information
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] Using local data (detailed info not loaded yet)');
+      }
+
+      return _createLocalBookDetailsState(book);
+    }
+  }
+
+  /// Create a simple book details state for local database usage (fallback)
+  BookDetailsState _createLocalBookDetailsState(LibraryItemEntity book) {
+    // Create ebook files from local data if available
+    List<EBookFile> ebookFiles = [];
+
+    if (kDebugMode) {
+      print(
+          '[BOOK_DETAILS] Checking ebook file format for book: ${book.media.metadata?.title}');
+      print('[BOOK_DETAILS] ebookFileFormat: ${book.media.ebookFileFormat}');
+      print(
+          '[BOOK_DETAILS] ebookFileFormat is null: ${book.media.ebookFileFormat == null}');
+      print(
+          '[BOOK_DETAILS] ebookFileFormat is empty: ${book.media.ebookFileFormat?.isEmpty}');
+    }
+
+    if (book.media.ebookFileFormat != null &&
+        book.media.ebookFileFormat!.isNotEmpty) {
+      // Create a basic EBookFile from the local data
+      final ebookFile = EBookFile(
+        ino: book.ino, // Use the book's ino as the file identifier
+        metadata: null, // We don't have detailed file metadata in local data
+        ebookFormat: book.media.ebookFileFormat!,
+        addedAt: book.addedAt,
+        updatedAt: book.updatedAt,
+      );
+      ebookFiles = [ebookFile];
+      if (kDebugMode) {
+        print(
+            '[BOOK_DETAILS] Created EBookFile for format: ${book.media.ebookFileFormat}');
+      }
+    } else {
+      if (kDebugMode) {
+        print(
+            '[BOOK_DETAILS] No ebook file format found, ebookFiles will be empty');
       }
     }
+
+    // Create basic chapters and audio tracks from available data
+    List<BookChapter> chapters = [];
+    List<AudioFile> audioTracks = [];
+
+    // Create basic chapters if we have chapter count
+    if (book.media.numChapters != null && book.media.numChapters! > 0) {
+      for (int i = 0; i < book.media.numChapters!; i++) {
+        final chapterStart =
+            (book.media.duration ?? 0) * (i / book.media.numChapters!);
+        final chapterEnd =
+            (book.media.duration ?? 0) * ((i + 1) / book.media.numChapters!);
+        chapters.add(BookChapter(
+          id: i,
+          title: 'Chapter ${i + 1}',
+          start: chapterStart,
+          end: chapterEnd,
+        ));
+      }
+    }
+
+    // Create basic audio tracks if we have track count
+    if (book.media.numTracks != null && book.media.numTracks! > 0) {
+      for (int i = 0; i < book.media.numTracks!; i++) {
+        final trackDuration =
+            (book.media.duration ?? 0) / book.media.numTracks!;
+        audioTracks.add(AudioFile(
+          ino: 'track_$i',
+          metadata: FileMetadata(
+            filename: 'Track ${i + 1}',
+            ext: 'mp3', // Default extension
+            path: '${book.path}/track_${i + 1}.mp3',
+            relPath: 'track_${i + 1}.mp3',
+            mtimeMs: book.mtimeMs,
+            ctimeMs: book.ctimeMs,
+            birthtimeMs: book.birthtimeMs,
+            size: (book.size / book.media.numTracks!).round(),
+          ),
+          duration: trackDuration,
+          index: i,
+          format: 'mp3',
+        ));
+      }
+    }
+
+    return BookDetailsState(
+      playerLoading: false,
+      hasActiveAudioSource: _audioPlayer.playing,
+      chapters: chapters,
+      audioTracks: audioTracks,
+      eBookFiles: ebookFiles,
+      bookDetails: null, // Not needed for local usage
+      isDescriptionExpanded: false,
+      playerPrepared: false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWideScreen = screenWidth > 800;
+    return Consumer(
+      builder: (context, ref, child) {
+        // Use the book from widget parameter
+        final book = widget.item;
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        final screenWidth = MediaQuery.of(context).size.width;
+        final isWideScreen = screenWidth > 800;
 
-    return Scaffold(
-      backgroundColor: colorScheme.surface,
-      bottomSheet: _audioPlayer.audioSource != null
-          ? Player(source: _audioPlayer.audioSource!)
-          : null,
-      appBar: AppBar(
-        title: Hero(
-          tag: 'bookTitleDetails${widget.item.itemId}',
-          child: Text(
-            widget.item.media.metadata?.title ?? "",
-            style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        flexibleSpace: ClipRRect(
+        return Container(
+          decoration: _cachedImageProvider != null
+              ? BoxDecoration(
+                  image: DecorationImage(
+                    image: _cachedImageProvider!,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : null,
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.7),
-                    Colors.black.withOpacity(0.3),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-      body: Stack(
-        children: [
-          // Blurred background cover
-          if (widget.item.media.coverBytes?.isNotEmpty == true)
-            Positioned.fill(
-              child: Image.memory(
-                Uint8List.fromList(widget.item.media.coverBytes!),
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: colorScheme.surface,
-                ),
-              ),
-            ),
+              color: colorScheme.surface.withOpacity(0.8),
+              child: Stack(
+                children: [
+                  // Main content
+                  Consumer(
+                    builder: (context, ref, child) {
+                      // Create state using detailed information when available
+                      final bookDetailsState = _createBookDetailsState(book);
 
-          // Blurred overlay
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Container(
-                color: colorScheme.surface.withOpacity(0.8),
-              ),
-            ),
-          ),
+                      // Show loading indicator if we're fetching detailed information
+                      if (_isLoadingDetails) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const CircularProgressIndicator(),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Loading detailed information...',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        );
+                      }
 
-          // Main content
-          SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: _audioPlayer.audioSource != null ? 100.0 : 0,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: isWideScreen ? _buildWideLayout() : _buildMobileLayout(),
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: isWideScreen
+                                    ? _buildWideLayout(bookDetailsState, book)
+                                    : _buildMobileLayout(
+                                        bookDetailsState, book),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildWideLayout() {
+  Widget _buildWideLayout(
+      BookDetailsState bookDetailsState, LibraryItemEntity book) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Left side - Cover image
         Expanded(
           flex: 2,
-          child: _buildCoverSection(),
+          child: _buildCoverSection(book),
         ),
         const SizedBox(width: 24),
         // Right side - Content
         Expanded(
           flex: 3,
-          child: _buildContentSection(),
+          child: _buildContentSection(bookDetailsState, book),
         ),
       ],
     );
   }
 
-  Widget _buildMobileLayout() {
+  Widget _buildMobileLayout(
+      BookDetailsState bookDetailsState, LibraryItemEntity book) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildCoverSection(),
+        _buildCoverSection(book),
         const SizedBox(height: 24),
-        _buildContentSection(),
+        _buildContentSection(bookDetailsState, book),
       ],
     );
   }
 
-  Widget _buildCoverSection() {
+  Widget _buildCoverSection(LibraryItemEntity book) {
     return Center(
       child: Hero(
-        tag: widget.heroTag ?? 'book-cover-${widget.item.id}',
+        tag: widget.heroTag ?? 'book-cover-${book.id}',
         child: Card(
           elevation: 8,
           shape: RoundedRectangleBorder(
@@ -219,7 +373,7 @@ class BookDetailsState extends ConsumerState<BookDetails> {
             child: SizedBox(
               width: 280,
               height: 400,
-              child: _buildCoverImage(),
+              child: _buildCoverImage(book),
             ),
           ),
         ),
@@ -227,15 +381,69 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     );
   }
 
-  Widget _buildCoverImage() {
-    if (widget.item.media.coverBytes?.isNotEmpty == true) {
-      return Image.memory(
-        Uint8List.fromList(widget.item.media.coverBytes!),
+  Widget _buildCoverImage(LibraryItemEntity book) {
+    // First priority: Use coverBytes if available and not empty
+    if (coverBytes.isNotEmpty) {
+      try {
+        return Image.memory(
+          coverBytes,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildPlaceholder();
+          },
+        );
+      } catch (e) {
+        if (kDebugMode) {
+          print('[BOOK_DETAILS] Error creating Image.memory: $e');
+        }
+      }
+    }
+
+    // Second priority: Use cached image provider if available
+    if (_cachedImageProvider != null) {
+      return Image(
+        image: _cachedImageProvider!,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
+        errorBuilder: (context, error, stackTrace) {
+          return _buildPlaceholder();
+        },
       );
     }
 
+    // Third priority: Try to fetch cover from server API (fallback)
+    if (book.media.coverPath?.isNotEmpty == true) {
+      // Build the server API URL for the cover
+      final serverAddress = ref.read(serverAddressProvider);
+      final token = userModel.token;
+      final coverUrl = '$serverAddress/api/items/${book.id}/cover';
+
+      return Image.network(
+        coverUrl,
+        fit: BoxFit.cover,
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+        errorBuilder: (context, error, stackTrace) {
+          if (kDebugMode) {
+            print('[BOOK_DETAILS] Error loading cover from server: $error');
+          }
+          return _buildPlaceholder();
+        },
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+      );
+    }
+
+    // Final fallback: Show placeholder
     return _buildPlaceholder();
   }
 
@@ -253,27 +461,28 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     );
   }
 
-  Widget _buildContentSection() {
+  Widget _buildContentSection(
+      BookDetailsState bookDetailsState, LibraryItemEntity book) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTitleSection(),
+        _buildTitleSection(book),
         const SizedBox(height: 24),
-        _buildInfoTable(),
+        _buildInfoTable(book),
         const SizedBox(height: 24),
-        _buildActionButtons(),
+        _buildActionButtons(bookDetailsState),
         const SizedBox(height: 24),
-        _buildDescriptionSection(),
+        _buildDescriptionSection(bookDetailsState, book),
         const SizedBox(height: 32),
-        _buildSections(),
+        _buildSections(bookDetailsState, book),
       ],
     );
   }
 
-  Widget _buildTitleSection() {
+  Widget _buildTitleSection(LibraryItemEntity book) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final metadata = widget.item.media.metadata;
+    final metadata = book.media.metadata;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,10 +518,8 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     );
   }
 
-  Widget _buildInfoTable() {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final metadata = widget.item.media.metadata;
+  Widget _buildInfoTable(LibraryItemEntity book) {
+    final metadata = book.media.metadata;
 
     return Card(
       elevation: 2,
@@ -327,15 +534,97 @@ class BookDetailsState extends ConsumerState<BookDetails> {
             const Divider(),
             _buildInfoRow("Genres", _formatGenres(metadata?.genres)),
             const Divider(),
-            _buildInfoRow("Duration",
-                durationToReadable(widget.item.media.duration ?? 0)),
+            _buildInfoRow(
+                "Duration", durationToReadable(book.media.duration ?? 0)),
             const Divider(),
-            _buildInfoRow("Size", sizeToReadable(widget.item.media.size ?? 0)),
+            _buildInfoRow("Size", sizeToReadable(book.media.size ?? 0)),
             const Divider(),
-            _buildInfoRow("Progress", _formatProgress()),
+            _buildProgressRow(book),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildProgressRow(LibraryItemEntity book) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final progressState = ref.watch(bookProgressProvider);
+        final localProgress = book.media.progress;
+
+        // Use progress from provider if available and matches this book, otherwise use local data
+        final progress = (progressState?.itemId == book.itemId)
+            ? progressState!.progress
+            : (localProgress?.progress ?? 0.0);
+        final currentTime = (progressState?.itemId == book.itemId)
+            ? progressState!.currentTime
+            : (localProgress?.currentTime ?? 0.0);
+        final duration = (progressState?.itemId == book.itemId)
+            ? progressState!.duration
+            : (localProgress?.duration ?? book.media.duration ?? 0.0);
+        final isFinished = (progressState?.itemId == book.itemId)
+            ? progressState!.isFinished
+            : (localProgress?.isFinished ?? false);
+
+        final progressPercent = (progress * 100).toStringAsFixed(1);
+        final currentTimeStr = durationToReadable(currentTime);
+        final durationStr = durationToReadable(duration);
+
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Progress",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+                Text(
+                  isFinished ? "Finished" : "$progressPercent%",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: isFinished
+                            ? Theme.of(context).colorScheme.tertiary
+                            : Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  currentTimeStr,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+                Text(
+                  durationStr,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            LinearProgressIndicator(
+              value: progress,
+              backgroundColor:
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                isFinished
+                    ? Theme.of(context).colorScheme.tertiary
+                    : Theme.of(context).colorScheme.primary,
+              ),
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -371,62 +660,84 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     );
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(BookDetailsState bookDetailsState) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDownloaded = _isBookDownloaded();
 
-    return Row(
-      children: [
-        // Stream/Play button
-        Expanded(
-          child: FilledButton.icon(
-            onPressed: _handleStreamPlay,
-            icon: Icon(_audioPlayer.playing ? Icons.pause : Icons.play_arrow),
-            label: Text(_audioPlayer.playing
-                ? "Pause"
-                : (isDownloaded ? "Play" : "Stream")),
-            style: FilledButton.styleFrom(
-              backgroundColor: colorScheme.primary,
-              foregroundColor: colorScheme.onPrimary,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        // Read button (if ebook available)
-        if (_eBookFiles.isNotEmpty)
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: _handleRead,
-              icon: const Icon(Icons.menu_book),
-              label: const Text("Read"),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+    if (kDebugMode) {
+      print(
+          '[BOOK_DETAILS] _buildActionButtons - eBookFiles count: ${bookDetailsState.eBookFiles.length}');
+      print(
+          '[BOOK_DETAILS] _buildActionButtons - eBookFiles: ${bookDetailsState.eBookFiles}');
+    }
+
+    return Consumer(
+      builder: (context, ref, child) {
+        // Watch the audio player provider to get real-time updates
+        final audioPlayer = ref.watch(audioPlayerProvider);
+
+        return Row(
+          children: [
+            // Stream/Play button
+            Expanded(
+              child: FilledButton.icon(
+                onPressed: () {
+                  if (kDebugMode) {
+                    print('[BOOK_DETAILS] Stream/Play button pressed!');
+                  }
+                  _handleStreamPlay();
+                },
+                icon:
+                    Icon(audioPlayer.playing ? Icons.pause : Icons.play_arrow),
+                label: Text(audioPlayer.playing
+                    ? "Pause"
+                    : (isDownloaded ? "Play" : "Stream")),
+                style: FilledButton.styleFrom(
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
               ),
             ),
-          ),
-        if (_eBookFiles.isNotEmpty) const SizedBox(width: 12),
-        // Download button (only if not downloaded)
-        if (!isDownloaded)
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: _handleDownload,
-              icon: const Icon(Icons.download),
-              label: const Text("Download"),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+            const SizedBox(width: 12),
+            // Read button (if ebook available)
+            if (_detailedItem?.media.ebookFile != null)
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _handleRead,
+                  icon: const Icon(Icons.menu_book),
+                  label: const Text("Read"),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
               ),
-            ),
-          ),
-      ],
+            if (_detailedItem?.media.ebookFile != null)
+              const SizedBox(width: 12),
+            // Download button (only if not downloaded)
+            if (!isDownloaded)
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _handleDownload,
+                  icon: const Icon(Icons.download),
+                  label: const Text("Download"),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildDescriptionSection() {
+  Widget _buildDescriptionSection(
+      BookDetailsState bookDetailsState, LibraryItemEntity book) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final description = widget.item.media.metadata?.description ?? "";
+    final description = book.media.metadata?.description ?? "";
 
     if (description.isEmpty) {
       return const SizedBox.shrink();
@@ -456,7 +767,7 @@ class BookDetailsState extends ConsumerState<BookDetails> {
             ),
             const SizedBox(height: 12),
             Text(
-              _isDescriptionExpanded || !shouldShowExpandButton
+              bookDetailsState.isDescriptionExpanded || !shouldShowExpandButton
                   ? cleanDescription
                   : lines.take(4).join('\n'),
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -468,16 +779,18 @@ class BookDetailsState extends ConsumerState<BookDetails> {
               const SizedBox(height: 12),
               TextButton.icon(
                 onPressed: () {
-                  setState(() {
-                    _isDescriptionExpanded = !_isDescriptionExpanded;
-                  });
+                  ref
+                      .read(bookDetailsStateProvider(_audioPlayer).notifier)
+                      .toggleDescription();
                 },
                 icon: Icon(
-                  _isDescriptionExpanded
+                  bookDetailsState.isDescriptionExpanded
                       ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
                 ),
-                label: Text(_isDescriptionExpanded ? "Show less" : "Show more"),
+                label: Text(bookDetailsState.isDescriptionExpanded
+                    ? "Show less"
+                    : "Show more"),
               ),
             ],
           ],
@@ -486,22 +799,24 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     );
   }
 
-  Widget _buildSections() {
+  Widget _buildSections(
+      BookDetailsState bookDetailsState, LibraryItemEntity book) {
     return Column(
       children: [
-        _buildChaptersSection(),
+        _buildChaptersSection(bookDetailsState),
         const SizedBox(height: 16),
-        _buildAudioTracksSection(),
+        _buildAudioTracksSection(bookDetailsState),
         const SizedBox(height: 16),
-        _buildEBookFilesSection(),
+        _buildEBookFilesSection(bookDetailsState),
         const SizedBox(height: 16),
-        _buildLibraryFilesSection(),
+        _buildLibraryFilesSection(bookDetailsState, book),
+        const SizedBox(height: 32), // Add extra spacing at the bottom
       ],
     );
   }
 
-  Widget _buildChaptersSection() {
-    if (_chapters.isEmpty) return const SizedBox.shrink();
+  Widget _buildChaptersSection(BookDetailsState bookDetailsState) {
+    if (bookDetailsState.chapters.isEmpty) return const SizedBox.shrink();
 
     return _buildExpandableSection(
       title: "Chapters",
@@ -509,9 +824,9 @@ class BookDetailsState extends ConsumerState<BookDetails> {
       child: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: _chapters.length,
+        itemCount: bookDetailsState.chapters.length,
         itemBuilder: (context, index) {
-          final chapter = _chapters[index];
+          final chapter = bookDetailsState.chapters[index];
           return ListTile(
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -556,8 +871,8 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     );
   }
 
-  Widget _buildAudioTracksSection() {
-    if (_audioTracks.isEmpty) return const SizedBox.shrink();
+  Widget _buildAudioTracksSection(BookDetailsState bookDetailsState) {
+    if (bookDetailsState.audioTracks.isEmpty) return const SizedBox.shrink();
 
     return _buildExpandableSection(
       title: "Audio Tracks",
@@ -565,9 +880,9 @@ class BookDetailsState extends ConsumerState<BookDetails> {
       child: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: _audioTracks.length,
+        itemCount: bookDetailsState.audioTracks.length,
         itemBuilder: (context, index) {
-          final track = _audioTracks[index];
+          final track = bookDetailsState.audioTracks[index];
           return ListTile(
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
@@ -588,8 +903,8 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     );
   }
 
-  Widget _buildEBookFilesSection() {
-    if (_eBookFiles.isEmpty) return const SizedBox.shrink();
+  Widget _buildEBookFilesSection(BookDetailsState bookDetailsState) {
+    if (bookDetailsState.eBookFiles.isEmpty) return const SizedBox.shrink();
 
     return _buildExpandableSection(
       title: "E-Book Files",
@@ -597,9 +912,9 @@ class BookDetailsState extends ConsumerState<BookDetails> {
       child: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: _eBookFiles.length,
+        itemCount: bookDetailsState.eBookFiles.length,
         itemBuilder: (context, index) {
-          final ebook = _eBookFiles[index];
+          final ebook = bookDetailsState.eBookFiles[index];
           return ListTile(
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
@@ -620,27 +935,28 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     );
   }
 
-  Widget _buildLibraryFilesSection() {
-    final libraryFiles = bookDetails?.libraryFiles ?? [];
+  Widget _buildLibraryFilesSection(
+      BookDetailsState bookDetailsState, LibraryItemEntity book) {
+    final libraryFiles = bookDetailsState.bookDetails?.libraryFiles ?? [];
 
     return _buildExpandableSection(
       title: "Library Files",
       icon: Icons.folder,
       child: Column(
         children: [
-          _buildFileInfo("Path", widget.item.path ?? "Unknown"),
+          _buildFileInfo("Path", book.path),
           const Divider(),
-          _buildFileInfo("Relative Path", widget.item.relPath ?? "Unknown"),
+          _buildFileInfo("Relative Path", book.relPath),
           const Divider(),
           _buildFileInfo("File Count", "${libraryFiles.length}"),
           const Divider(),
-          _buildFileInfo("Total Size", sizeToReadable(widget.item.size ?? 0)),
+          _buildFileInfo("Total Size", sizeToReadable(book.size)),
           const Divider(),
-          _buildFileInfo("Media Type", widget.item.mediaType ?? "Unknown"),
+          _buildFileInfo("Media Type", book.mediaType),
           const Divider(),
-          _buildFileInfo("Added", _formatDate(widget.item.addedAt)),
+          _buildFileInfo("Added", _formatDate(book.addedAt)),
           const Divider(),
-          _buildFileInfo("Modified", _formatDate(widget.item.mtimeMs)),
+          _buildFileInfo("Modified", _formatDate(book.mtimeMs)),
           if (libraryFiles.isNotEmpty) ...[
             const Divider(),
             const SizedBox(height: 8),
@@ -717,21 +1033,6 @@ class BookDetailsState extends ConsumerState<BookDetails> {
         ],
       ),
     );
-  }
-
-  IconData _getFileTypeIcon(String? fileType) {
-    switch (fileType?.toLowerCase()) {
-      case 'audio':
-        return Icons.audiotrack;
-      case 'ebook':
-        return Icons.menu_book;
-      case 'image':
-        return Icons.image;
-      case 'metadata':
-        return Icons.info;
-      default:
-        return Icons.insert_drive_file;
-    }
   }
 
   IconData _getFileTypeIconFromExtension(String? extension) {
@@ -850,11 +1151,6 @@ class BookDetailsState extends ConsumerState<BookDetails> {
     return genres.join(", ");
   }
 
-  String _formatProgress() {
-    final progressValue = (widget.item.media.progress?.progress ?? 0) * 100;
-    return "${progressValue.toInt()}%";
-  }
-
   String _formatDate(int? timestamp) {
     if (timestamp == null) return "Unknown";
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
@@ -868,21 +1164,52 @@ class BookDetailsState extends ConsumerState<BookDetails> {
   }
 
   void _handleStreamPlay() async {
-    if (_audioPlayer.playing) {
-      _audioPlayer.pause();
+    // Get the current audio player state from the provider
+    final currentAudioPlayer = ref.read(audioPlayerProvider);
+
+    if (kDebugMode) {
+      print('[BOOK_DETAILS] _handleStreamPlay called');
+      print(
+          '[BOOK_DETAILS] currentAudioPlayer.playing: ${currentAudioPlayer.playing}');
+      print(
+          '[BOOK_DETAILS] currentAudioPlayer.audioSource: ${currentAudioPlayer.audioSource}');
+    }
+
+    if (currentAudioPlayer.playing) {
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] Pausing playback');
+      }
+      currentAudioPlayer.pause();
     } else {
-      if (playerService.currentItem() != widget.item) {
+      final currentItem = playerService.currentItem();
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] Current item: ${currentItem?.itemId}');
+        print('[BOOK_DETAILS] Widget item: ${widget.item.itemId}');
+      }
+
+      if (currentItem?.itemId != widget.item.itemId) {
+        if (kDebugMode) {
+          print('[BOOK_DETAILS] Preparing player for new item');
+        }
         try {
           await playerService.preparePlayer(
             widget.item,
-            bookDetails,
             autoStart: true,
             onPrepared: () {
-              setState(() {
-                playerPrepared = true;
-              });
+              if (kDebugMode) {
+                print('[BOOK_DETAILS] Player prepared successfully');
+              }
+              ref
+                  .read(bookDetailsStateProvider(_audioPlayer).notifier)
+                  .setPlayerState(prepared: true);
             },
           );
+          if (kDebugMode) {
+            print('[BOOK_DETAILS] preparePlayer completed');
+            final updatedAudioPlayer = ref.read(audioPlayerProvider);
+            print(
+                '[BOOK_DETAILS] currentAudioPlayer.audioSource after prepare: ${updatedAudioPlayer.audioSource}');
+          }
         } catch (e) {
           if (kDebugMode) {
             print('[BOOK_DETAILS] Error preparing player: $e');
@@ -895,41 +1222,86 @@ class BookDetailsState extends ConsumerState<BookDetails> {
           );
         }
       } else {
-        _audioPlayer.play();
+        if (kDebugMode) {
+          print('[BOOK_DETAILS] Resuming playback for current item');
+        }
+        currentAudioPlayer.play();
       }
     }
   }
 
   void _handleRead() {
-    if (_eBookFiles.isNotEmpty) {
+    // Check if we have detailed information with ebook file
+    if (_detailedItem?.media.ebookFile != null) {
+      // Show loading feedback
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Opening ebook reader...'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
+      );
+
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => EbookReaderPage(
-            ebook: _eBookFiles.first,
+            ebook: _detailedItem!.media.ebookFile!,
             libraryItem: widget.item,
             userModel: userModel,
             libraryService: libraryService,
           ),
         ),
       );
+    } else {
+      // Show error feedback
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('No ebook file available for this book'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] _handleRead - No ebook file found');
+        print('[BOOK_DETAILS] _detailedItem: ${_detailedItem != null}');
+        if (_detailedItem != null) {
+          print(
+              '[BOOK_DETAILS] _detailedItem.media.ebookFile: ${_detailedItem!.media.ebookFile}');
+        }
+      }
     }
   }
 
   void _handleDownload() {
-    // Implement download logic
+    // Show feedback that download is not yet implemented
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Download functionality is coming soon!'),
+        duration: const Duration(seconds: 3),
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
+        action: SnackBarAction(
+          label: 'OK',
+          textColor: Theme.of(context).colorScheme.onTertiary,
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+
     if (kDebugMode) {
-      print('Download button pressed');
+      print('Download button pressed - showing coming soon message');
     }
   }
 
-  void _jumpToChapter(BookChapter chapter) {
-    if (playerService.currentItem() != widget.item) {
+  void _jumpToChapter(BookChapter chapter) async {
+    final currentItem = playerService.currentItem();
+    if (currentItem?.itemId != widget.item.itemId) {
       // If this book is not currently playing, prepare it first
-      playerService.preparePlayer(
+      await playerService.preparePlayer(
         widget.item,
-        bookDetails,
-        autoStart: true,
+        autoStart: false,
         onPrepared: () {
           // Jump to chapter position after player is prepared
           _seekToPosition(chapter.start);

@@ -12,5 +12,6 @@ include: package:flutter_lints/flutter.yaml
 linter:
   rules:
 analyzer:
-  plugins:
-    - custom_lint
+  # Commented out custom_lint plugin to avoid conflicts with isar_community_generator
+  # plugins:
+  #   - custom_lint

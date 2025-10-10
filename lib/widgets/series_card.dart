@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 
 class SeriesCard extends StatelessWidget {
   final Series series;
-  const SeriesCard({super.key, required this.series});
+  final String? heroTag;
+  const SeriesCard({super.key, required this.series, this.heroTag});
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -15,10 +16,11 @@ class SeriesCard extends StatelessWidget {
       child: Card(
         child: InkWell(
           onTap: () {
+            final tag = heroTag ?? 'series-cover-${series.seriesId}';
             NavigationService.pushWithHero(
               context,
-              SeriesDetails(series: series),
-              'series-cover-${series.seriesId}',
+              SeriesDetails(series: series, heroTag: tag),
+              tag,
             );
           },
           child: Column(
@@ -26,7 +28,7 @@ class SeriesCard extends StatelessWidget {
             children: [
               // Series cover with Hero animation
               Hero(
-                tag: 'series-cover-${series.seriesId}',
+                tag: heroTag ?? 'series-cover-${series.seriesId}',
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(12),

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import 'package:audiobookshelf_flutter/widgets/wave_animation.dart';
 import 'package:audiobookshelf_flutter/widgets/player_slider.dart';
 import 'package:audiobookshelf_flutter/pages/player_overlay.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
+import 'package:audiobookshelf_flutter/provider/player_state_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FloatingPlayer extends ConsumerStatefulWidget {
@@ -38,9 +38,6 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
   late Animation<double> _waveAnimation;
   late Animation<double> _glowAnimation;
   late Animation<Offset> _slideAnimation;
-
-  bool _isExpanded = false;
-  bool _isPlaying = false;
 
   @override
   void initState() {
@@ -100,12 +97,8 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
       curve: Curves.easeOutCubic,
     ));
 
-    // Listen to player state
+    // Listen to player state changes for animations
     widget.audioPlayer.playingStream.listen((playing) {
-      setState(() {
-        _isPlaying = playing;
-      });
-
       if (playing) {
         _waveController.repeat();
         _glowController.repeat(reverse: true);
@@ -125,11 +118,13 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
   }
 
   void _toggleExpanded() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-    });
+    final floatingPlayerNotifier =
+        ref.read(floatingPlayerStateProvider(widget.audioPlayer).notifier);
+    floatingPlayerNotifier.toggleExpanded();
 
-    if (_isExpanded) {
+    final isExpanded =
+        ref.read(floatingPlayerStateProvider(widget.audioPlayer)).isExpanded;
+    if (isExpanded) {
       _expandController.forward();
       HapticFeedback.mediumImpact();
     } else {
@@ -155,7 +150,7 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
           );
 
           // Get PlayerService from provider
-          final playerService = ref.read(playerServiceProvider);
+          final playerService = ref.read(playerServiceProvider.notifier);
 
           return PlayerOverlay(
             widget.audioPlayer,
@@ -185,6 +180,10 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final floatingPlayerState =
+        ref.watch(floatingPlayerStateProvider(widget.audioPlayer));
+    final isPlaying = floatingPlayerState.isPlaying;
+    final isExpanded = floatingPlayerState.isExpanded;
 
     return AnimatedBuilder(
       animation:
@@ -199,14 +198,14 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
           child: Container(
             margin: const EdgeInsets.all(16),
             child: GestureDetector(
-              onTap: _isExpanded ? _openFullPlayer : _toggleExpanded,
+              onTap: isExpanded ? _openFullPlayer : _toggleExpanded,
               onLongPress: _toggleExpanded,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.easeOutCubic,
-                height: _isExpanded ? 120 : 80,
+                height: isExpanded ? 120 : 80,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(_isExpanded ? 24 : 40),
+                  borderRadius: BorderRadius.circular(isExpanded ? 24 : 40),
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -223,7 +222,7 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                       offset: const Offset(0, 8),
                     ),
                     // Glow shadow
-                    if (_isPlaying)
+                    if (isPlaying)
                       BoxShadow(
                         color: colorScheme.primary.withOpacity(0.3 * glowValue),
                         blurRadius: 24 * glowValue,
@@ -239,7 +238,7 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(_isExpanded ? 24 : 40),
+                  borderRadius: BorderRadius.circular(isExpanded ? 24 : 40),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Container(
@@ -249,7 +248,7 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                           width: 1,
                         ),
                       ),
-                      child: _isExpanded
+                      child: isExpanded
                           ? _buildExpandedContent()
                           : _buildCollapsedContent(),
                     ),
@@ -266,6 +265,9 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
   Widget _buildCollapsedContent() {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final floatingPlayerState =
+        ref.watch(floatingPlayerStateProvider(widget.audioPlayer));
+    final isPlaying = floatingPlayerState.isPlaying;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -397,14 +399,14 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                     borderRadius: BorderRadius.circular(24),
                     onTap: () {
                       HapticFeedback.mediumImpact();
-                      if (_isPlaying) {
+                      if (isPlaying) {
                         widget.audioPlayer.pause();
                       } else {
                         widget.audioPlayer.play();
                       }
                     },
                     child: Center(
-                      child: _isPlaying
+                      child: isPlaying
                           ? WaveAnimation(
                               isPlaying: true,
                               color: colorScheme.onPrimary,
@@ -430,6 +432,9 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
   Widget _buildExpandedContent() {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final floatingPlayerState =
+        ref.watch(floatingPlayerStateProvider(widget.audioPlayer));
+    final isPlaying = floatingPlayerState.isPlaying;
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -548,14 +553,14 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                     borderRadius: BorderRadius.circular(20),
                     onTap: () {
                       HapticFeedback.mediumImpact();
-                      if (_isPlaying) {
+                      if (isPlaying) {
                         widget.audioPlayer.pause();
                       } else {
                         widget.audioPlayer.play();
                       }
                     },
                     child: Center(
-                      child: _isPlaying
+                      child: isPlaying
                           ? WaveAnimation(
                               isPlaying: true,
                               color: colorScheme.onPrimary,
@@ -592,8 +597,8 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
 
                   return PlayerSlider(
                     audioPlayer: widget.audioPlayer,
-                    playerService: ref.read(
-                        playerServiceProvider), // Get PlayerService from provider
+                    playerService: ref.read(playerServiceProvider
+                        .notifier), // Get PlayerService from provider
                     progress: progress,
                   );
                 },

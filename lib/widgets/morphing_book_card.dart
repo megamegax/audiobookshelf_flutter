@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/library_item_new.dart';
-import 'package:audiobookshelf_flutter/pages/book_details.dart';
+import 'package:audiobookshelf_flutter/pages/book_details_wrapper.dart';
 import 'package:audiobookshelf_flutter/provider/cover_image_provider.dart';
+import 'package:audiobookshelf_flutter/provider/login_provider.dart';
+import 'package:audiobookshelf_flutter/provider/selected_book_provider.dart';
+import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:audiobookshelf_flutter/services/navigation_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -231,17 +234,9 @@ class _MorphingBookCardState extends ConsumerState<MorphingBookCard>
                 onTapDown: (_) => _handlePress(true),
                 onTapUp: (_) => _handlePress(false),
                 onTapCancel: () => _handlePress(false),
-                onTap: () {
-                  final uniqueHeroTag = widget.heroTag ??
-                      'book-cover-${widget.libraryItem.id}-${widget.hashCode}';
-                  NavigationService.pushWithHero(
-                    context,
-                    BookDetails(
-                      item: widget.libraryItem,
-                      heroTag: uniqueHeroTag,
-                    ),
-                    uniqueHeroTag,
-                  );
+                onTap: () async {
+                  await _navigateToBookDetails(
+                      context, ref, widget.libraryItem);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -550,5 +545,75 @@ class _MorphingBookCardState extends ConsumerState<MorphingBookCard>
         );
       },
     );
+  }
+
+  Future<void> _navigateToBookDetails(BuildContext context, WidgetRef ref,
+      LibraryItemEntity libraryItem) async {
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+
+      // Get user model and library service
+      final userModel = ref.read(userModelNotifierProvider);
+      final libraryService = ref.read(libraryServiceProvider);
+
+      if (userModel != null) {
+        // Fetch detailed library item
+        final detailedItem = await libraryService.fetchDetailedLibraryItem(
+          userModel,
+          libraryItem.itemId,
+        );
+
+        // Close loading dialog
+        if (context.mounted) Navigator.of(context).pop();
+
+        // Set the selected book in the provider with cover image
+        final coverImageBytes = widget.libraryItem.media.coverBytes != null
+            ? Uint8List.fromList(widget.libraryItem.media.coverBytes!)
+            : null;
+        ref.read(selectedBookProvider.notifier).selectBook(
+              detailedItem,
+              coverImageBytes: coverImageBytes,
+            );
+
+        // Navigate to book details with hero animation
+        if (context.mounted) {
+          final uniqueHeroTag = widget.heroTag ??
+              'book-cover-${widget.libraryItem.id}-${widget.hashCode}';
+          NavigationService.pushWithHero(
+            context,
+            BookDetailsWrapper(
+              item: widget.libraryItem,
+              heroTag: uniqueHeroTag,
+            ),
+            uniqueHeroTag,
+          );
+        }
+      } else {
+        // Close loading dialog
+        if (context.mounted) Navigator.of(context).pop();
+        // Handle no user case
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('User not logged in')),
+          );
+        }
+      }
+    } catch (e) {
+      // Close loading dialog
+      if (context.mounted) Navigator.of(context).pop();
+      // Handle error
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading book details: $e')),
+        );
+      }
+    }
   }
 }
