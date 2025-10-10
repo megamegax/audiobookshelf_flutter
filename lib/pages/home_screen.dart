@@ -1,170 +1,46 @@
-import 'dart:async';
-
-import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
-import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_notifier.dart';
 import 'package:audiobookshelf_flutter/widgets/library_selector.dart';
 import 'package:audiobookshelf_flutter/widgets/sync_indicator.dart';
 import 'package:audiobookshelf_flutter/layouts/responsive_layout.dart';
-import 'package:audiobookshelf_flutter/widgets/morphing_navigation_drawer.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
-import 'package:audiobookshelf_flutter/provider/library_selector_provider.dart';
-import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
 import 'package:audiobookshelf_flutter/widgets/home_content_widget.dart';
 import 'package:audiobookshelf_flutter/widgets/search_content_widget.dart';
-import 'package:audiobookshelf_flutter/services/local_search_service.dart';
+import 'package:audiobookshelf_flutter/provider/search_notifier.dart';
+import 'package:audiobookshelf_flutter/widgets/morphing_navigation_drawer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:just_audio/just_audio.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() {
-    return HomeScreenState();
-  }
-}
-
-class HomeScreenState extends ConsumerState<HomeScreen> {
-  String searchQuery = '';
-  bool showPlayer = false;
-  late AudioPlayer _audioPlayer;
-  late TextEditingController _searchController;
-  List<LibraryItemEntity> searchResults = [];
-  bool isSearching = false;
-  Timer? _debounceTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    _debounceTimer?.cancel();
-    super.dispose();
-  }
-
-  void _onSearchChanged(String query) {
-    // Cancel previous timer
-    _debounceTimer?.cancel();
-
-    // Update search query immediately for UI feedback
-    setState(() {
-      searchQuery = query;
-    });
-
-    if (query.isEmpty) {
-      setState(() {
-        searchResults = [];
-        isSearching = false;
-      });
-      return;
-    }
-
-    // Set searching state immediately
-    setState(() {
-      isSearching = true;
-    });
-
-    // Debounce the actual search
-    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
-      _performSearch(query);
-    });
-  }
-
-  Future<void> _performSearch(String query) async {
-    if (query.isEmpty) {
-      if (mounted) {
-        setState(() {
-          searchResults = [];
-          isSearching = false;
-        });
-      }
-      return;
-    }
-
-    try {
-      final selectedLibrary = ref.read(selectedLibraryProvider);
-      final libraryId = selectedLibrary?.id;
-
-      if (libraryId == null) {
-        if (kDebugMode) {
-          print('[HOME_SCREEN] No library selected for search');
-        }
-        if (mounted) {
-          setState(() {
-            searchResults = [];
-            isSearching = false;
-          });
-        }
-        return;
-      }
-
-      final libraryItemsRepository =
-          await ref.read(libraryItemsRepositoryProvider.future);
-      final localSearchService = ref.read(localSearchServiceProvider);
-
-      final results = await localSearchService.searchBooks(
-        libraryItemsRepository,
-        libraryId,
-        query,
-      );
-
-      if (mounted) {
-        setState(() {
-          searchResults = results;
-          isSearching = false;
-        });
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('[HOME_SCREEN] Search error: $e');
-      }
-      if (mounted) {
-        setState(() {
-          searchResults = [];
-          isSearching = false;
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (kDebugMode) {
       print('[HOME_SCREEN] HomeScreen build kezdődik...');
     }
 
-    _audioPlayer = ref.watch(audioPlayerProvider);
+    // Watch the search state
+    final searchState = ref.watch(searchProvider);
+    final searchNotifier = ref.read(searchProvider.notifier);
 
-    // Update player visibility
-    if (_audioPlayer.audioSource != null) {
-      setState(() {
-        showPlayer = true;
-      });
-    } else {
-      showPlayer = false;
-    }
+    // Watch the audio player
+    final audioPlayer = ref.watch(audioPlayerProvider);
 
     // Only watch essential providers for the main layout
-    final ServerSettings? serverSettings =
-        ref.watch(serverSettingsNotifierProvider);
+    final ServerSettings? serverSettings = ref.watch(serverSettingsProvider);
 
     return ResponsiveLayout(
       title: 'Audiobookshelf - Flutter',
       selectedDrawerItem: SelectedItem.home,
       serverSettings: serverSettings,
       appBar: AppBar(
-        title: searchQuery.isEmpty
+        title: searchState.query.isEmpty
             ? const Text('Audiobookshelf - Flutter')
-            : Text('Search: $searchQuery'),
+            : Text('Search: ${searchState.query}'),
         actions: [
-          if (searchQuery.isEmpty) ...[
+          if (searchState.query.isEmpty) ...[
             const CompactLibrarySelector(),
             const SyncIndicator(),
             const SizedBox(width: 8),
@@ -172,12 +48,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             IconButton(
               icon: const Icon(Icons.clear),
               onPressed: () {
-                _searchController.clear();
-                setState(() {
-                  searchQuery = '';
-                  searchResults = [];
-                  isSearching = false;
-                });
+                searchNotifier.clearSearch();
               },
             ),
             const SizedBox(width: 8),
@@ -197,8 +68,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 filled: true,
                 fillColor: Theme.of(context).colorScheme.surface,
               ),
-              onChanged: _onSearchChanged,
-              controller: _searchController,
+              onChanged: (query) => searchNotifier.updateQuery(query),
             ),
           ),
         ),
@@ -215,17 +85,18 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               ),
         child: Padding(
           padding: EdgeInsets.only(
-              bottom: _audioPlayer.audioSource != null ? 100.0 : 0),
+            bottom: audioPlayer.audioSource != null ? 100.0 : 0,
+          ),
           child: Column(
             children: [
               // Search results or home content
               Expanded(
-                child: searchQuery.isEmpty
+                child: searchState.query.isEmpty
                     ? const HomeContentWidget()
                     : SearchContentWidget(
-                        searchQuery: searchQuery,
-                        isSearching: isSearching,
-                        searchResults: searchResults,
+                        searchQuery: searchState.query,
+                        isSearching: searchState.isSearching,
+                        searchResults: searchState.results,
                       ),
               ),
             ],

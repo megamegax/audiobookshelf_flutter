@@ -6,8 +6,8 @@ part of 'detailed_media.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$DetailedMediaImpl _$$DetailedMediaImplFromJson(Map<String, dynamic> json) =>
-    _$DetailedMediaImpl(
+_DetailedMedia _$DetailedMediaFromJson(Map<String, dynamic> json) =>
+    _DetailedMedia(
       metadata: Metadata.fromJson(json['metadata'] as Map<String, dynamic>),
       coverPath: json['coverPath'] as String,
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
@@ -33,14 +33,14 @@ _$DetailedMediaImpl _$$DetailedMediaImplFromJson(Map<String, dynamic> json) =>
       autoDownloadSchedule: json['autoDownloadSchedule'] as String?,
       lastEpisodeCheck: (json['lastEpisodeCheck'] as num?)?.toInt(),
       maxEpisodesToKeep: (json['maxEpisodesToKeep'] as num?)?.toInt(),
-      maxNewEpisodesToDownload:
-          (json['maxNewEpisodesToDownload'] as num?)?.toInt(),
+      maxNewEpisodesToDownload: (json['maxNewEpisodesToDownload'] as num?)
+          ?.toInt(),
       numTracks: (json['numTracks'] as num?)?.toInt(),
       numAudioFiles: (json['numAudioFiles'] as num?)?.toInt(),
       numChapters: (json['numChapters'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$$DetailedMediaImplToJson(_$DetailedMediaImpl instance) =>
+Map<String, dynamic> _$DetailedMediaToJson(_DetailedMedia instance) =>
     <String, dynamic>{
       'metadata': instance.metadata,
       'coverPath': instance.coverPath,

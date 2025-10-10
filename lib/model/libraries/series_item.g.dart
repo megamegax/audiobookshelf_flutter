@@ -6,20 +6,19 @@ part of 'series_item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SeriesItemImpl _$$SeriesItemImplFromJson(Map<String, dynamic> json) =>
-    _$SeriesItemImpl(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      nameIgnorePrefix: json['nameIgnorePrefix'] as String,
-      addedAt: (json['addedAt'] as num).toInt(),
-      updatedAt: (json['updatedAt'] as num?)?.toInt(),
-      description: json['description'] as String?,
-      books: (json['books'] as List<dynamic>)
-          .map((e) => SeriesBook.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+_SeriesItem _$SeriesItemFromJson(Map<String, dynamic> json) => _SeriesItem(
+  id: json['id'] as String,
+  name: json['name'] as String,
+  nameIgnorePrefix: json['nameIgnorePrefix'] as String,
+  addedAt: (json['addedAt'] as num).toInt(),
+  updatedAt: (json['updatedAt'] as num?)?.toInt(),
+  description: json['description'] as String?,
+  books: (json['books'] as List<dynamic>)
+      .map((e) => SeriesBook.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
 
-Map<String, dynamic> _$$SeriesItemImplToJson(_$SeriesItemImpl instance) =>
+Map<String, dynamic> _$SeriesItemToJson(_SeriesItem instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
@@ -30,12 +29,8 @@ Map<String, dynamic> _$$SeriesItemImplToJson(_$SeriesItemImpl instance) =>
       'books': instance.books,
     };
 
-_$SeriesBookImpl _$$SeriesBookImplFromJson(Map<String, dynamic> json) =>
-    _$SeriesBookImpl(
-      id: json['id'] as String,
-    );
+_SeriesBook _$SeriesBookFromJson(Map<String, dynamic> json) =>
+    _SeriesBook(id: json['id'] as String);
 
-Map<String, dynamic> _$$SeriesBookImplToJson(_$SeriesBookImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-    };
+Map<String, dynamic> _$SeriesBookToJson(_SeriesBook instance) =>
+    <String, dynamic>{'id': instance.id};

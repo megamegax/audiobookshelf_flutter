@@ -6,7 +6,9 @@ import 'package:audiobookshelf_flutter/services/cover_image_service.dart';
 import 'package:audiobookshelf_flutter/services/incremental_sync_service.dart';
 import 'package:audiobookshelf_flutter/services/loading_progress_service.dart';
 import 'package:audiobookshelf_flutter/services/optimized_background_loading_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'app_services_provider.g.dart';
 
 /// Central provider that manages all app services
 /// This provides a clean interface for accessing all services throughout the app
@@ -25,7 +27,8 @@ class AppServices {
 }
 
 /// Provider for the main app services
-final appServicesProvider = Provider<AppServices>((ref) {
+@riverpod
+AppServices appServices(Ref ref) {
   return AppServices(
     coverImageService: ref.watch(coverImageServiceProvider),
     incrementalSyncService: ref.watch(incrementalSyncServiceProvider),
@@ -33,22 +36,25 @@ final appServicesProvider = Provider<AppServices>((ref) {
     backgroundLoadingService:
         ref.watch(optimizedBackgroundLoadingServiceProvider),
   );
-});
+}
 
 /// Provider for cover image operations
-final coverImageOperationsProvider = Provider<CoverImageOperations>((ref) {
+@riverpod
+CoverImageOperations coverImageOperations(Ref ref) {
   return CoverImageOperations(ref);
-});
+}
 
 /// Provider for loading operations
-final loadingOperationsProvider = Provider<LoadingOperations>((ref) {
+@riverpod
+LoadingOperations loadingOperations(Ref ref) {
   return LoadingOperations(ref);
-});
+}
 
 /// Provider for sync operations
-final syncOperationsProvider = Provider<SyncOperations>((ref) {
+@riverpod
+SyncOperations syncOperations(Ref ref) {
   return SyncOperations(ref);
-});
+}
 
 /// Wrapper class for cover image operations
 class CoverImageOperations {

@@ -13,14 +13,17 @@ class SeriesDetails extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Hero(
-            tag: 'seriesTitle${series.seriesId}',
-            child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(series.name,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(color: Colors.white)))),
+          tag: 'seriesTitle${series.seriesId}',
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              series.name,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: Colors.white),
+            ),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -35,10 +38,9 @@ class SeriesDetails extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .shadow
-                            .withOpacity(0.2),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.shadow.withOpacity(0.2),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
@@ -62,10 +64,9 @@ class SeriesDetails extends ConsumerWidget {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(32.0),
-                  child: Wrap(
-                    children: series.books
-                        .map((e) => BookCard(libraryItem: e))
-                        .toList(),
+                  child: Text(
+                    'Books in this series: ${series.bookIds.length}',
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
               ),

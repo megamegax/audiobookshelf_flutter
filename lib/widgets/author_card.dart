@@ -38,7 +38,7 @@ class _AuthorCardState extends ConsumerState<AuthorCard> {
               true &&
           next.maybeWhen(initial: () => true, orElse: () => false)) {
         // First time loading, check for cached image
-        authorImageNotifier.checkCachedImage().then((_) {
+        authorImageNotifier.checkCachedImage(widget.author.authorId).then((_) {
           // If no cached image found, trigger download
           if (authorImageNotifier.imageBytes == null) {
             authorImageNotifier.downloadImage();
@@ -52,7 +52,7 @@ class _AuthorCardState extends ConsumerState<AuthorCard> {
       if (mounted &&
           authorImageState.maybeWhen(
               initial: () => true, orElse: () => false)) {
-        authorImageNotifier.checkCachedImage().then((_) {
+        authorImageNotifier.checkCachedImage(widget.author.authorId).then((_) {
           if (mounted && authorImageNotifier.imageBytes == null) {
             authorImageNotifier.downloadImage();
           }

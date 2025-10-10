@@ -2,12 +2,9 @@ import 'dart:async';
 import 'package:audiobookshelf_flutter/services/sync_service.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// Provider for sync state
-final syncStateProvider =
-    StateNotifierProvider<SyncStateNotifier, SyncState>((ref) {
-  return SyncStateNotifier(ref.watch(syncServiceProvider));
-});
+part 'sync_provider.g.dart';
 
 /// Sync state
 class SyncState {
@@ -47,20 +44,25 @@ class SyncState {
 }
 
 /// Sync state notifier
-class SyncStateNotifier extends StateNotifier<SyncState> {
-  final SyncService _syncService;
+@riverpod
+class SyncStateNotifier extends _$SyncStateNotifier {
   StreamSubscription<SyncProgress>? _syncProgressSubscription;
 
-  SyncStateNotifier(this._syncService) : super(const SyncState()) {
-    _initializeSyncListener();
-    _loadLastSyncTime();
+  @override
+  SyncState build() {
+    final syncService = ref.read(syncServiceProvider);
+    _initializeSyncListener(syncService);
+    _loadLastSyncTime(syncService);
+    return const SyncState();
   }
 
-  void _initializeSyncListener() {
-    _syncProgressSubscription =
-        _syncService.syncProgressStream.listen((progress) {
+  void _initializeSyncListener(SyncService syncService) {
+    _syncProgressSubscription = syncService.syncProgressStream.listen((
+      progress,
+    ) {
       state = state.copyWith(
-        isSyncing: progress.status != SyncStatus.completed &&
+        isSyncing:
+            progress.status != SyncStatus.completed &&
             progress.status != SyncStatus.failed,
         lastSyncStatus: progress.status,
         lastSyncMessage: progress.message,
@@ -72,8 +74,8 @@ class SyncStateNotifier extends StateNotifier<SyncState> {
     });
   }
 
-  Future<void> _loadLastSyncTime() async {
-    final lastSyncTime = await _syncService.getLastSyncTime();
+  Future<void> _loadLastSyncTime(SyncService syncService) async {
+    final lastSyncTime = await syncService.getLastSyncTime();
     if (lastSyncTime != null) {
       state = state.copyWith(lastSyncTime: lastSyncTime);
     }
@@ -81,43 +83,51 @@ class SyncStateNotifier extends StateNotifier<SyncState> {
 
   /// Start full sync (upload and download)
   Future<void> startFullSync(WidgetRef ref) async {
-    final userModel = ref.read(userModelNotifierProvider);
+    final userModel = ref.read(userModelProvider);
     if (userModel != null) {
-      await _syncService.fullSync(userModel);
+      final syncService = ref.read(syncServiceProvider);
+      await syncService.fullSync(userModel);
     }
   }
 
   /// Start upload sync (local progress to server)
   Future<void> startUploadSync(WidgetRef ref) async {
-    final userModel = ref.read(userModelNotifierProvider);
+    final userModel = ref.read(userModelProvider);
     if (userModel != null) {
-      await _syncService.syncProgressToServer(userModel);
+      final syncService = ref.read(syncServiceProvider);
+      await syncService.syncProgressToServer(userModel);
     }
   }
 
   /// Start download sync (server progress to local)
   Future<void> startDownloadSync(WidgetRef ref) async {
-    final userModel = ref.read(userModelNotifierProvider);
+    final userModel = ref.read(userModelProvider);
     if (userModel != null) {
-      await _syncService.downloadProgressFromServer(userModel);
+      final syncService = ref.read(syncServiceProvider);
+      await syncService.downloadProgressFromServer(userModel);
     }
   }
 
   /// Save offline progress
   Future<void> saveOfflineProgress(
-      String libraryItemId, Map<String, dynamic> progress) async {
-    await _syncService.saveOfflineProgress(libraryItemId, progress);
+    String libraryItemId,
+    Map<String, dynamic> progress,
+  ) async {
+    final syncService = ref.read(syncServiceProvider);
+    await syncService.saveOfflineProgress(libraryItemId, progress);
     await _updatePendingSyncCount();
   }
 
   /// Get offline progress
   Future<Map<String, dynamic>?> getOfflineProgress(String libraryItemId) async {
-    return await _syncService.getOfflineProgress(libraryItemId);
+    final syncService = ref.read(syncServiceProvider);
+    return await syncService.getOfflineProgress(libraryItemId);
   }
 
   /// Update pending sync count
   Future<void> _updatePendingSyncCount() async {
-    final pendingProgress = await _syncService.getPendingSyncProgress();
+    final syncService = ref.read(syncServiceProvider);
+    final pendingProgress = await syncService.getPendingSyncProgress();
     state = state.copyWith(pendingSyncCount: pendingProgress.length);
   }
 
@@ -154,11 +164,5 @@ class SyncStateNotifier extends StateNotifier<SyncState> {
     } else {
       return '${diff.inDays}d ago';
     }
-  }
-
-  @override
-  void dispose() {
-    _syncProgressSubscription?.cancel();
-    super.dispose();
   }
 }

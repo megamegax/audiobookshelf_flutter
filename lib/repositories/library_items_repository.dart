@@ -13,8 +13,9 @@ import 'package:audiobookshelf_flutter/provider/database_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar_community/isar.dart';
 
-final libraryItemsRepositoryProvider =
-    FutureProvider<LibraryItemsRepository>((ref) async {
+final libraryItemsRepositoryProvider = FutureProvider<LibraryItemsRepository>((
+  ref,
+) async {
   return LibraryItemsRepository(await ref.watch(databaseProvider.future));
 });
 
@@ -56,7 +57,9 @@ class LibraryItemsRepository {
 
   /// Generic method to get any library item by ID and library ID (works for books, podcasts, etc.)
   Future<LibraryItemEntity?> getBookByLibrary(
-      String itemId, String libraryId) async {
+    String itemId,
+    String libraryId,
+  ) async {
     final LibraryItemEntity? item = await _isar.libraryItemEntitys
         .where()
         .filter()
@@ -101,36 +104,38 @@ class LibraryItemsRepository {
             ..isMissing = fetchedLibrary.isMissing
             ..updatedAt = fetchedLibrary.updatedAt ?? 0
             ..media = MediaEntity(
-                coverBytes: fetchedLibrary.media.coverBytes,
-                coverPath: fetchedLibrary.media.coverPath,
-                duration: fetchedLibrary.media.duration,
-                ebookFileFormat: fetchedLibrary.media.ebookFileFormat,
-                metadata: MetadataEntity(
-                    title: fetchedLibrary.media.metadata.title,
-                    authorName: fetchedLibrary.media.metadata.authorName,
-                    seriesName: fetchedLibrary.media.metadata.seriesName,
-                    asin: fetchedLibrary.media.metadata.asin,
-                    description: fetchedLibrary.media.metadata.description,
-                    genres: fetchedLibrary.media.metadata.genres,
-                    isbn: fetchedLibrary.media.metadata.isbn,
-                    language: fetchedLibrary.media.metadata.language,
-                    narratorName: fetchedLibrary.media.metadata.narratorName,
-                    publishedDate: fetchedLibrary.media.metadata.publishedDate,
-                    publishedYear:
-                        fetchedLibrary.media.metadata.publishedYear?.toString(),
-                    publisher: fetchedLibrary.media.metadata.publisher,
-                    subtitle: fetchedLibrary.media.metadata.subtitle,
-                    titleIgnorePrefix:
-                        fetchedLibrary.media.metadata.titleIgnorePrefix,
-                    explicit: fetchedLibrary.media.metadata.explicit),
-                numAudioFiles: fetchedLibrary.media.numAudioFiles,
-                numChapters: fetchedLibrary.media.numChapters,
-                numInvalidAudioFiles: fetchedLibrary.media.numInvalidAudioFiles,
-                numMissingParts: fetchedLibrary.media.numMissingParts,
-                numTracks: fetchedLibrary.media.numTracks,
-                size: fetchedLibrary.media.size,
-                tags: fetchedLibrary.media.tags,
-                progress: null)
+              coverBytes: fetchedLibrary.media.coverBytes,
+              coverPath: fetchedLibrary.media.coverPath,
+              duration: fetchedLibrary.media.duration,
+              ebookFileFormat: fetchedLibrary.media.ebookFileFormat,
+              metadata: MetadataEntity(
+                title: fetchedLibrary.media.metadata.title,
+                authorName: fetchedLibrary.media.metadata.authorName,
+                seriesName: fetchedLibrary.media.metadata.seriesName,
+                asin: fetchedLibrary.media.metadata.asin,
+                description: fetchedLibrary.media.metadata.description,
+                genres: fetchedLibrary.media.metadata.genres,
+                isbn: fetchedLibrary.media.metadata.isbn,
+                language: fetchedLibrary.media.metadata.language,
+                narratorName: fetchedLibrary.media.metadata.narratorName,
+                publishedDate: fetchedLibrary.media.metadata.publishedDate,
+                publishedYear: fetchedLibrary.media.metadata.publishedYear
+                    ?.toString(),
+                publisher: fetchedLibrary.media.metadata.publisher,
+                subtitle: fetchedLibrary.media.metadata.subtitle,
+                titleIgnorePrefix:
+                    fetchedLibrary.media.metadata.titleIgnorePrefix,
+                explicit: fetchedLibrary.media.metadata.explicit,
+              ),
+              numAudioFiles: fetchedLibrary.media.numAudioFiles,
+              numChapters: fetchedLibrary.media.numChapters,
+              numInvalidAudioFiles: fetchedLibrary.media.numInvalidAudioFiles,
+              numMissingParts: fetchedLibrary.media.numMissingParts,
+              numTracks: fetchedLibrary.media.numTracks,
+              size: fetchedLibrary.media.size,
+              tags: fetchedLibrary.media.tags,
+              progress: null,
+            )
             ..birthtimeMs = fetchedLibrary.birthtimeMs ?? 0
             ..ctimeMs = fetchedLibrary.ctimeMs ?? 0
             ..mtimeMs = fetchedLibrary.mtimeMs ?? 0
@@ -157,65 +162,66 @@ class LibraryItemsRepository {
       } else {
         _isar.writeTxn(() {
           final libraryEntity = LibraryItemEntity(
-              itemId: fetchedLibrary.id,
-              ino: fetchedLibrary.ino ?? '',
-              libraryId: fetchedLibrary.libraryId,
-              folderId: fetchedLibrary.folderId,
-              path: fetchedLibrary.path,
-              relPath: fetchedLibrary.relPath,
-              isFile: fetchedLibrary.isFile,
-              mtimeMs: fetchedLibrary.mtimeMs ?? 0,
-              ctimeMs: fetchedLibrary.ctimeMs ?? 0,
-              birthtimeMs: fetchedLibrary.birthtimeMs ?? 0,
-              addedAt: fetchedLibrary.addedAt ?? 0,
-              updatedAt: fetchedLibrary.updatedAt ?? 0,
-              isMissing: fetchedLibrary.isMissing,
-              isInvalid: fetchedLibrary.isInvalid,
-              mediaType: fetchedLibrary.mediaType,
-              media: MediaEntity(
-                  coverBytes: null,
-                  coverPath: fetchedLibrary.media.coverPath,
-                  duration: fetchedLibrary.media.duration,
-                  ebookFileFormat: fetchedLibrary.media.ebookFileFormat,
-                  metadata: MetadataEntity(
-                      title: fetchedLibrary.media.metadata.title,
-                      authorName: fetchedLibrary.media.metadata.authorName,
-                      seriesName: fetchedLibrary.media.metadata.seriesName,
-                      asin: fetchedLibrary.media.metadata.asin,
-                      description: fetchedLibrary.media.metadata.description,
-                      genres: fetchedLibrary.media.metadata.genres,
-                      isbn: fetchedLibrary.media.metadata.isbn,
-                      language: fetchedLibrary.media.metadata.language,
-                      narratorName: fetchedLibrary.media.metadata.narratorName,
-                      publishedDate:
-                          fetchedLibrary.media.metadata.publishedDate,
-                      publishedYear: fetchedLibrary.media.metadata.publishedYear
-                          ?.toString(),
-                      publisher: fetchedLibrary.media.metadata.publisher,
-                      subtitle: fetchedLibrary.media.metadata.subtitle,
-                      titleIgnorePrefix:
-                          fetchedLibrary.media.metadata.titleIgnorePrefix,
-                      explicit: fetchedLibrary.media.metadata.explicit),
-                  numAudioFiles: fetchedLibrary.media.numAudioFiles,
-                  numChapters: fetchedLibrary.media.numChapters,
-                  numInvalidAudioFiles:
-                      fetchedLibrary.media.numInvalidAudioFiles,
-                  numMissingParts: fetchedLibrary.media.numMissingParts,
-                  numTracks: fetchedLibrary.media.numTracks,
-                  size: fetchedLibrary.media.size,
-                  tags: fetchedLibrary.media.tags,
-                  progress: null),
-              numFiles: fetchedLibrary.numFiles ?? 0,
-              size: fetchedLibrary.size ?? 0,
-              collapsedSeries: fetchedLibrary.collapsedSeries == null
-                  ? null
-                  : CollapsedSeriesEntity(
-                      name: fetchedLibrary.collapsedSeries!.name,
-                      numBooks: fetchedLibrary.collapsedSeries!.numBooks,
-                      nameIgnorePrefix:
-                          fetchedLibrary.collapsedSeries!.nameIgnorePrefix,
-                      id: cachedLibraryItem?.collapsedSeries!.id ?? "0",
-                    ));
+            itemId: fetchedLibrary.id,
+            ino: fetchedLibrary.ino ?? '',
+            libraryId: fetchedLibrary.libraryId,
+            folderId: fetchedLibrary.folderId,
+            path: fetchedLibrary.path,
+            relPath: fetchedLibrary.relPath,
+            isFile: fetchedLibrary.isFile,
+            mtimeMs: fetchedLibrary.mtimeMs ?? 0,
+            ctimeMs: fetchedLibrary.ctimeMs ?? 0,
+            birthtimeMs: fetchedLibrary.birthtimeMs ?? 0,
+            addedAt: fetchedLibrary.addedAt ?? 0,
+            updatedAt: fetchedLibrary.updatedAt ?? 0,
+            isMissing: fetchedLibrary.isMissing,
+            isInvalid: fetchedLibrary.isInvalid,
+            mediaType: fetchedLibrary.mediaType,
+            media: MediaEntity(
+              coverBytes: null,
+              coverPath: fetchedLibrary.media.coverPath,
+              duration: fetchedLibrary.media.duration,
+              ebookFileFormat: fetchedLibrary.media.ebookFileFormat,
+              metadata: MetadataEntity(
+                title: fetchedLibrary.media.metadata.title,
+                authorName: fetchedLibrary.media.metadata.authorName,
+                seriesName: fetchedLibrary.media.metadata.seriesName,
+                asin: fetchedLibrary.media.metadata.asin,
+                description: fetchedLibrary.media.metadata.description,
+                genres: fetchedLibrary.media.metadata.genres,
+                isbn: fetchedLibrary.media.metadata.isbn,
+                language: fetchedLibrary.media.metadata.language,
+                narratorName: fetchedLibrary.media.metadata.narratorName,
+                publishedDate: fetchedLibrary.media.metadata.publishedDate,
+                publishedYear: fetchedLibrary.media.metadata.publishedYear
+                    ?.toString(),
+                publisher: fetchedLibrary.media.metadata.publisher,
+                subtitle: fetchedLibrary.media.metadata.subtitle,
+                titleIgnorePrefix:
+                    fetchedLibrary.media.metadata.titleIgnorePrefix,
+                explicit: fetchedLibrary.media.metadata.explicit,
+              ),
+              numAudioFiles: fetchedLibrary.media.numAudioFiles,
+              numChapters: fetchedLibrary.media.numChapters,
+              numInvalidAudioFiles: fetchedLibrary.media.numInvalidAudioFiles,
+              numMissingParts: fetchedLibrary.media.numMissingParts,
+              numTracks: fetchedLibrary.media.numTracks,
+              size: fetchedLibrary.media.size,
+              tags: fetchedLibrary.media.tags,
+              progress: null,
+            ),
+            numFiles: fetchedLibrary.numFiles ?? 0,
+            size: fetchedLibrary.size ?? 0,
+            collapsedSeries: fetchedLibrary.collapsedSeries == null
+                ? null
+                : CollapsedSeriesEntity(
+                    name: fetchedLibrary.collapsedSeries!.name,
+                    numBooks: fetchedLibrary.collapsedSeries!.numBooks,
+                    nameIgnorePrefix:
+                        fetchedLibrary.collapsedSeries!.nameIgnorePrefix,
+                    id: cachedLibraryItem?.collapsedSeries!.id ?? "0",
+                  ),
+          );
           return _isar.libraryItemEntitys.put(libraryEntity);
         });
       }
@@ -236,8 +242,9 @@ class LibraryItemsRepository {
       }
       if (cachedLibraryItem.media.progress == null) {
         await _isar.writeTxn(() async {
-          _isar.libraryItemEntitys.put(cachedLibraryItem
-            ..media.progress = MediaProgressEntity(
+          _isar.libraryItemEntitys.put(
+            cachedLibraryItem
+              ..media.progress = MediaProgressEntity(
                 itemId: element.libraryItemId,
                 progress: element.progress,
                 duration: element.duration,
@@ -248,7 +255,9 @@ class LibraryItemsRepository {
                 ebookProgress: element.ebookProgress,
                 lastUpdate: element.lastUpdate,
                 startedAt: element.startedAt,
-                finishedAt: element.finishedAt));
+                finishedAt: element.finishedAt,
+              ),
+          );
         });
       } else {
         if ((element.lastUpdate ?? 0) >
@@ -272,7 +281,7 @@ class LibraryItemsRepository {
     }
   }
 
-//todo handle series
+  //todo handle series
   Future<Series?> getSeriesItem(String seriesId) async {
     final SeriesItemEntity? series = await _isar.seriesItemEntitys
         .where()
@@ -281,37 +290,42 @@ class LibraryItemsRepository {
         .findFirst();
     if (series == null) return null;
     return Series(
-        addedAt: series.addedAt,
-        description: series.description,
-        id: series.id,
-        name: series.name,
-        nameIgnorePrefix: series.nameIgnorePrefix,
-        updatedAt: series.updatedAt,
-        seriesId: series.seriesId!,
-        books: await Future.wait(
-            series.books.map((book) async => (await getBook(book))!)));
+      addedAt: series.addedAt,
+      description: series.description,
+      id: series.id,
+      name: series.name,
+      nameIgnorePrefix: series.nameIgnorePrefix,
+      updatedAt: series.updatedAt,
+      seriesId: series.seriesId!,
+      bookIds: series.books,
+    );
   }
 
   Future<List<Series>> getSeries(String libraryId) async {
     // Get all series items
-    final List<SeriesItemEntity> allSeriesItems =
-        await _isar.seriesItemEntitys.where().findAll();
+    final List<SeriesItemEntity> allSeriesItems = await _isar.seriesItemEntitys
+        .where()
+        .findAll();
 
     // Filter series that have books in the specified library
     final List<Series> series = [];
     for (final seriesItem in allSeriesItems) {
       // Get books for this series
       final books = await Future.wait(
-          seriesItem.books.map((bookId) async => await getBook(bookId)));
+        seriesItem.books.map((bookId) async => await getBook(bookId)),
+      );
 
       // Filter out null books and check if any book belongs to the library
-      final validBooks =
-          books.where((book) => book != null).cast<LibraryItemEntity>();
-      final booksInLibrary =
-          validBooks.where((book) => book.libraryId == libraryId);
+      final validBooks = books
+          .where((book) => book != null)
+          .cast<LibraryItemEntity>();
+      final booksInLibrary = validBooks.where(
+        (book) => book.libraryId == libraryId,
+      );
 
       if (booksInLibrary.isNotEmpty) {
-        series.add(Series(
+        series.add(
+          Series(
             addedAt: seriesItem.addedAt,
             description: seriesItem.description,
             id: seriesItem.id,
@@ -319,7 +333,9 @@ class LibraryItemsRepository {
             nameIgnorePrefix: seriesItem.nameIgnorePrefix,
             updatedAt: seriesItem.updatedAt,
             seriesId: seriesItem.seriesId!,
-            books: booksInLibrary.toList()));
+            bookIds: booksInLibrary.map((book) => book.id.toString()).toList(),
+          ),
+        );
       }
     }
 
@@ -342,14 +358,17 @@ class LibraryItemsRepository {
 
       if (existingSeriesItem == null) {
         _isar.writeTxn(() {
-          return _isar.seriesItemEntitys.put(SeriesItemEntity(
+          return _isar.seriesItemEntitys.put(
+            SeriesItemEntity(
               seriesId: seriesItem.id,
               name: seriesItem.name,
               nameIgnorePrefix: seriesItem.nameIgnorePrefix,
               addedAt: seriesItem.addedAt,
               updatedAt: seriesItem.updatedAt,
               description: seriesItem.description,
-              books: seriesItem.books.map((e) => e.id).toList()));
+              books: seriesItem.books.map((e) => e.id).toList(),
+            ),
+          );
         });
       } else {
         if ((seriesItem.updatedAt ?? 0) > (existingSeriesItem.updatedAt ?? 0)) {
@@ -399,7 +418,9 @@ class LibraryItemsRepository {
 
   /// Search books by author name in local database
   Future<List<LibraryItemEntity>> searchBooksByAuthor(
-      String libraryId, String authorName) async {
+    String libraryId,
+    String authorName,
+  ) async {
     final List<LibraryItemEntity> books = await _isar.libraryItemEntitys
         .where()
         .filter()
@@ -421,7 +442,9 @@ class LibraryItemsRepository {
 
   /// Search books by title in local database
   Future<List<LibraryItemEntity>> searchBooksByTitle(
-      String libraryId, String title) async {
+    String libraryId,
+    String title,
+  ) async {
     final List<LibraryItemEntity> books = await _isar.libraryItemEntitys
         .where()
         .filter()
@@ -443,7 +466,9 @@ class LibraryItemsRepository {
 
   /// Search books by narrator name in local database
   Future<List<LibraryItemEntity>> searchBooksByNarrator(
-      String libraryId, String narratorName) async {
+    String libraryId,
+    String narratorName,
+  ) async {
     final List<LibraryItemEntity> books = await _isar.libraryItemEntitys
         .where()
         .filter()
@@ -465,7 +490,9 @@ class LibraryItemsRepository {
 
   /// Search books by series name in local database
   Future<List<LibraryItemEntity>> searchBooksBySeries(
-      String libraryId, String seriesName) async {
+    String libraryId,
+    String seriesName,
+  ) async {
     final List<LibraryItemEntity> books = await _isar.libraryItemEntitys
         .where()
         .filter()
@@ -487,7 +514,9 @@ class LibraryItemsRepository {
 
   /// General search in local database
   Future<List<LibraryItemEntity>> searchBooks(
-      String libraryId, String query) async {
+    String libraryId,
+    String query,
+  ) async {
     final List<LibraryItemEntity> books = await _isar.libraryItemEntitys
         .where()
         .filter()

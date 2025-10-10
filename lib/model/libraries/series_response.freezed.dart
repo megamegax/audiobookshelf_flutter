@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,165 +9,269 @@ part of 'series_response.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-SeriesResponse _$SeriesResponseFromJson(Map<String, dynamic> json) {
-  return _SeriesResponse.fromJson(json);
-}
 
 /// @nodoc
 mixin _$SeriesResponse {
-  List<SeriesItem> get results => throw _privateConstructorUsedError;
+
+ List<SeriesItem> get results;
+/// Create a copy of SeriesResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SeriesResponseCopyWith<SeriesResponse> get copyWith => _$SeriesResponseCopyWithImpl<SeriesResponse>(this as SeriesResponse, _$identity);
 
   /// Serializes this SeriesResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SeriesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SeriesResponseCopyWith<SeriesResponse> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SeriesResponse&&const DeepCollectionEquality().equals(other.results, results));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(results));
+
+@override
+String toString() {
+  return 'SeriesResponse(results: $results)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SeriesResponseCopyWith<$Res> {
-  factory $SeriesResponseCopyWith(
-          SeriesResponse value, $Res Function(SeriesResponse) then) =
-      _$SeriesResponseCopyWithImpl<$Res, SeriesResponse>;
-  @useResult
-  $Res call({List<SeriesItem> results});
-}
+abstract mixin class $SeriesResponseCopyWith<$Res>  {
+  factory $SeriesResponseCopyWith(SeriesResponse value, $Res Function(SeriesResponse) _then) = _$SeriesResponseCopyWithImpl;
+@useResult
+$Res call({
+ List<SeriesItem> results
+});
 
+
+
+
+}
 /// @nodoc
-class _$SeriesResponseCopyWithImpl<$Res, $Val extends SeriesResponse>
+class _$SeriesResponseCopyWithImpl<$Res>
     implements $SeriesResponseCopyWith<$Res> {
-  _$SeriesResponseCopyWithImpl(this._value, this._then);
+  _$SeriesResponseCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SeriesResponse _self;
+  final $Res Function(SeriesResponse) _then;
 
-  /// Create a copy of SeriesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? results = null,
-  }) {
-    return _then(_value.copyWith(
-      results: null == results
-          ? _value.results
-          : results // ignore: cast_nullable_to_non_nullable
-              as List<SeriesItem>,
-    ) as $Val);
-  }
+/// Create a copy of SeriesResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? results = null,}) {
+  return _then(_self.copyWith(
+results: null == results ? _self.results : results // ignore: cast_nullable_to_non_nullable
+as List<SeriesItem>,
+  ));
 }
 
-/// @nodoc
-abstract class _$$SeriesResponseImplCopyWith<$Res>
-    implements $SeriesResponseCopyWith<$Res> {
-  factory _$$SeriesResponseImplCopyWith(_$SeriesResponseImpl value,
-          $Res Function(_$SeriesResponseImpl) then) =
-      __$$SeriesResponseImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({List<SeriesItem> results});
 }
 
-/// @nodoc
-class __$$SeriesResponseImplCopyWithImpl<$Res>
-    extends _$SeriesResponseCopyWithImpl<$Res, _$SeriesResponseImpl>
-    implements _$$SeriesResponseImplCopyWith<$Res> {
-  __$$SeriesResponseImplCopyWithImpl(
-      _$SeriesResponseImpl _value, $Res Function(_$SeriesResponseImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of SeriesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? results = null,
-  }) {
-    return _then(_$SeriesResponseImpl(
-      results: null == results
-          ? _value._results
-          : results // ignore: cast_nullable_to_non_nullable
-              as List<SeriesItem>,
-    ));
-  }
+/// Adds pattern-matching-related methods to [SeriesResponse].
+extension SeriesResponsePatterns on SeriesResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SeriesResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SeriesResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SeriesResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _SeriesResponse():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SeriesResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SeriesResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<SeriesItem> results)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SeriesResponse() when $default != null:
+return $default(_that.results);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<SeriesItem> results)  $default,) {final _that = this;
+switch (_that) {
+case _SeriesResponse():
+return $default(_that.results);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<SeriesItem> results)?  $default,) {final _that = this;
+switch (_that) {
+case _SeriesResponse() when $default != null:
+return $default(_that.results);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$SeriesResponseImpl implements _SeriesResponse {
-  const _$SeriesResponseImpl({required final List<SeriesItem> results})
-      : _results = results;
 
-  factory _$SeriesResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SeriesResponseImplFromJson(json);
+class _SeriesResponse implements SeriesResponse {
+  const _SeriesResponse({required final  List<SeriesItem> results}): _results = results;
+  factory _SeriesResponse.fromJson(Map<String, dynamic> json) => _$SeriesResponseFromJson(json);
 
-  final List<SeriesItem> _results;
-  @override
-  List<SeriesItem> get results {
-    if (_results is EqualUnmodifiableListView) return _results;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_results);
-  }
-
-  @override
-  String toString() {
-    return 'SeriesResponse(results: $results)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SeriesResponseImpl &&
-            const DeepCollectionEquality().equals(other._results, _results));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_results));
-
-  /// Create a copy of SeriesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SeriesResponseImplCopyWith<_$SeriesResponseImpl> get copyWith =>
-      __$$SeriesResponseImplCopyWithImpl<_$SeriesResponseImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SeriesResponseImplToJson(
-      this,
-    );
-  }
+ final  List<SeriesItem> _results;
+@override List<SeriesItem> get results {
+  if (_results is EqualUnmodifiableListView) return _results;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_results);
 }
 
-abstract class _SeriesResponse implements SeriesResponse {
-  const factory _SeriesResponse({required final List<SeriesItem> results}) =
-      _$SeriesResponseImpl;
 
-  factory _SeriesResponse.fromJson(Map<String, dynamic> json) =
-      _$SeriesResponseImpl.fromJson;
+/// Create a copy of SeriesResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SeriesResponseCopyWith<_SeriesResponse> get copyWith => __$SeriesResponseCopyWithImpl<_SeriesResponse>(this, _$identity);
 
-  @override
-  List<SeriesItem> get results;
-
-  /// Create a copy of SeriesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SeriesResponseImplCopyWith<_$SeriesResponseImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$SeriesResponseToJson(this, );
 }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SeriesResponse&&const DeepCollectionEquality().equals(other._results, _results));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_results));
+
+@override
+String toString() {
+  return 'SeriesResponse(results: $results)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SeriesResponseCopyWith<$Res> implements $SeriesResponseCopyWith<$Res> {
+  factory _$SeriesResponseCopyWith(_SeriesResponse value, $Res Function(_SeriesResponse) _then) = __$SeriesResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ List<SeriesItem> results
+});
+
+
+
+
+}
+/// @nodoc
+class __$SeriesResponseCopyWithImpl<$Res>
+    implements _$SeriesResponseCopyWith<$Res> {
+  __$SeriesResponseCopyWithImpl(this._self, this._then);
+
+  final _SeriesResponse _self;
+  final $Res Function(_SeriesResponse) _then;
+
+/// Create a copy of SeriesResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? results = null,}) {
+  return _then(_SeriesResponse(
+results: null == results ? _self._results : results // ignore: cast_nullable_to_non_nullable
+as List<SeriesItem>,
+  ));
+}
+
+
+}
+
+// dart format on

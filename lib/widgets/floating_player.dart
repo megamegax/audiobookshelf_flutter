@@ -9,7 +9,6 @@ import 'package:audiobookshelf_flutter/widgets/wave_animation.dart';
 import 'package:audiobookshelf_flutter/widgets/player_slider.dart';
 import 'package:audiobookshelf_flutter/pages/player_overlay.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
-import 'package:audiobookshelf_flutter/provider/player_state_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FloatingPlayer extends ConsumerStatefulWidget {
@@ -38,6 +37,7 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
   late Animation<double> _waveAnimation;
   late Animation<double> _glowAnimation;
   late Animation<Offset> _slideAnimation;
+  bool _isExpanded = false;
 
   @override
   void initState() {
@@ -62,40 +62,28 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
     );
 
     // Expand animation
-    _expandAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _expandController,
-      curve: Curves.easeOutCubic,
-    ));
+    _expandAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _expandController, curve: Curves.easeOutCubic),
+    );
 
     // Wave animation
-    _waveAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _waveController,
-      curve: Curves.easeInOut,
-    ));
+    _waveAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _waveController, curve: Curves.easeInOut),
+    );
 
     // Glow animation
-    _glowAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _glowController,
-      curve: Curves.easeInOut,
-    ));
+    _glowAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
+    );
 
     // Slide animation
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _expandController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _expandController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     // Listen to player state changes for animations
     widget.audioPlayer.playingStream.listen((playing) {
@@ -118,13 +106,11 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
   }
 
   void _toggleExpanded() {
-    final floatingPlayerNotifier =
-        ref.read(floatingPlayerStateProvider(widget.audioPlayer).notifier);
-    floatingPlayerNotifier.toggleExpanded();
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
 
-    final isExpanded =
-        ref.read(floatingPlayerStateProvider(widget.audioPlayer)).isExpanded;
-    if (isExpanded) {
+    if (_isExpanded) {
       _expandController.forward();
       HapticFeedback.mediumImpact();
     } else {
@@ -142,7 +128,8 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
           final mediaItem = MediaItem(
             id: widget.libraryItem.itemId,
             title: widget.libraryItem.media?.metadata?.title ?? 'Unknown Title',
-            artist: widget.libraryItem.media?.metadata?.authorName ??
+            artist:
+                widget.libraryItem.media?.metadata?.authorName ??
                 'Unknown Author',
             duration: widget.libraryItem.media?.duration != null
                 ? Duration(seconds: widget.libraryItem.media!.duration!.toInt())
@@ -150,7 +137,7 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
           );
 
           // Get PlayerService from provider
-          final playerService = ref.read(playerServiceProvider.notifier);
+          final playerService = ref.read(playerServiceProvider);
 
           return PlayerOverlay(
             widget.audioPlayer,
@@ -161,13 +148,13 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 1),
-              end: Offset.zero,
-            ).animate(CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutCubic,
-            )),
+            position: Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+                .animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ),
             child: child,
           );
         },
@@ -180,14 +167,15 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final floatingPlayerState =
-        ref.watch(floatingPlayerStateProvider(widget.audioPlayer));
-    final isPlaying = floatingPlayerState.isPlaying;
-    final isExpanded = floatingPlayerState.isExpanded;
+    final isPlaying = widget.audioPlayer.playing;
+    final isExpanded = _isExpanded;
 
     return AnimatedBuilder(
-      animation:
-          Listenable.merge([_expandAnimation, _waveAnimation, _glowAnimation]),
+      animation: Listenable.merge([
+        _expandAnimation,
+        _waveAnimation,
+        _glowAnimation,
+      ]),
       builder: (context, child) {
         final expandValue = _expandAnimation.value;
         final waveValue = _waveAnimation.value;
@@ -230,8 +218,9 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                       ),
                     // Morphing shadow
                     BoxShadow(
-                      color: colorScheme.shadow
-                          .withOpacity(0.15 * (1 + expandValue * 0.5)),
+                      color: colorScheme.shadow.withOpacity(
+                        0.15 * (1 + expandValue * 0.5),
+                      ),
                       blurRadius: 20 * (1 + expandValue * 0.3),
                       offset: Offset(0, 12 * (1 + expandValue * 0.2)),
                     ),
@@ -265,9 +254,7 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
   Widget _buildCollapsedContent() {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final floatingPlayerState =
-        ref.watch(floatingPlayerStateProvider(widget.audioPlayer));
-    final isPlaying = floatingPlayerState.isPlaying;
+    final isPlaying = widget.audioPlayer.playing;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -284,8 +271,9 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: colorScheme.primary
-                          .withOpacity(0.2 * _waveAnimation.value),
+                      color: colorScheme.primary.withOpacity(
+                        0.2 * _waveAnimation.value,
+                      ),
                       blurRadius: 8 * _waveAnimation.value,
                       offset: const Offset(0, 4),
                     ),
@@ -295,28 +283,13 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                   borderRadius: BorderRadius.circular(16),
                   child:
                       widget.libraryItem.media?.coverBytes?.isNotEmpty == true
-                          ? Image.memory(
-                              Uint8List.fromList(
-                                  widget.libraryItem.media!.coverBytes!),
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        colorScheme.primaryContainer,
-                                        colorScheme.secondaryContainer,
-                                      ],
-                                    ),
-                                  ),
-                                  child: Icon(
-                                    Icons.library_music,
-                                    color: colorScheme.onPrimaryContainer,
-                                  ),
-                                );
-                              },
-                            )
-                          : Container(
+                      ? Image.memory(
+                          Uint8List.fromList(
+                            widget.libraryItem.media!.coverBytes!,
+                          ),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
@@ -329,7 +302,23 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                                 Icons.library_music,
                                 color: colorScheme.onPrimaryContainer,
                               ),
+                            );
+                          },
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                colorScheme.primaryContainer,
+                                colorScheme.secondaryContainer,
+                              ],
                             ),
+                          ),
+                          child: Icon(
+                            Icons.library_music,
+                            color: colorScheme.onPrimaryContainer,
+                          ),
+                        ),
                 ),
               );
             },
@@ -386,8 +375,9 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: colorScheme.primary
-                          .withOpacity(0.3 * _waveAnimation.value),
+                      color: colorScheme.primary.withOpacity(
+                        0.3 * _waveAnimation.value,
+                      ),
                       blurRadius: 12 * _waveAnimation.value,
                       offset: const Offset(0, 4),
                     ),
@@ -432,9 +422,7 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
   Widget _buildExpandedContent() {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final floatingPlayerState =
-        ref.watch(floatingPlayerStateProvider(widget.audioPlayer));
-    final isPlaying = floatingPlayerState.isPlaying;
+    final isPlaying = widget.audioPlayer.playing;
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -461,29 +449,13 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                   borderRadius: BorderRadius.circular(12),
                   child:
                       widget.libraryItem.media?.coverBytes?.isNotEmpty == true
-                          ? Image.memory(
-                              Uint8List.fromList(
-                                  widget.libraryItem.media!.coverBytes!),
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        colorScheme.primaryContainer,
-                                        colorScheme.secondaryContainer,
-                                      ],
-                                    ),
-                                  ),
-                                  child: Icon(
-                                    Icons.library_music,
-                                    color: colorScheme.onPrimaryContainer,
-                                    size: 24,
-                                  ),
-                                );
-                              },
-                            )
-                          : Container(
+                      ? Image.memory(
+                          Uint8List.fromList(
+                            widget.libraryItem.media!.coverBytes!,
+                          ),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
@@ -497,7 +469,24 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
                                 color: colorScheme.onPrimaryContainer,
                                 size: 24,
                               ),
+                            );
+                          },
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                colorScheme.primaryContainer,
+                                colorScheme.secondaryContainer,
+                              ],
                             ),
+                          ),
+                          child: Icon(
+                            Icons.library_music,
+                            color: colorScheme.onPrimaryContainer,
+                            size: 24,
+                          ),
+                        ),
                 ),
               ),
 
@@ -597,8 +586,9 @@ class _FloatingPlayerState extends ConsumerState<FloatingPlayer>
 
                   return PlayerSlider(
                     audioPlayer: widget.audioPlayer,
-                    playerService: ref.read(playerServiceProvider
-                        .notifier), // Get PlayerService from provider
+                    playerService: ref.read(
+                      playerServiceProvider,
+                    ), // Get PlayerService from provider
                     progress: progress,
                   );
                 },

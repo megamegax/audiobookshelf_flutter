@@ -1,17 +1,16 @@
 import 'package:audiobookshelf_flutter/model/libraries/library.dart';
-import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'library_selector_provider.g.dart';
 
 /// Provider for the currently selected library
-final selectedLibraryProvider =
-    StateNotifierProvider<SelectedLibraryNotifier, Library?>((ref) {
-  return SelectedLibraryNotifier();
-});
-
-class SelectedLibraryNotifier extends StateNotifier<Library?> {
-  SelectedLibraryNotifier() : super(null);
+@riverpod
+class SelectedLibraryNotifier extends _$SelectedLibraryNotifier {
+  @override
+  Library? build() => null;
 
   void selectLibrary(Library? library) {
     state = library;
@@ -19,9 +18,10 @@ class SelectedLibraryNotifier extends StateNotifier<Library?> {
 }
 
 /// Provider for all available libraries
-final availableLibrariesProvider = FutureProvider<List<Library>>((ref) async {
+@riverpod
+Future<List<Library>> availableLibraries(Ref ref) async {
   final libraryService = ref.watch(libraryServiceProvider);
-  final userModel = ref.watch(userModelNotifierProvider);
+  final userModel = ref.watch(userModelProvider);
 
   if (userModel == null) {
     return [];
@@ -33,19 +33,20 @@ final availableLibrariesProvider = FutureProvider<List<Library>>((ref) async {
     // Auto-select first library if none is selected
     final selectedLibrary = ref.read(selectedLibraryProvider);
     if (selectedLibrary == null && libraries.isNotEmpty) {
-      ref.read(selectedLibraryProvider.notifier).state = libraries.first;
+      ref.read(selectedLibraryProvider.notifier).selectLibrary(libraries.first);
     }
 
     return libraries;
   } catch (e) {
     return [];
   }
-});
+}
 
 /// Provider for library selector notifier
-final librarySelectorProvider = Provider<SelectedLibraryNotifier>((ref) {
+@riverpod
+SelectedLibraryNotifier librarySelector(Ref ref) {
   return ref.read(selectedLibraryProvider.notifier);
-});
+}
 
 class LibrarySelector {
   final Ref ref;
@@ -67,7 +68,7 @@ class LibrarySelector {
 
   /// Select a library
   void selectLibrary(Library library) {
-    ref.read(selectedLibraryProvider.notifier).state = library;
+    ref.read(selectedLibraryProvider.notifier).selectLibrary(library);
   }
 
   /// Check if multiple libraries are available

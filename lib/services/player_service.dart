@@ -1,23 +1,25 @@
 import 'dart:math';
 import 'dart:developer' as dev;
+import 'dart:typed_data';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/audio_track.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/playback_session.dart';
 import 'package:audiobookshelf_flutter/model/login/media_progress.dart';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
-import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
-import 'package:audiobookshelf_flutter/provider/book_progress_provider.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_notifier.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/provider/server_address_provider.dart';
 import 'package:audiobookshelf_flutter/repositories/library_items_repository.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+part 'player_service.g.dart';
 
 // Player state for StateNotifier
 class PlayerState {
@@ -48,24 +50,31 @@ class PlayerState {
   }
 }
 
-final playerServiceProvider =
-    StateNotifierProvider<PlayerService, PlayerState>((ref) {
-  final audioPlayer = ref.read(audioPlayerProvider);
+@riverpod
+PlayerService playerService(Ref ref) {
+  final audioPlayerNotifier = ref.read(audioPlayerProvider.notifier);
+  final audioPlayer = audioPlayerNotifier.audioPlayer;
   final serverAddress = ref.read(serverAddressProvider);
-  final userModel = ref.read(userModelNotifierProvider)!;
-  final libraryItemsRepository =
-      ref.read(libraryItemsRepositoryProvider.future);
+  final userModel = ref.read(userModelProvider);
+  final libraryItemsRepository = ref.read(
+    libraryItemsRepositoryProvider.future,
+  );
+
+  if (userModel == null) {
+    throw Exception('User not logged in');
+  }
 
   return PlayerService(
-      audioPlayer: audioPlayer,
-      serverAddress: serverAddress,
-      libraryService: ref.read(libraryServiceProvider),
-      userModel: userModel,
-      libraryItemsRepository: libraryItemsRepository,
-      container: null); // TODO: Fix container access
-});
+    audioPlayer: audioPlayer,
+    serverAddress: serverAddress,
+    libraryService: ref.read(libraryServiceProvider),
+    userModel: userModel,
+    libraryItemsRepository: libraryItemsRepository,
+    audioPlayerNotifier: audioPlayerNotifier,
+  );
+}
 
-class PlayerService extends StateNotifier<PlayerState> {
+class PlayerService {
   final AudioPlayer audioPlayer;
   late PlaybackSession _playbackSession;
   final LibraryService libraryService;
@@ -74,47 +83,38 @@ class PlayerService extends StateNotifier<PlayerState> {
   LibraryItemEntity? _libraryItem;
   final UserModel userModel;
   final Future<LibraryItemsRepository> libraryItemsRepository;
-  final ProviderContainer? container;
+  final AudioPlayerNotifier audioPlayerNotifier;
 
-  PlayerService(
-      {required this.audioPlayer,
-      required this.serverAddress,
-      required this.libraryService,
-      required this.userModel,
-      required this.libraryItemsRepository,
-      this.container})
-      : super(const PlayerState());
+  PlayerState _state = const PlayerState();
+
+  PlayerState get state => _state;
+
+  PlayerService({
+    required this.audioPlayer,
+    required this.serverAddress,
+    required this.libraryService,
+    required this.userModel,
+    required this.libraryItemsRepository,
+    required this.audioPlayerNotifier,
+  });
   void init(PlaybackSession playbackSession, double startTime) {
     _playbackSession = playbackSession;
     _startTime = startTime;
   }
 
-  /// Update the progress provider with current playback state
-  void _updateProgressProvider() {
-    if (container != null && _libraryItem != null) {
-      final progressNotifier = container!.read(bookProgressProvider.notifier);
-      final currentPosition = audioPlayer.position.inSeconds.toDouble();
-      final duration = audioPlayer.duration?.inSeconds.toDouble() ?? 0.0;
-      final progress = duration > 0 ? currentPosition / duration : 0.0;
-      final isPlaying = audioPlayer.playing;
 
-      progressNotifier.updateProgress(
-        itemId: _libraryItem!.itemId,
-        progress: progress,
-        currentTime: currentPosition,
-        duration: duration,
-        isPlaying: isPlaying,
-      );
-    }
-  }
-
-  Future<void> preparePlayer(LibraryItemEntity libraryItem,
-      {bool autoStart = false, Function? onPrepared}) async {
+  Future<void> preparePlayer(
+    LibraryItemEntity libraryItem, {
+    bool autoStart = false,
+    Function? onPrepared,
+  }) async {
     dev.log(
-        '[PLAYER_SERVICE] preparePlayer called for: ${libraryItem.media.metadata?.title}');
+      '[PLAYER_SERVICE] preparePlayer called for: ${libraryItem.media.metadata?.title}',
+    );
     dev.log('[PLAYER_SERVICE] autoStart: $autoStart');
     dev.log(
-        '[PLAYER_SERVICE] current audioPlayer.playing: ${audioPlayer.playing}');
+      '[PLAYER_SERVICE] current audioPlayer.playing: ${audioPlayer.playing}',
+    );
 
     _libraryItem = libraryItem;
 
@@ -131,14 +131,18 @@ class PlayerService extends StateNotifier<PlayerState> {
       await audioPlayer.stop();
     }
 
-    final playbackSession =
-        await libraryService.playBook(userModel, libraryItem);
+    final playbackSession = await libraryService.playBook(
+      userModel,
+      libraryItem,
+    );
 
     dev.log('[PLAYER_SERVICE] Playback session created: ${playbackSession.id}');
     dev.log(
-        '[PLAYER_SERVICE] Session current time: ${playbackSession.currentTime}');
+      '[PLAYER_SERVICE] Session current time: ${playbackSession.currentTime}',
+    );
     dev.log(
-        '[PLAYER_SERVICE] Audio tracks count: ${playbackSession.audioTracks.length}');
+      '[PLAYER_SERVICE] Audio tracks count: ${playbackSession.audioTracks.length}',
+    );
 
     // Use the current time from the playback session, not 0
     final startTime = playbackSession.currentTime;
@@ -148,13 +152,15 @@ class PlayerService extends StateNotifier<PlayerState> {
     final currentTrackData = currentTrack();
     if (currentTrackData == null) {
       dev.log(
-          '[PLAYER_SERVICE] ERROR: No current track found, cannot create stream URL');
+        '[PLAYER_SERVICE] ERROR: No current track found, cannot create stream URL',
+      );
       throw Exception('No audio track available for playback');
     }
 
     String streamUrl;
     dev.log(
-        '[PLAYER_SERVICE] Track contentUrl: ${currentTrackData.contentUrl}');
+      '[PLAYER_SERVICE] Track contentUrl: ${currentTrackData.contentUrl}',
+    );
     dev.log('[PLAYER_SERVICE] Track index: ${currentTrackData.index}');
     dev.log('[PLAYER_SERVICE] Session ID: ${_playbackSession.id}');
     dev.log('[PLAYER_SERVICE] Play method: ${_playbackSession.playMethod}');
@@ -177,25 +183,29 @@ class PlayerService extends StateNotifier<PlayerState> {
           // Full URL
           streamUrl = currentTrackData.contentUrl!;
           dev.log(
-              '[PLAYER_SERVICE] Using full transcode contentUrl: $streamUrl');
+            '[PLAYER_SERVICE] Using full transcode contentUrl: $streamUrl',
+          );
         } else if (currentTrackData.contentUrl!.startsWith('/')) {
           // Relative URL
           streamUrl = "$serverAddress${currentTrackData.contentUrl}";
           dev.log(
-              '[PLAYER_SERVICE] Using relative transcode contentUrl: $streamUrl');
+            '[PLAYER_SERVICE] Using relative transcode contentUrl: $streamUrl',
+          );
         } else {
           // Fallback to session URL
           streamUrl =
               "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrackData.index}";
           dev.log(
-              '[PLAYER_SERVICE] Using fallback transcode session URL: $streamUrl');
+            '[PLAYER_SERVICE] Using fallback transcode session URL: $streamUrl',
+          );
         }
       } else {
         // No contentUrl, use session URL
         streamUrl =
             "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrackData.index}";
         dev.log(
-            '[PLAYER_SERVICE] Using transcode session URL (no contentUrl): $streamUrl');
+          '[PLAYER_SERVICE] Using transcode session URL (no contentUrl): $streamUrl',
+        );
       }
     }
 
@@ -223,14 +233,17 @@ class PlayerService extends StateNotifier<PlayerState> {
       final httpClient = http.Client();
       final response = await httpClient.head(Uri.parse(fullUrl));
       dev.log(
-          '[PLAYER_SERVICE] HTTP HEAD response status: ${response.statusCode}');
+        '[PLAYER_SERVICE] HTTP HEAD response status: ${response.statusCode}',
+      );
       dev.log(
-          '[PLAYER_SERVICE] HTTP HEAD response headers: ${response.headers}');
+        '[PLAYER_SERVICE] HTTP HEAD response headers: ${response.headers}',
+      );
       httpClient.close();
 
       if (response.statusCode != 200) {
         dev.log(
-            '[PLAYER_SERVICE] WARNING: URL not accessible (${response.statusCode}), trying alternative method...');
+          '[PLAYER_SERVICE] WARNING: URL not accessible (${response.statusCode}), trying alternative method...',
+        );
         // Try alternative URL construction
         final alternativeUrl =
             "$serverAddress/api/items/${_libraryItem!.itemId}/play/${currentTrackData.index ?? 1}?token=${userModel.token}";
@@ -243,7 +256,8 @@ class PlayerService extends StateNotifier<PlayerState> {
           fullUrl = alternativeUrl;
         } else {
           dev.log(
-              '[PLAYER_SERVICE] Alternative URL also failed: ${altResponse.statusCode}');
+            '[PLAYER_SERVICE] Alternative URL also failed: ${altResponse.statusCode}',
+          );
         }
       }
     } catch (e) {
@@ -252,22 +266,23 @@ class PlayerService extends StateNotifier<PlayerState> {
     }
 
     dev.log(
-        '[PLAYER_SERVICE] Setting audio source with URL: $streamUrl?token=***');
-    await audioPlayer.setAudioSource(AudioSource.uri(
+      '[PLAYER_SERVICE] Setting audio source with URL: $streamUrl?token=***',
+    );
+    // Create the audio source
+    final audioSource = AudioSource.uri(
       Uri.parse(fullUrl),
       tag: MediaItem(
-          id: libraryItem.itemId.toString(),
-          album: libraryItem.media.metadata?.seriesName,
-          title: libraryItem.media.metadata?.title ?? "-",
-          displayDescription: libraryItem.media.metadata?.authorName ?? "-",
-          extras: {
-            "coverBytes":
-                Uint8List.fromList(libraryItem.media.coverBytes ?? []),
-            "item": libraryItem
-          },
-          duration:
-              Duration(seconds: libraryItem.media.duration?.toInt() ?? 0)),
-    ));
+        id: libraryItem.itemId.toString(),
+        album: libraryItem.media.metadata?.seriesName,
+        title: libraryItem.media.metadata?.title ?? "-",
+        displayDescription: libraryItem.media.metadata?.authorName ?? "-",
+        extras: {"item": libraryItem},
+        duration: Duration(seconds: libraryItem.media.duration?.toInt() ?? 0),
+      ),
+    );
+
+    // Use the AudioPlayerNotifier to set the audio source and update state
+    await audioPlayerNotifier.setAudioSource(audioSource, item: libraryItem);
 
     dev.log('[PLAYER_SERVICE] Audio source set successfully');
 
@@ -280,10 +295,12 @@ class PlayerService extends StateNotifier<PlayerState> {
     final position = Duration(seconds: seekTimeInTrack.floor());
 
     dev.log(
-        '[PLAYER_SERVICE] Track start offset: $currentTrackStartOffset, seek time in track: $seekTimeInTrack');
+      '[PLAYER_SERVICE] Track start offset: $currentTrackStartOffset, seek time in track: $seekTimeInTrack',
+    );
 
     dev.log(
-        '[PLAYER_SERVICE] Calculated seek position: ${position.inSeconds}s within track');
+      '[PLAYER_SERVICE] Calculated seek position: ${position.inSeconds}s within track',
+    );
 
     // Wait for the audio source to be loaded before seeking
     dev.log('[PLAYER_SERVICE] Loading audio source...');
@@ -301,7 +318,8 @@ class PlayerService extends StateNotifier<PlayerState> {
       dev.log('[PLAYER_SERVICE] Seek completed successfully');
     } catch (e) {
       dev.log(
-          '[PLAYER_SERVICE] WARNING: Seek failed, continuing from start: $e');
+        '[PLAYER_SERVICE] WARNING: Seek failed, continuing from start: $e',
+      );
       // Continue without seeking if it fails
     }
 
@@ -311,7 +329,7 @@ class PlayerService extends StateNotifier<PlayerState> {
     if (autoStart) {
       dev.log('[PLAYER_SERVICE] Auto-starting playback');
       try {
-        await audioPlayer.play();
+        await audioPlayerNotifier.play();
         dev.log('[PLAYER_SERVICE] Playback started successfully');
       } catch (e) {
         dev.log('[PLAYER_SERVICE] ERROR: Failed to start playback: $e');
@@ -333,15 +351,18 @@ class PlayerService extends StateNotifier<PlayerState> {
       return 0;
     }
 
-    final trackIndex = _playbackSession.audioTracks.indexWhere((t) =>
-        (t.startOffset?.floor() ?? 0) <= _startTime &&
-        ((t.startOffset ?? 0) + (t.duration ?? 0)).floor() > _startTime);
+    final trackIndex = _playbackSession.audioTracks.indexWhere(
+      (t) =>
+          (t.startOffset?.floor() ?? 0) <= _startTime &&
+          ((t.startOffset ?? 0) + (t.duration ?? 0)).floor() > _startTime,
+    );
 
     // If no track found, use the first track
     final currentTrackIndex = trackIndex >= 0 ? trackIndex : 0;
 
     dev.log(
-        '[PLAYER_SERVICE] Current track index: $currentTrackIndex (startTime: $_startTime)');
+      '[PLAYER_SERVICE] Current track index: $currentTrackIndex (startTime: $_startTime)',
+    );
     return currentTrackIndex;
   }
 
@@ -371,7 +392,8 @@ class PlayerService extends StateNotifier<PlayerState> {
       return _playbackSession.audioTracks[index];
     }
     dev.log(
-        '[PLAYER_SERVICE] Invalid track index: $index, tracks count: ${_playbackSession.audioTracks.length}');
+      '[PLAYER_SERVICE] Invalid track index: $index, tracks count: ${_playbackSession.audioTracks.length}',
+    );
     return null;
   }
 
@@ -389,11 +411,13 @@ class PlayerService extends StateNotifier<PlayerState> {
 
     // Find the correct track for this time
     final newTrackIndex = max(
-        0,
-        _playbackSession.audioTracks.indexWhere((t) =>
+      0,
+      _playbackSession.audioTracks.indexWhere(
+        (t) =>
             (t.startOffset?.floor() ?? 0) <= timeInSeconds &&
-            ((t.startOffset ?? 0) + (t.duration ?? 0)).floor() >
-                timeInSeconds));
+            ((t.startOffset ?? 0) + (t.duration ?? 0)).floor() > timeInSeconds,
+      ),
+    );
 
     // If we need to change tracks, reload the audio source
     if (newTrackIndex != currentTrackIndex()) {
@@ -421,21 +445,26 @@ class PlayerService extends StateNotifier<PlayerState> {
         }
       }
 
-      await audioPlayer.setAudioSource(AudioSource.uri(
-        Uri.parse("$streamUrl?token=${userModel.token}"),
-        tag: MediaItem(
+      await audioPlayer.setAudioSource(
+        AudioSource.uri(
+          Uri.parse("$streamUrl?token=${userModel.token}"),
+          tag: MediaItem(
             id: _libraryItem!.itemId.toString(),
             album: _libraryItem!.media.metadata?.seriesName,
             title: _libraryItem!.media.metadata?.title ?? "-",
             displayDescription: _libraryItem!.media.metadata?.authorName ?? "-",
             extras: {
-              "coverBytes":
-                  Uint8List.fromList(_libraryItem!.media.coverBytes ?? []),
-              "item": _libraryItem!
+              "coverBytes": Uint8List.fromList(
+                _libraryItem!.media.coverBytes ?? [],
+              ),
+              "item": _libraryItem!,
             },
-            duration:
-                Duration(seconds: _libraryItem!.media.duration?.toInt() ?? 0)),
-      ));
+            duration: Duration(
+              seconds: _libraryItem!.media.duration?.toInt() ?? 0,
+            ),
+          ),
+        ),
+      );
     }
 
     // Calculate the seek position within the current track
@@ -464,14 +493,16 @@ class PlayerService extends StateNotifier<PlayerState> {
     final targetOverallTime = currentTrackStartOffset() + targetTimeInTrack;
 
     dev.log(
-        '[PLAYER_SERVICE] Seeking within track: ${progressRatio * 100}% (${targetTimeInTrack}s of ${currentTrackDur}s)');
+      '[PLAYER_SERVICE] Seeking within track: ${progressRatio * 100}% (${targetTimeInTrack}s of ${currentTrackDur}s)',
+    );
 
     // Seek within the current audio source
     await audioPlayer.seek(Duration(seconds: targetTimeInTrack.floor()));
 
     // Update the playback session current time
-    _playbackSession =
-        _playbackSession.copyWith(currentTime: targetOverallTime);
+    _playbackSession = _playbackSession.copyWith(
+      currentTime: targetOverallTime,
+    );
   }
 
   Future<void> sendProgressSync() async {
@@ -482,7 +513,10 @@ class PlayerService extends StateNotifier<PlayerState> {
       "lastUpdate": DateTime.now().millisecondsSinceEpoch,
     };
     await libraryService.sendProgressSync(
-        userModel, _playbackSession.id, syncData);
+      userModel,
+      _playbackSession.id,
+      syncData,
+    );
   }
 
   Future<void> updateMediaProgress() async {
@@ -501,19 +535,24 @@ class PlayerService extends StateNotifier<PlayerState> {
       if (shouldMarkAsFinished) "finishedAt": now,
     };
 
-    await libraryService.updateMediaProgress(userModel, _libraryItem!.itemId,
-        updatePayload: updatePayload);
+    await libraryService.updateMediaProgress(
+      userModel,
+      _libraryItem!.itemId,
+      updatePayload: updatePayload,
+    );
 
-    final List<MediaProgress>? mediaProgress =
-        userModel.mediaProgress?.map((MediaProgress element) {
+    final List<MediaProgress>? mediaProgress = userModel.mediaProgress?.map((
+      MediaProgress element,
+    ) {
       MediaProgress? updatedElement;
       if (element.libraryItemId == _libraryItem!.itemId) {
         updatedElement = element.copyWith(
-            currentTime: currentTime,
-            progress: progress,
-            lastUpdate: now,
-            isFinished: shouldMarkAsFinished,
-            finishedAt: shouldMarkAsFinished ? now : element.finishedAt);
+          currentTime: currentTime,
+          progress: progress,
+          lastUpdate: now,
+          isFinished: shouldMarkAsFinished,
+          finishedAt: shouldMarkAsFinished ? now : element.finishedAt,
+        );
       } else {
         updatedElement = element;
       }
@@ -527,12 +566,12 @@ class PlayerService extends StateNotifier<PlayerState> {
     if (shouldMarkAsFinished) {
       if (kDebugMode) {
         print(
-            '[PLAYER_SERVICE] Book marked as finished: ${_libraryItem!.media.metadata?.title}');
+          '[PLAYER_SERVICE] Book marked as finished: ${_libraryItem!.media.metadata?.title}',
+        );
       }
     }
 
-    // Update the progress provider for UI updates
-    _updateProgressProvider();
+    // Progress updates are handled by the AudioPlayerNotifier
   }
 
   /// Skip forward by specified seconds
@@ -542,7 +581,8 @@ class PlayerService extends StateNotifier<PlayerState> {
     final currentTrackDur = currentTrackDuration();
 
     dev.log(
-        '[PLAYER_SERVICE] Skip forward ${seconds}s: ${currentPosition}s -> ${newPosition}s');
+      '[PLAYER_SERVICE] Skip forward ${seconds}s: ${currentPosition}s -> ${newPosition}s',
+    );
 
     if (newPosition < currentTrackDur) {
       // Stay within current track
@@ -560,7 +600,8 @@ class PlayerService extends StateNotifier<PlayerState> {
     final newPosition = currentPosition - seconds;
 
     dev.log(
-        '[PLAYER_SERVICE] Skip backward ${seconds}s: ${currentPosition}s -> ${newPosition}s');
+      '[PLAYER_SERVICE] Skip backward ${seconds}s: ${currentPosition}s -> ${newPosition}s',
+    );
 
     if (newPosition >= 0) {
       // Stay within current track
@@ -584,7 +625,8 @@ class PlayerService extends StateNotifier<PlayerState> {
       final startTime = nextTrack.startOffset ?? 0.0;
 
       dev.log(
-          '[PLAYER_SERVICE] Switching to track $nextIndex at offset ${startTime}s');
+        '[PLAYER_SERVICE] Switching to track $nextIndex at offset ${startTime}s',
+      );
       await seekTo(startTime);
     } else {
       dev.log('[PLAYER_SERVICE] Already at last chapter');
@@ -597,7 +639,8 @@ class PlayerService extends StateNotifier<PlayerState> {
     final currentPosition = audioPlayer.position.inSeconds;
 
     dev.log(
-        '[PLAYER_SERVICE] Previous chapter: current track $currentIndex, position ${currentPosition}s');
+      '[PLAYER_SERVICE] Previous chapter: current track $currentIndex, position ${currentPosition}s',
+    );
 
     // If we're more than 3 seconds into the track, restart current track
     if (currentPosition > 3) {
@@ -610,7 +653,8 @@ class PlayerService extends StateNotifier<PlayerState> {
       final startTime = previousTrack.startOffset ?? 0.0;
 
       dev.log(
-          '[PLAYER_SERVICE] Switching to previous track $previousIndex at offset ${startTime}s');
+        '[PLAYER_SERVICE] Switching to previous track $previousIndex at offset ${startTime}s',
+      );
       await seekTo(startTime);
     } else {
       dev.log('[PLAYER_SERVICE] Already at first chapter, restarting');
@@ -629,7 +673,7 @@ class PlayerService extends StateNotifier<PlayerState> {
   }
 
   /// Get current playback speed
-  double get playbackSpeed => state.playbackSpeed;
+  double get playbackSpeed => _state.playbackSpeed;
 
   /// Set playback speed
   Future<void> setPlaybackSpeed(double speed) async {
@@ -638,7 +682,7 @@ class PlayerService extends StateNotifier<PlayerState> {
     }
 
     // Update state to notify listeners
-    state = state.copyWith(playbackSpeed: speed);
+    _state = _state.copyWith(playbackSpeed: speed);
 
     await audioPlayer.setSpeed(speed);
 
@@ -653,7 +697,8 @@ class PlayerService extends StateNotifier<PlayerState> {
   Future<void> setVolume(double volume) async {
     if (kDebugMode) {
       dev.log(
-          '[PLAYER_SERVICE] Setting volume to ${(volume * 100).toStringAsFixed(1)}%');
+        '[PLAYER_SERVICE] Setting volume to ${(volume * 100).toStringAsFixed(1)}%',
+      );
     }
     await audioPlayer.setVolume(volume);
   }
@@ -682,8 +727,9 @@ class PlayerService extends StateNotifier<PlayerState> {
 
       // Try to load per-book speed first
       if (_libraryItem != null) {
-        final bookSpeed =
-            prefs.getDouble('playback_speed_${_libraryItem!.itemId}');
+        final bookSpeed = prefs.getDouble(
+          'playback_speed_${_libraryItem!.itemId}',
+        );
         if (bookSpeed != null) {
           return bookSpeed;
         }
@@ -702,7 +748,7 @@ class PlayerService extends StateNotifier<PlayerState> {
   /// Initialize playback speed when preparing player
   Future<void> _initializePlaybackSpeed() async {
     final savedSpeed = await _loadPlaybackSpeed();
-    if (savedSpeed != state.playbackSpeed) {
+    if (savedSpeed != _state.playbackSpeed) {
       await setPlaybackSpeed(savedSpeed);
     }
   }
@@ -749,16 +795,16 @@ class PlayerService extends StateNotifier<PlayerState> {
                 extras["sleepTimerRemaining"] ||
             currentMediaItem.extras?["playbackSpeed"] !=
                 extras["playbackSpeed"]) {
-          await audioPlayer.setAudioSource(AudioSource.uri(
-            currentSource.uri,
-            tag: mediaItem,
-          ));
+          await audioPlayer.setAudioSource(
+            AudioSource.uri(currentSource.uri, tag: mediaItem),
+          );
         }
       }
 
       if (kDebugMode) {
         dev.log(
-            '[PLAYER_SERVICE] Updated MediaItem with sleep timer: ${sleepTimerRemaining?.inMinutes}min, speed: ${playbackSpeed}x');
+          '[PLAYER_SERVICE] Updated MediaItem with sleep timer: ${sleepTimerRemaining?.inMinutes}min, speed: ${playbackSpeed}x',
+        );
       }
     } catch (e) {
       if (kDebugMode) {

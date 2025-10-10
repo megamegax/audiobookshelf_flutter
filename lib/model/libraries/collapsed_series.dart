@@ -4,7 +4,7 @@ part 'collapsed_series.freezed.dart';
 part 'collapsed_series.g.dart';
 
 @freezed
-class CollapsedSeries with _$CollapsedSeries {
+sealed class CollapsedSeries with _$CollapsedSeries {
   const factory CollapsedSeries({
     required String id,
     required String name,

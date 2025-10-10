@@ -9,8 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Provider for real narrators data
 final narratorsProvider = FutureProvider<List<NarratorEntity>>((ref) async {
-  final narratorsRepository =
-      await ref.read(narratorsRepositoryProvider.future);
+  final narratorsRepository = await ref.read(
+    narratorsRepositoryProvider.future,
+  );
   return await narratorsRepository.getAllNarrators();
 });
 
@@ -19,7 +20,7 @@ class NarratorsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final serverSettings = ref.read(serverSettingsNotifierProvider);
+    final serverSettings = ref.read(serverSettingsProvider);
 
     return ResponsiveLayout(
       body: _buildBody(context, ref),
@@ -67,30 +68,25 @@ class NarratorsScreen extends ConsumerWidget {
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final narrator = narrators[index];
-                    return NarratorCard(
-                      narrator: narrator,
-                      isCompact: true,
-                      onTap: () {
-                        // TODO: Navigate to narrator details page
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Narrator: ${narrator.name}')),
-                        );
-                      },
-                    );
-                  },
-                  childCount: narrators.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final narrator = narrators[index];
+                  return NarratorCard(
+                    narrator: narrator,
+                    isCompact: true,
+                    onTap: () {
+                      // TODO: Navigate to narrator details page
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Narrator: ${narrator.name}')),
+                      );
+                    },
+                  );
+                }, childCount: narrators.length),
               ),
             ),
           ],
         );
       },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: '>=3.8.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -13,17 +13,17 @@ dependencies:
     sdk: flutter
   intl: any
   cupertino_icons: ^1.0.8
-  flutter_riverpod: ^2.6.1
-  riverpod_annotation: ^2.3.5
+  flutter_riverpod: ^3.0.3
+  riverpod_annotation: ^3.0.3
   flutter_hooks: ^0.21.3
-  hooks_riverpod: ^2.5.1
+  hooks_riverpod: ^3.0.3
   shared_preferences: ^2.3.2
   http: ^1.5.0
   dio: ^5.7.0
   isar_community: ^3.1.0+1
   isar_community_flutter_libs: ^3.1.0+1
   path_provider: ^2.1.5
-  freezed_annotation: ^2.4.4
+  freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
   just_audio: ^0.10.5
   socket_io_client: ^3.1.2
@@ -45,8 +45,8 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  freezed: ^2.5.7
-  riverpod_generator: ^2.4.0
+  freezed: ^3.2.3
+  riverpod_generator: ^3.0.3
   build_runner: ^2.4.1
   # custom_lint: ^0.6.4 # Commented out due to analyzer conflict with isar_community_generator
   # riverpod_lint: ^2.3.9 # Commented out due to analyzer conflict with isar_generator

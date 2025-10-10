@@ -1,4 +1,3 @@
-
 import 'package:audiobookshelf_flutter/model/libraries/player/library_file.dart';
 import 'package:audiobookshelf_flutter/model/libraries/player/meta_tags.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -7,7 +6,7 @@ part 'audio_file.freezed.dart';
 part 'audio_file.g.dart';
 
 @freezed
-class AudioFile with _$AudioFile {
+sealed class AudioFile with _$AudioFile {
   const factory AudioFile({
     required int? index,
     required String? ino,

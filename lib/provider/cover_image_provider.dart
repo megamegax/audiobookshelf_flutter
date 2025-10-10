@@ -3,26 +3,24 @@ import 'dart:typed_data';
 import 'package:audiobookshelf_flutter/model/libraries/library_item_new.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/services/cover_image_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'cover_image_provider.g.dart';
 
 /// Provider for cover image state management
-final coverImageProvider =
-    StateNotifierProvider<CoverImageNotifier, CoverImageState>((ref) {
-  return CoverImageNotifier(ref);
-});
+@riverpod
+class CoverImageNotifier extends _$CoverImageNotifier {
+  @override
+  CoverImageState build() => const CoverImageState.initial();
 
-/// State notifier for managing cover image downloads and state
-class CoverImageNotifier extends StateNotifier<CoverImageState> {
-  final Ref _ref;
-  final CoverImageService _coverService;
-
-  CoverImageNotifier(this._ref)
-      : _coverService = _ref.read(coverImageServiceProvider),
-        super(const CoverImageState.initial());
+  Future<CoverImageService> get _coverService =>
+      ref.read(coverImageServiceProvider.future);
 
   /// Downloads cover for a specific item
   Future<void> downloadCover(String itemId) async {
-    final userModel = _ref.read(userModelNotifierProvider);
+    final userModel = ref.read(userModelProvider);
     if (userModel == null) {
       state = const CoverImageState.error('User not logged in');
       return;
@@ -39,7 +37,8 @@ class CoverImageNotifier extends StateNotifier<CoverImageState> {
       // We need to get the item from somewhere - this is a limitation
       // In practice, this would be called from BookCard with the full item
       state = const CoverImageState.error(
-          'Item not provided - use downloadCoverForItem instead');
+        'Item not provided - use downloadCoverForItem instead',
+      );
     } catch (e) {
       state = CoverImageState.error('Failed to download cover: $e');
     }
@@ -47,8 +46,16 @@ class CoverImageNotifier extends StateNotifier<CoverImageState> {
 
   /// Downloads cover for a specific library item
   Future<void> downloadCoverForItem(LibraryItemNew item) async {
-    final userModel = _ref.read(userModelNotifierProvider);
+    final userModel = ref.read(userModelProvider);
+    if (kDebugMode) {
+      print('[COVER_IMAGE_PROVIDER] User model: ${userModel?.username}');
+    }
     if (userModel == null) {
+      if (kDebugMode) {
+        print(
+          '[COVER_IMAGE_PROVIDER] User model is null, cannot download cover',
+        );
+      }
       state = const CoverImageState.error('User not logged in');
       return;
     }
@@ -63,8 +70,11 @@ class CoverImageNotifier extends StateNotifier<CoverImageState> {
     state = CoverImageState.downloading(itemId);
 
     try {
-      final coverBytes =
-          await _coverService.downloadAndCacheCover(item, userModel);
+      final coverService = await _coverService;
+      final coverBytes = await coverService.downloadAndCacheCover(
+        item,
+        userModel,
+      );
 
       if (coverBytes != null && coverBytes.isNotEmpty) {
         state = CoverImageState.completed(itemId, coverBytes);
@@ -78,7 +88,8 @@ class CoverImageNotifier extends StateNotifier<CoverImageState> {
 
   /// Checks if cover is cached for an item
   Future<bool> isCoverCached(String itemId) async {
-    return await _coverService.isCoverCached(itemId);
+    final coverService = await _coverService;
+    return await coverService.isCoverCached(itemId);
   }
 
   /// Resets the state
@@ -87,8 +98,9 @@ class CoverImageNotifier extends StateNotifier<CoverImageState> {
   }
 
   /// Clears download cache
-  void clearCache() {
-    _coverService.clearDownloadCache();
+  Future<void> clearCache() async {
+    final coverService = await _coverService;
+    coverService.clearDownloadCache();
   }
 }
 

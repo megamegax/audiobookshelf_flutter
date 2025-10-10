@@ -1,10 +1,10 @@
-import 'dart:async';
 import 'dart:io';
 import 'dart:developer' as dev;
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/pages/player_overlay.dart';
-import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_notifier.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_streams.dart';
 import 'package:audiobookshelf_flutter/provider/sleep_timer_provider.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
 import 'package:audiobookshelf_flutter/widgets/player_page_route.dart';
@@ -18,80 +18,38 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:text_scroll/text_scroll.dart';
 
-class Player extends ConsumerStatefulWidget {
+class Player extends ConsumerWidget {
   final AudioSource source;
   const Player({super.key, required this.source});
-  @override
-  ConsumerState<Player> createState() => _PlayerState();
-}
-
-class _PlayerState extends ConsumerState<Player> {
-  late AudioPlayer _audioPlayer;
-  late MediaItem _mediaItem;
-  late LibraryItemEntity _libraryItem;
-  double progress = 0;
-  late StreamSubscription subscription;
-  late StreamSubscription metaSubscription;
-  late PlayerService _playerService;
-  @override
-  void initState() {
-    dev.log('[PLAYER_WIDGET] initState called');
-    _mediaItem = widget.source.sequence[0].tag as MediaItem;
-    _libraryItem = _mediaItem.extras!['item'] as LibraryItemEntity;
-    _audioPlayer = ref.read(audioPlayerProvider);
-    _playerService = ref.read(playerServiceProvider.notifier);
-
-    dev.log('[PLAYER_WIDGET] Initialized with:');
-    dev.log('[PLAYER_WIDGET] - Title: ${_mediaItem.title}');
-    dev.log('[PLAYER_WIDGET] - Library Item ID: ${_libraryItem.itemId}');
-    dev.log(
-        '[PLAYER_WIDGET] - Audio Player State: ${_audioPlayer.playerState}');
-    dev.log(
-        '[PLAYER_WIDGET] - Has Audio Source: ${_audioPlayer.audioSource != null}');
-    metaSubscription = _audioPlayer.playerStateStream.listen((event) {
-      dev.log(
-          '[PLAYER_WIDGET] Player state changed: ${event.processingState}, playing: ${event.playing}');
-      setState(() {
-        _mediaItem = widget.source.sequence[0].tag as MediaItem;
-        _libraryItem = _mediaItem.extras!['item'] as LibraryItemEntity;
-      });
-    });
-    subscription = _audioPlayer.positionStream.listen((event) {
-      setState(() {
-        final currentTrackDuration = _playerService.currentTrackDuration();
-        if (event.inSeconds == 0 || currentTrackDuration <= 0) {
-          progress = 0;
-        } else {
-          // Progress within the current track/chapter
-          progress = event.inSeconds / currentTrackDuration;
-        }
-      });
-      // Log progress every 30 seconds to avoid spam
-      if (event.inSeconds % 30 == 0) {
-        dev.log(
-            '[PLAYER_WIDGET] Position: ${event.inSeconds}s, Progress: ${(progress * 100).toStringAsFixed(1)}%');
-      }
-      if (event.inSeconds % 15 == 0) {
-        ref.read(playerServiceProvider.notifier).sendProgressSync();
-      }
-    });
-    super.initState();
-  }
 
   @override
-  void dispose() {
-    dev.log('[PLAYER_WIDGET] dispose called - cleaning up subscriptions');
-    subscription.cancel();
-    metaSubscription.cancel();
-    super.dispose();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the audio player state
+    final audioPlayerNotifier = ref.watch(audioPlayerProvider.notifier);
+    final audioPlayer = audioPlayerNotifier.audioPlayer;
+    final playerService = ref.read(playerServiceProvider);
 
-  @override
-  Widget build(BuildContext context) {
+    // Get media item and library item from the source
+    final mediaItem = source.sequence[0].tag as MediaItem;
+    final libraryItem = mediaItem.extras!['item'] as LibraryItemEntity;
+
+    // Watch position and playing state from streams
+    final positionAsync = ref.watch(audioPositionStreamProvider);
+    final isPlayingAsync = ref.watch(audioPlayingStreamProvider);
+    final isPlaying = isPlayingAsync.value ?? false;
+
+    // Calculate progress
+    final currentTrackDuration = playerService.currentTrackDuration();
+    final position = positionAsync.value ?? Duration.zero;
+    final progress = position.inSeconds == 0 || currentTrackDuration <= 0
+        ? 0.0
+        : position.inSeconds / currentTrackDuration;
+
     dev.log('[PLAYER_WIDGET] build() called - rendering player widget');
-    dev.log('[PLAYER_WIDGET] Current playing state: ${_audioPlayer.playing}');
+    dev.log('[PLAYER_WIDGET] Current playing state: $isPlaying');
     dev.log(
-        '[PLAYER_WIDGET] Current progress: ${(progress * 100).toStringAsFixed(1)}%');
+      '[PLAYER_WIDGET] Current progress: ${(progress * 100).toStringAsFixed(1)}%',
+    );
 
     return Container(
       height: Platform.isIOS ? 220 : 200,
@@ -111,18 +69,23 @@ class _PlayerState extends ConsumerState<Player> {
                     onTap: () {
                       Navigator.of(context).push(
                         FadePageRoute(
-                            page: PlayerOverlay(_audioPlayer, _mediaItem,
-                                _libraryItem, _playerService)),
+                          page: PlayerOverlay(
+                            audioPlayer,
+                            mediaItem,
+                            libraryItem,
+                            playerService,
+                          ),
+                        ),
                       );
                     },
                     child: Stack(
                       children: [
                         Hero(
-                          tag: 'playerCover${_libraryItem.itemId}',
+                          tag: 'playerCover${libraryItem.itemId}',
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Image.memory(
-                              _mediaItem.extras!['coverBytes'] as Uint8List,
+                              mediaItem.extras!['coverBytes'] as Uint8List,
                               width: 56,
                               height: 56,
                               fit: BoxFit.cover,
@@ -131,16 +94,16 @@ class _PlayerState extends ConsumerState<Player> {
                                   width: 56,
                                   height: 56,
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .surfaceContainerHighest,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceContainerHighest,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
                                     Icons.library_music,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                                     size: 24,
                                   ),
                                 );
@@ -156,10 +119,9 @@ class _PlayerState extends ConsumerState<Player> {
                             width: 16,
                             height: 16,
                             decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.8),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.8),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(
@@ -179,17 +141,16 @@ class _PlayerState extends ConsumerState<Player> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextScroll(
-                          _mediaItem.title,
+                          mediaItem.title,
                           mode: TextScrollMode.bouncing,
-                          velocity:
-                              const Velocity(pixelsPerSecond: Offset(100, 0)),
+                          velocity: const Velocity(
+                            pixelsPerSecond: Offset(100, 0),
+                          ),
                           delayBefore: const Duration(seconds: 1),
                           pauseBetween: const Duration(seconds: 1),
                           textAlign: TextAlign.left,
                           selectable: true,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
+                          style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
                                 color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.w600,
@@ -197,21 +158,22 @@ class _PlayerState extends ConsumerState<Player> {
                         ),
                         const SizedBox(height: 2),
                         TextScroll(
-                          _mediaItem.displayDescription!,
+                          mediaItem.displayDescription!,
                           mode: TextScrollMode.bouncing,
-                          velocity:
-                              const Velocity(pixelsPerSecond: Offset(50, 0)),
+                          velocity: const Velocity(
+                            pixelsPerSecond: Offset(50, 0),
+                          ),
                           delayBefore: const Duration(seconds: 1),
                           pauseBetween: const Duration(seconds: 1),
                           textAlign: TextAlign.left,
                           selectable: true,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w400,
+                              ),
                         ),
                         const SizedBox(height: 4),
                         // Sleep timer and playback speed indicators
@@ -233,10 +195,9 @@ class _PlayerState extends ConsumerState<Player> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .shadow
-                              .withOpacity(0.2),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.shadow.withOpacity(0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -244,18 +205,14 @@ class _PlayerState extends ConsumerState<Player> {
                     ),
                     child: IconButton(
                       onPressed: () async {
-                        if (_audioPlayer.playing) {
-                          setState(() {
-                            _audioPlayer.pause();
-                          });
-                          _playerService.updateMediaProgress();
+                        if (isPlaying) {
+                          await ref.read(audioPlayerProvider.notifier).pause();
+                          playerService.updateMediaProgress();
                         } else {
-                          setState(() {
-                            _audioPlayer.play();
-                          });
+                          await ref.read(audioPlayerProvider.notifier).play();
                         }
                       },
-                      icon: _audioPlayer.playing
+                      icon: isPlaying
                           ? WaveAnimation(
                               isPlaying: true,
                               color: Theme.of(context).colorScheme.onPrimary,
@@ -280,27 +237,27 @@ class _PlayerState extends ConsumerState<Player> {
                 children: [
                   // Previous chapter button
                   IconButton(
-                    onPressed: _playerService.hasPreviousChapter()
-                        ? () async => await _playerService.previousChapter()
+                    onPressed: playerService.hasPreviousChapter()
+                        ? () async => await playerService.previousChapter()
                         : null,
                     icon: Icon(
                       Icons.skip_previous,
                       size: 20,
-                      color: _playerService.hasPreviousChapter()
+                      color: playerService.hasPreviousChapter()
                           ? Theme.of(context).colorScheme.onSurface
-                          : Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.4),
+                          : Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.4),
                     ),
                     padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(minWidth: 32, minHeight: 32),
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
+                    ),
                   ),
                   // Skip backward 10s
                   IconButton(
-                    onPressed: () async =>
-                        await _playerService.skipBackward(10),
+                    onPressed: () async => await playerService.skipBackward(10),
                     icon: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -312,39 +269,44 @@ class _PlayerState extends ConsumerState<Player> {
                       ],
                     ),
                     padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(minWidth: 32, minHeight: 32),
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
+                    ),
                   ),
                   // Skip forward 10s
                   IconButton(
-                    onPressed: () async => await _playerService.skipForward(10),
+                    onPressed: () async => await playerService.skipForward(10),
                     icon: Icon(
                       Icons.forward_10,
                       size: 20,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
                     padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(minWidth: 32, minHeight: 32),
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
+                    ),
                   ),
                   // Next chapter button
                   IconButton(
-                    onPressed: _playerService.hasNextChapter()
-                        ? () async => await _playerService.nextChapter()
+                    onPressed: playerService.hasNextChapter()
+                        ? () async => await playerService.nextChapter()
                         : null,
                     icon: Icon(
                       Icons.skip_next,
                       size: 20,
-                      color: _playerService.hasNextChapter()
+                      color: playerService.hasNextChapter()
                           ? Theme.of(context).colorScheme.onSurface
-                          : Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.4),
+                          : Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.4),
                     ),
                     padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(minWidth: 32, minHeight: 32),
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
+                    ),
                   ),
                 ],
               ),
@@ -356,32 +318,28 @@ class _PlayerState extends ConsumerState<Player> {
                   Row(
                     children: [
                       Text(
-                        durationToReadable(_audioPlayer.position),
+                        durationToReadable(position),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                              fontFamily: 'monospace',
-                            ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontFamily: 'monospace',
+                        ),
                       ),
                       const Spacer(),
                       Text(
-                        "-${durationToReadable(Duration(seconds: (_playerService.currentTrackDuration() - (_audioPlayer.position.inSeconds)).round().clamp(0, double.infinity).toInt()))}",
+                        "-${durationToReadable(Duration(seconds: (playerService.currentTrackDuration() - (position.inSeconds)).round().clamp(0, double.infinity).toInt()))}",
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                              fontFamily: 'monospace',
-                            ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontFamily: 'monospace',
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   // Wavy progress bar
                   WavyProgressBar(
-                    audioPlayer: _audioPlayer,
+                    audioPlayer: audioPlayer,
                     progress: progress,
-                    playerService: _playerService,
+                    playerService: playerService,
                     height: 6.0,
                   ),
                 ],
@@ -434,9 +392,9 @@ class _PlaybackSpeedIndicator extends ConsumerWidget {
       child: Text(
         '${speed.toStringAsFixed(speed == speed.toInt() ? 0 : 2)}x',
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSecondaryContainer,
-              fontWeight: FontWeight.w500,
-            ),
+          color: Theme.of(context).colorScheme.onSecondaryContainer,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }
@@ -477,10 +435,10 @@ class _SleepTimerIndicator extends ConsumerWidget {
           Text(
             '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'monospace',
-                ),
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'monospace',
+            ),
           ),
         ],
       ),

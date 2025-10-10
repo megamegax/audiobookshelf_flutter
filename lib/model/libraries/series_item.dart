@@ -4,7 +4,7 @@ part 'series_item.freezed.dart';
 part 'series_item.g.dart';
 
 @freezed
-class SeriesItem with _$SeriesItem {
+sealed class SeriesItem with _$SeriesItem {
   const factory SeriesItem({
     required String id,
     required String name,
@@ -20,10 +20,8 @@ class SeriesItem with _$SeriesItem {
 }
 
 @freezed
-class SeriesBook with _$SeriesBook {
-  const factory SeriesBook({
-    required String id,
-  }) = _SeriesBook;
+sealed class SeriesBook with _$SeriesBook {
+  const factory SeriesBook({required String id}) = _SeriesBook;
 
   factory SeriesBook.fromJson(Map<String, dynamic> json) =>
       _$SeriesBookFromJson(json);

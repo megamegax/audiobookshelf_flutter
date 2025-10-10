@@ -1,77 +1,51 @@
-import 'dart:async';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
 import 'package:audiobookshelf_flutter/services/sleep_timer_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-// Provider for SleepTimerService
-final sleepTimerServiceProvider = Provider<SleepTimerService>((ref) {
-  return SleepTimerService();
-});
+part 'sleep_timer_provider.freezed.dart';
+part 'sleep_timer_provider.g.dart';
 
 // State for sleep timer
-class SleepTimerState {
-  final bool isActive;
-  final Duration? remainingTime;
-  final Duration? totalDuration;
-  final bool fadeOutEnabled;
-  final bool waitForChapterEnd;
-
-  const SleepTimerState({
-    this.isActive = false,
-    this.remainingTime,
-    this.totalDuration,
-    this.fadeOutEnabled = false,
-    this.waitForChapterEnd = false,
-  });
-
-  SleepTimerState copyWith({
-    bool? isActive,
+@freezed
+sealed class SleepTimerState with _$SleepTimerState {
+  const factory SleepTimerState({
+    @Default(false) bool isActive,
     Duration? remainingTime,
     Duration? totalDuration,
-    bool? fadeOutEnabled,
-    bool? waitForChapterEnd,
-  }) {
-    return SleepTimerState(
-      isActive: isActive ?? this.isActive,
-      remainingTime: remainingTime ?? this.remainingTime,
-      totalDuration: totalDuration ?? this.totalDuration,
-      fadeOutEnabled: fadeOutEnabled ?? this.fadeOutEnabled,
-      waitForChapterEnd: waitForChapterEnd ?? this.waitForChapterEnd,
-    );
-  }
+    @Default(false) bool fadeOutEnabled,
+    @Default(false) bool waitForChapterEnd,
+  }) = _SleepTimerState;
+}
+
+// Provider for SleepTimerService
+@riverpod
+SleepTimerService sleepTimerService(Ref ref) {
+  return SleepTimerService();
 }
 
 // Notifier for sleep timer state
-class SleepTimerNotifier extends StateNotifier<SleepTimerState> {
-  final SleepTimerService _sleepTimerService;
-  final PlayerService _playerService;
-  StreamSubscription<Duration?>? _remainingTimeSubscription;
-  StreamSubscription<bool>? _isActiveSubscription;
-
-  SleepTimerNotifier(this._sleepTimerService, this._playerService)
-      : super(const SleepTimerState()) {
-    _setupSubscriptions();
+@riverpod
+class SleepTimerNotifier extends _$SleepTimerNotifier {
+  @override
+  SleepTimerState build() {
+    return const SleepTimerState();
   }
 
-  void _setupSubscriptions() {
-    _remainingTimeSubscription =
-        _sleepTimerService.remainingTimeStream.listen((remainingTime) {
-      state = state.copyWith(remainingTime: remainingTime);
-    });
+  void startTimer(
+    Duration duration, {
+    bool fadeOut = false,
+    bool waitForChapterEnd = false,
+  }) {
+    final sleepTimerService = ref.read(sleepTimerServiceProvider);
+    final playerService = ref.read(playerServiceProvider);
 
-    _isActiveSubscription =
-        _sleepTimerService.isActiveStream.listen((isActive) {
-      state = state.copyWith(isActive: isActive);
-    });
-  }
-
-  void startTimer(Duration duration,
-      {bool fadeOut = false, bool waitForChapterEnd = false}) {
-    _sleepTimerService.startTimer(
+    sleepTimerService.startTimer(
       duration,
       fadeOut: fadeOut,
       waitForChapterEnd: waitForChapterEnd,
-      playerService: _playerService,
+      playerService: playerService,
     );
 
     state = state.copyWith(
@@ -82,23 +56,10 @@ class SleepTimerNotifier extends StateNotifier<SleepTimerState> {
   }
 
   void cancelTimer() {
-    _sleepTimerService.cancelTimer(playerService: _playerService);
+    final sleepTimerService = ref.read(sleepTimerServiceProvider);
+    final playerService = ref.read(playerServiceProvider);
+
+    sleepTimerService.cancelTimer(playerService: playerService);
     state = const SleepTimerState();
   }
-
-  @override
-  void dispose() {
-    _remainingTimeSubscription?.cancel();
-    _isActiveSubscription?.cancel();
-    _sleepTimerService.dispose();
-    super.dispose();
-  }
 }
-
-// Provider for sleep timer notifier
-final sleepTimerProvider =
-    StateNotifierProvider<SleepTimerNotifier, SleepTimerState>((ref) {
-  final sleepTimerService = ref.read(sleepTimerServiceProvider);
-  final playerService = ref.read(playerServiceProvider.notifier);
-  return SleepTimerNotifier(sleepTimerService, playerService);
-});

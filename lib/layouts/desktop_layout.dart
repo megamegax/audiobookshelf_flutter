@@ -12,7 +12,7 @@ import 'package:audiobookshelf_flutter/pages/download_queue_page.dart';
 import 'package:audiobookshelf_flutter/pages/series_screen.dart';
 import 'package:audiobookshelf_flutter/pages/authors_screen.dart';
 import 'package:audiobookshelf_flutter/pages/narrators_screen.dart';
-import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_notifier.dart';
 import 'package:audiobookshelf_flutter/widgets/player.dart';
 
 /// Desktop master-detail layout with permanent sidebar
@@ -69,7 +69,8 @@ class DesktopLayout extends ConsumerWidget {
                     // AppBar for the detail area
                     if (appBar != null)
                       SizedBox(
-                        height: kToolbarHeight +
+                        height:
+                            kToolbarHeight +
                             (appBar!.preferredSize.height - kToolbarHeight),
                         child: appBar!,
                       )
@@ -139,11 +140,7 @@ class _SidebarContent extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                Icons.headphones,
-                color: colorScheme.primary,
-                size: 28,
-              ),
+              Icon(Icons.headphones, color: colorScheme.primary, size: 28),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -312,8 +309,9 @@ class _SidebarContent extends StatelessWidget {
                   child: Text(
                     label,
                     style: theme.textTheme.bodyMedium!.copyWith(
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w500,
                       color: isSelected
                           ? colorScheme.onPrimaryContainer
                           : colorScheme.onSurface,

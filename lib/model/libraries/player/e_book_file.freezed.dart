@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,262 +9,299 @@ part of 'e_book_file.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-EBookFile _$EBookFileFromJson(Map<String, dynamic> json) {
-  return _EBookFile.fromJson(json);
-}
 
 /// @nodoc
 mixin _$EBookFile {
-  String get ino => throw _privateConstructorUsedError;
-  FileMetadata? get metadata => throw _privateConstructorUsedError;
-  String get ebookFormat => throw _privateConstructorUsedError;
-  int get addedAt => throw _privateConstructorUsedError;
-  int? get updatedAt => throw _privateConstructorUsedError;
+
+ String get ino; FileMetadata? get metadata; String get ebookFormat; int get addedAt; int? get updatedAt;
+/// Create a copy of EBookFile
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EBookFileCopyWith<EBookFile> get copyWith => _$EBookFileCopyWithImpl<EBookFile>(this as EBookFile, _$identity);
 
   /// Serializes this EBookFile to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of EBookFile
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $EBookFileCopyWith<EBookFile> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EBookFile&&(identical(other.ino, ino) || other.ino == ino)&&(identical(other.metadata, metadata) || other.metadata == metadata)&&(identical(other.ebookFormat, ebookFormat) || other.ebookFormat == ebookFormat)&&(identical(other.addedAt, addedAt) || other.addedAt == addedAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,ino,metadata,ebookFormat,addedAt,updatedAt);
+
+@override
+String toString() {
+  return 'EBookFile(ino: $ino, metadata: $metadata, ebookFormat: $ebookFormat, addedAt: $addedAt, updatedAt: $updatedAt)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $EBookFileCopyWith<$Res> {
-  factory $EBookFileCopyWith(EBookFile value, $Res Function(EBookFile) then) =
-      _$EBookFileCopyWithImpl<$Res, EBookFile>;
-  @useResult
-  $Res call(
-      {String ino,
-      FileMetadata? metadata,
-      String ebookFormat,
-      int addedAt,
-      int? updatedAt});
+abstract mixin class $EBookFileCopyWith<$Res>  {
+  factory $EBookFileCopyWith(EBookFile value, $Res Function(EBookFile) _then) = _$EBookFileCopyWithImpl;
+@useResult
+$Res call({
+ String ino, FileMetadata? metadata, String ebookFormat, int addedAt, int? updatedAt
+});
 
-  $FileMetadataCopyWith<$Res>? get metadata;
+
+$FileMetadataCopyWith<$Res>? get metadata;
+
 }
-
 /// @nodoc
-class _$EBookFileCopyWithImpl<$Res, $Val extends EBookFile>
+class _$EBookFileCopyWithImpl<$Res>
     implements $EBookFileCopyWith<$Res> {
-  _$EBookFileCopyWithImpl(this._value, this._then);
+  _$EBookFileCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final EBookFile _self;
+  final $Res Function(EBookFile) _then;
 
-  /// Create a copy of EBookFile
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? ino = null,
-    Object? metadata = freezed,
-    Object? ebookFormat = null,
-    Object? addedAt = null,
-    Object? updatedAt = freezed,
-  }) {
-    return _then(_value.copyWith(
-      ino: null == ino
-          ? _value.ino
-          : ino // ignore: cast_nullable_to_non_nullable
-              as String,
-      metadata: freezed == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
-              as FileMetadata?,
-      ebookFormat: null == ebookFormat
-          ? _value.ebookFormat
-          : ebookFormat // ignore: cast_nullable_to_non_nullable
-              as String,
-      addedAt: null == addedAt
-          ? _value.addedAt
-          : addedAt // ignore: cast_nullable_to_non_nullable
-              as int,
-      updatedAt: freezed == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as int?,
-    ) as $Val);
+/// Create a copy of EBookFile
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? ino = null,Object? metadata = freezed,Object? ebookFormat = null,Object? addedAt = null,Object? updatedAt = freezed,}) {
+  return _then(_self.copyWith(
+ino: null == ino ? _self.ino : ino // ignore: cast_nullable_to_non_nullable
+as String,metadata: freezed == metadata ? _self.metadata : metadata // ignore: cast_nullable_to_non_nullable
+as FileMetadata?,ebookFormat: null == ebookFormat ? _self.ebookFormat : ebookFormat // ignore: cast_nullable_to_non_nullable
+as String,addedAt: null == addedAt ? _self.addedAt : addedAt // ignore: cast_nullable_to_non_nullable
+as int,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+/// Create a copy of EBookFile
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FileMetadataCopyWith<$Res>? get metadata {
+    if (_self.metadata == null) {
+    return null;
   }
 
-  /// Create a copy of EBookFile
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $FileMetadataCopyWith<$Res>? get metadata {
-    if (_value.metadata == null) {
-      return null;
-    }
-
-    return $FileMetadataCopyWith<$Res>(_value.metadata!, (value) {
-      return _then(_value.copyWith(metadata: value) as $Val);
-    });
-  }
+  return $FileMetadataCopyWith<$Res>(_self.metadata!, (value) {
+    return _then(_self.copyWith(metadata: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$EBookFileImplCopyWith<$Res>
-    implements $EBookFileCopyWith<$Res> {
-  factory _$$EBookFileImplCopyWith(
-          _$EBookFileImpl value, $Res Function(_$EBookFileImpl) then) =
-      __$$EBookFileImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String ino,
-      FileMetadata? metadata,
-      String ebookFormat,
-      int addedAt,
-      int? updatedAt});
 
-  @override
-  $FileMetadataCopyWith<$Res>? get metadata;
+/// Adds pattern-matching-related methods to [EBookFile].
+extension EBookFilePatterns on EBookFile {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _EBookFile value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _EBookFile() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _EBookFile value)  $default,){
+final _that = this;
+switch (_that) {
+case _EBookFile():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _EBookFile value)?  $default,){
+final _that = this;
+switch (_that) {
+case _EBookFile() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ino,  FileMetadata? metadata,  String ebookFormat,  int addedAt,  int? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _EBookFile() when $default != null:
+return $default(_that.ino,_that.metadata,_that.ebookFormat,_that.addedAt,_that.updatedAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ino,  FileMetadata? metadata,  String ebookFormat,  int addedAt,  int? updatedAt)  $default,) {final _that = this;
+switch (_that) {
+case _EBookFile():
+return $default(_that.ino,_that.metadata,_that.ebookFormat,_that.addedAt,_that.updatedAt);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ino,  FileMetadata? metadata,  String ebookFormat,  int addedAt,  int? updatedAt)?  $default,) {final _that = this;
+switch (_that) {
+case _EBookFile() when $default != null:
+return $default(_that.ino,_that.metadata,_that.ebookFormat,_that.addedAt,_that.updatedAt);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$EBookFileImplCopyWithImpl<$Res>
-    extends _$EBookFileCopyWithImpl<$Res, _$EBookFileImpl>
-    implements _$$EBookFileImplCopyWith<$Res> {
-  __$$EBookFileImplCopyWithImpl(
-      _$EBookFileImpl _value, $Res Function(_$EBookFileImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of EBookFile
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? ino = null,
-    Object? metadata = freezed,
-    Object? ebookFormat = null,
-    Object? addedAt = null,
-    Object? updatedAt = freezed,
-  }) {
-    return _then(_$EBookFileImpl(
-      ino: null == ino
-          ? _value.ino
-          : ino // ignore: cast_nullable_to_non_nullable
-              as String,
-      metadata: freezed == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
-              as FileMetadata?,
-      ebookFormat: null == ebookFormat
-          ? _value.ebookFormat
-          : ebookFormat // ignore: cast_nullable_to_non_nullable
-              as String,
-      addedAt: null == addedAt
-          ? _value.addedAt
-          : addedAt // ignore: cast_nullable_to_non_nullable
-              as int,
-      updatedAt: freezed == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as int?,
-    ));
-  }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$EBookFileImpl implements _EBookFile {
-  const _$EBookFileImpl(
-      {required this.ino,
-      this.metadata,
-      required this.ebookFormat,
-      required this.addedAt,
-      this.updatedAt});
 
-  factory _$EBookFileImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EBookFileImplFromJson(json);
+class _EBookFile implements EBookFile {
+  const _EBookFile({required this.ino, this.metadata, required this.ebookFormat, required this.addedAt, this.updatedAt});
+  factory _EBookFile.fromJson(Map<String, dynamic> json) => _$EBookFileFromJson(json);
 
-  @override
-  final String ino;
-  @override
-  final FileMetadata? metadata;
-  @override
-  final String ebookFormat;
-  @override
-  final int addedAt;
-  @override
-  final int? updatedAt;
+@override final  String ino;
+@override final  FileMetadata? metadata;
+@override final  String ebookFormat;
+@override final  int addedAt;
+@override final  int? updatedAt;
 
-  @override
-  String toString() {
-    return 'EBookFile(ino: $ino, metadata: $metadata, ebookFormat: $ebookFormat, addedAt: $addedAt, updatedAt: $updatedAt)';
-  }
+/// Create a copy of EBookFile
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$EBookFileCopyWith<_EBookFile> get copyWith => __$EBookFileCopyWithImpl<_EBookFile>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$EBookFileImpl &&
-            (identical(other.ino, ino) || other.ino == ino) &&
-            (identical(other.metadata, metadata) ||
-                other.metadata == metadata) &&
-            (identical(other.ebookFormat, ebookFormat) ||
-                other.ebookFormat == ebookFormat) &&
-            (identical(other.addedAt, addedAt) || other.addedAt == addedAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, ino, metadata, ebookFormat, addedAt, updatedAt);
-
-  /// Create a copy of EBookFile
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$EBookFileImplCopyWith<_$EBookFileImpl> get copyWith =>
-      __$$EBookFileImplCopyWithImpl<_$EBookFileImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$EBookFileImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$EBookFileToJson(this, );
 }
 
-abstract class _EBookFile implements EBookFile {
-  const factory _EBookFile(
-      {required final String ino,
-      final FileMetadata? metadata,
-      required final String ebookFormat,
-      required final int addedAt,
-      final int? updatedAt}) = _$EBookFileImpl;
-
-  factory _EBookFile.fromJson(Map<String, dynamic> json) =
-      _$EBookFileImpl.fromJson;
-
-  @override
-  String get ino;
-  @override
-  FileMetadata? get metadata;
-  @override
-  String get ebookFormat;
-  @override
-  int get addedAt;
-  @override
-  int? get updatedAt;
-
-  /// Create a copy of EBookFile
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$EBookFileImplCopyWith<_$EBookFileImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EBookFile&&(identical(other.ino, ino) || other.ino == ino)&&(identical(other.metadata, metadata) || other.metadata == metadata)&&(identical(other.ebookFormat, ebookFormat) || other.ebookFormat == ebookFormat)&&(identical(other.addedAt, addedAt) || other.addedAt == addedAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,ino,metadata,ebookFormat,addedAt,updatedAt);
+
+@override
+String toString() {
+  return 'EBookFile(ino: $ino, metadata: $metadata, ebookFormat: $ebookFormat, addedAt: $addedAt, updatedAt: $updatedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$EBookFileCopyWith<$Res> implements $EBookFileCopyWith<$Res> {
+  factory _$EBookFileCopyWith(_EBookFile value, $Res Function(_EBookFile) _then) = __$EBookFileCopyWithImpl;
+@override @useResult
+$Res call({
+ String ino, FileMetadata? metadata, String ebookFormat, int addedAt, int? updatedAt
+});
+
+
+@override $FileMetadataCopyWith<$Res>? get metadata;
+
+}
+/// @nodoc
+class __$EBookFileCopyWithImpl<$Res>
+    implements _$EBookFileCopyWith<$Res> {
+  __$EBookFileCopyWithImpl(this._self, this._then);
+
+  final _EBookFile _self;
+  final $Res Function(_EBookFile) _then;
+
+/// Create a copy of EBookFile
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? ino = null,Object? metadata = freezed,Object? ebookFormat = null,Object? addedAt = null,Object? updatedAt = freezed,}) {
+  return _then(_EBookFile(
+ino: null == ino ? _self.ino : ino // ignore: cast_nullable_to_non_nullable
+as String,metadata: freezed == metadata ? _self.metadata : metadata // ignore: cast_nullable_to_non_nullable
+as FileMetadata?,ebookFormat: null == ebookFormat ? _self.ebookFormat : ebookFormat // ignore: cast_nullable_to_non_nullable
+as String,addedAt: null == addedAt ? _self.addedAt : addedAt // ignore: cast_nullable_to_non_nullable
+as int,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+/// Create a copy of EBookFile
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FileMetadataCopyWith<$Res>? get metadata {
+    if (_self.metadata == null) {
+    return null;
+  }
+
+  return $FileMetadataCopyWith<$Res>(_self.metadata!, (value) {
+    return _then(_self.copyWith(metadata: value));
+  });
+}
+}
+
+// dart format on

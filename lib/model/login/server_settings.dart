@@ -4,7 +4,7 @@ part 'server_settings.freezed.dart';
 part 'server_settings.g.dart';
 
 @freezed
-class ServerSettings with _$ServerSettings {
+sealed class ServerSettings with _$ServerSettings {
   const factory ServerSettings({
     required String id,
     required bool scannerFindCovers,

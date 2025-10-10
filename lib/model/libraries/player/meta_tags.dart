@@ -4,7 +4,7 @@ part 'meta_tags.freezed.dart';
 part 'meta_tags.g.dart';
 
 @freezed
-class MetaTags with _$MetaTags {
+sealed class MetaTags with _$MetaTags {
   const factory MetaTags({
     String? tagAlbum,
     String? tagArtist,

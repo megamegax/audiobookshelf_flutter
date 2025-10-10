@@ -8,17 +8,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider for the cover image service
-final coverImageServiceProvider = Provider<CoverImageService>((ref) {
+final coverImageServiceProvider = FutureProvider<CoverImageService>((
+  ref,
+) async {
   return CoverImageService(
     ref.watch(libraryServiceProvider),
-    ref.read(libraryItemsRepositoryProvider.future),
+    await ref.read(libraryItemsRepositoryProvider.future),
   );
 });
 
 /// Service responsible for managing cover image downloads and caching
 class CoverImageService {
   final LibraryService _libraryService;
-  final Future<LibraryItemsRepository> _repository;
+  final LibraryItemsRepository _repository;
 
   // Cache for ongoing downloads to prevent duplicate requests
   final Map<String, Future<Uint8List?>> _downloadCache = {};
@@ -42,8 +44,7 @@ class CoverImageService {
     }
 
     // Check if we already have the cover cached
-    final repository = await _repository;
-    final cachedItem = await repository.getBook(itemId);
+    final cachedItem = await _repository.getBook(itemId);
     if (cachedItem?.media.coverBytes?.isNotEmpty == true) {
       if (kDebugMode) {
         print('[COVER_SERVICE] Cover already cached for $itemId');
@@ -64,7 +65,8 @@ class CoverImageService {
 
         if (kDebugMode) {
           print(
-              '[COVER_SERVICE] Successfully downloaded and cached cover for ${item.media.metadata.title}');
+            '[COVER_SERVICE] Successfully downloaded and cached cover for ${item.media.metadata.title}',
+          );
         }
       }
 
@@ -83,7 +85,8 @@ class CoverImageService {
     try {
       if (kDebugMode) {
         print(
-            '[COVER_SERVICE] Downloading cover for ${item.media.metadata.title}');
+          '[COVER_SERVICE] Downloading cover for ${item.media.metadata.title}',
+        );
       }
 
       final coverBytes = await _libraryService.fetchCover(item, userModel);
@@ -91,20 +94,23 @@ class CoverImageService {
       if (coverBytes != null && coverBytes.isNotEmpty) {
         if (kDebugMode) {
           print(
-              '[COVER_SERVICE] Downloaded ${coverBytes.length} bytes for ${item.media.metadata.title}');
+            '[COVER_SERVICE] Downloaded ${coverBytes.length} bytes for ${item.media.metadata.title}',
+          );
         }
         return coverBytes;
       } else {
         if (kDebugMode) {
           print(
-              '[COVER_SERVICE] No cover data received for ${item.media.metadata.title}');
+            '[COVER_SERVICE] No cover data received for ${item.media.metadata.title}',
+          );
         }
         return null;
       }
     } catch (e) {
       if (kDebugMode) {
         print(
-            '[COVER_SERVICE] Failed to download cover for ${item.media.metadata.title}: $e');
+          '[COVER_SERVICE] Failed to download cover for ${item.media.metadata.title}: $e',
+        );
       }
       return null;
     }
@@ -116,114 +122,117 @@ class CoverImageService {
     Uint8List coverBytes,
   ) async {
     try {
-      final repository = await _repository;
-
       // Create updated media with cover bytes
       final updatedMedia = item.media.copyWith(coverBytes: coverBytes);
 
       // Create updated item with new media
       final updatedItem = item.when(
-        book: (id,
-                ino,
-                libraryId,
-                folderId,
-                path,
-                relPath,
-                isFile,
-                mtimeMs,
-                ctimeMs,
-                birthtimeMs,
-                addedAt,
-                updatedAt,
-                isMissing,
-                isInvalid,
-                mediaType,
-                media,
-                numFiles,
-                size,
-                collapsedSeries) =>
-            LibraryItemNew.book(
-          id: id,
-          ino: ino,
-          libraryId: libraryId,
-          folderId: folderId,
-          path: path,
-          relPath: relPath,
-          isFile: isFile,
-          mtimeMs: mtimeMs,
-          ctimeMs: ctimeMs,
-          birthtimeMs: birthtimeMs,
-          addedAt: addedAt,
-          updatedAt: updatedAt,
-          isMissing: isMissing,
-          isInvalid: isInvalid,
-          mediaType: mediaType,
-          media: updatedMedia,
-          numFiles: numFiles,
-          size: size,
-          collapsedSeries: collapsedSeries,
-        ),
-        podcast: (id,
-                ino,
-                libraryId,
-                folderId,
-                path,
-                relPath,
-                isFile,
-                mtimeMs,
-                ctimeMs,
-                birthtimeMs,
-                addedAt,
-                updatedAt,
-                isMissing,
-                isInvalid,
-                mediaType,
-                media,
-                numFiles,
-                size,
-                collapsedSeries) =>
-            LibraryItemNew.podcast(
-          id: id,
-          ino: ino,
-          libraryId: libraryId,
-          folderId: folderId,
-          path: path,
-          relPath: relPath,
-          isFile: isFile,
-          mtimeMs: mtimeMs,
-          ctimeMs: ctimeMs,
-          birthtimeMs: birthtimeMs,
-          addedAt: addedAt,
-          updatedAt: updatedAt,
-          isMissing: isMissing,
-          isInvalid: isInvalid,
-          mediaType: mediaType,
-          media: updatedMedia,
-          numFiles: numFiles,
-          size: size,
-          collapsedSeries: collapsedSeries,
-        ),
+        book:
+            (
+              id,
+              ino,
+              libraryId,
+              folderId,
+              path,
+              relPath,
+              isFile,
+              mtimeMs,
+              ctimeMs,
+              birthtimeMs,
+              addedAt,
+              updatedAt,
+              isMissing,
+              isInvalid,
+              mediaType,
+              media,
+              numFiles,
+              size,
+              collapsedSeries,
+            ) => LibraryItemNew.book(
+              id: id,
+              ino: ino,
+              libraryId: libraryId,
+              folderId: folderId,
+              path: path,
+              relPath: relPath,
+              isFile: isFile,
+              mtimeMs: mtimeMs,
+              ctimeMs: ctimeMs,
+              birthtimeMs: birthtimeMs,
+              addedAt: addedAt,
+              updatedAt: updatedAt,
+              isMissing: isMissing,
+              isInvalid: isInvalid,
+              mediaType: mediaType,
+              media: updatedMedia,
+              numFiles: numFiles,
+              size: size,
+              collapsedSeries: collapsedSeries,
+            ),
+        podcast:
+            (
+              id,
+              ino,
+              libraryId,
+              folderId,
+              path,
+              relPath,
+              isFile,
+              mtimeMs,
+              ctimeMs,
+              birthtimeMs,
+              addedAt,
+              updatedAt,
+              isMissing,
+              isInvalid,
+              mediaType,
+              media,
+              numFiles,
+              size,
+              collapsedSeries,
+            ) => LibraryItemNew.podcast(
+              id: id,
+              ino: ino,
+              libraryId: libraryId,
+              folderId: folderId,
+              path: path,
+              relPath: relPath,
+              isFile: isFile,
+              mtimeMs: mtimeMs,
+              ctimeMs: ctimeMs,
+              birthtimeMs: birthtimeMs,
+              addedAt: addedAt,
+              updatedAt: updatedAt,
+              isMissing: isMissing,
+              isInvalid: isInvalid,
+              mediaType: mediaType,
+              media: updatedMedia,
+              numFiles: numFiles,
+              size: size,
+              collapsedSeries: collapsedSeries,
+            ),
       );
 
       // Save the updated item
-      await repository.saveLibraryItems([updatedItem]);
+      await _repository.saveLibraryItems([updatedItem]);
 
       if (kDebugMode) {
         print(
-            '[COVER_SERVICE] Updated database with cover for ${item.media.metadata.title}');
+          '[COVER_SERVICE] Updated database with cover for ${item.media.metadata.title}',
+        );
       }
     } catch (e) {
       if (kDebugMode) {
         print(
-            '[COVER_SERVICE] Failed to update database with cover for ${item.media.metadata.title}: $e');
+          '[COVER_SERVICE] Failed to update database with cover for ${item.media.metadata.title}: $e',
+        );
       }
     }
   }
 
   /// Checks if a cover is already cached for the given item
   Future<bool> isCoverCached(String itemId) async {
-    final repository = await _repository;
-    final cachedItem = await repository.getBook(itemId);
+    final cachedItem = await _repository.getBook(itemId);
     return cachedItem?.media.coverBytes?.isNotEmpty == true;
   }
 
@@ -235,4 +244,3 @@ class CoverImageService {
   /// Gets the number of ongoing downloads
   int get ongoingDownloadsCount => _downloadCache.length;
 }
-

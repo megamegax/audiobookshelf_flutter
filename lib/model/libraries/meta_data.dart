@@ -23,7 +23,7 @@ int? _publishedYearFromJson(dynamic json) {
 }
 
 @freezed
-class Metadata with _$Metadata {
+sealed class Metadata with _$Metadata {
   const factory Metadata({
     String? title,
     String? titleIgnorePrefix,

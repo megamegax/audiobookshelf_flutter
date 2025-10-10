@@ -6,8 +6,8 @@ part of 'media_progress.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$MediaProgressImpl _$$MediaProgressImplFromJson(Map<String, dynamic> json) =>
-    _$MediaProgressImpl(
+_MediaProgress _$MediaProgressFromJson(Map<String, dynamic> json) =>
+    _MediaProgress(
       id: json['id'] as String?,
       userId: json['userId'] as String?,
       libraryItemId: json['libraryItemId'] as String?,
@@ -26,7 +26,7 @@ _$MediaProgressImpl _$$MediaProgressImplFromJson(Map<String, dynamic> json) =>
       finishedAt: (json['finishedAt'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$$MediaProgressImplToJson(_$MediaProgressImpl instance) =>
+Map<String, dynamic> _$MediaProgressToJson(_MediaProgress instance) =>
     <String, dynamic>{
       'id': instance.id,
       'userId': instance.userId,

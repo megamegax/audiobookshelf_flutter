@@ -6,11 +6,11 @@ part of 'library_item_response.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$LibraryItemResponseImpl _$$LibraryItemResponseImplFromJson(
-        Map<String, dynamic> json) =>
-    _$LibraryItemResponseImpl(
-      result:
-          DetailedLibraryItem.fromJson(json['result'] as Map<String, dynamic>),
+_LibraryItemResponse _$LibraryItemResponseFromJson(Map<String, dynamic> json) =>
+    _LibraryItemResponse(
+      result: DetailedLibraryItem.fromJson(
+        json['result'] as Map<String, dynamic>,
+      ),
       total: (json['total'] as num).toInt(),
       limit: (json['limit'] as num?)?.toInt(),
       page: (json['page'] as num?)?.toInt(),
@@ -23,18 +23,18 @@ _$LibraryItemResponseImpl _$$LibraryItemResponseImplFromJson(
       include: json['include'] as String?,
     );
 
-Map<String, dynamic> _$$LibraryItemResponseImplToJson(
-        _$LibraryItemResponseImpl instance) =>
-    <String, dynamic>{
-      'result': instance.result,
-      'total': instance.total,
-      'limit': instance.limit,
-      'page': instance.page,
-      'sortBy': instance.sortBy,
-      'sortDesc': instance.sortDesc,
-      'filterBy': instance.filterBy,
-      'mediaType': instance.mediaType,
-      'minified': instance.minified,
-      'collapseseries': instance.collapseseries,
-      'include': instance.include,
-    };
+Map<String, dynamic> _$LibraryItemResponseToJson(
+  _LibraryItemResponse instance,
+) => <String, dynamic>{
+  'result': instance.result,
+  'total': instance.total,
+  'limit': instance.limit,
+  'page': instance.page,
+  'sortBy': instance.sortBy,
+  'sortDesc': instance.sortDesc,
+  'filterBy': instance.filterBy,
+  'mediaType': instance.mediaType,
+  'minified': instance.minified,
+  'collapseseries': instance.collapseseries,
+  'include': instance.include,
+};

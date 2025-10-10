@@ -6,18 +6,17 @@ part of 'permissions.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PermissionsImpl _$$PermissionsImplFromJson(Map<String, dynamic> json) =>
-    _$PermissionsImpl(
-      download: json['download'] as bool?,
-      update: json['update'] as bool?,
-      delete: json['delete'] as bool?,
-      upload: json['upload'] as bool?,
-      accessAllLibraries: json['accessAllLibraries'] as bool?,
-      accessAllTags: json['accessAllTags'] as bool?,
-      accessExplicitContent: json['accessExplicitContent'] as bool?,
-    );
+_Permissions _$PermissionsFromJson(Map<String, dynamic> json) => _Permissions(
+  download: json['download'] as bool?,
+  update: json['update'] as bool?,
+  delete: json['delete'] as bool?,
+  upload: json['upload'] as bool?,
+  accessAllLibraries: json['accessAllLibraries'] as bool?,
+  accessAllTags: json['accessAllTags'] as bool?,
+  accessExplicitContent: json['accessExplicitContent'] as bool?,
+);
 
-Map<String, dynamic> _$$PermissionsImplToJson(_$PermissionsImpl instance) =>
+Map<String, dynamic> _$PermissionsToJson(_Permissions instance) =>
     <String, dynamic>{
       'download': instance.download,
       'update': instance.update,

@@ -4,7 +4,7 @@ part 'bookmark.freezed.dart';
 part 'bookmark.g.dart';
 
 @freezed
-class Bookmark with _$Bookmark {
+sealed class Bookmark with _$Bookmark {
   factory Bookmark({
     required String id,
     required String libraryItemId,
@@ -14,6 +14,7 @@ class Bookmark with _$Bookmark {
     required int createdAt,
     required int updatedAt,
   }) = _Bookmark;
-  
-  factory Bookmark.fromJson(Map<String, dynamic> json) => _$BookmarkFromJson(json);
+
+  factory Bookmark.fromJson(Map<String, dynamic> json) =>
+      _$BookmarkFromJson(json);
 }

@@ -14,7 +14,7 @@ class DownloadsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final downloadedItemsAsync = ref.watch(downloadedItemsProvider);
-    final serverSettings = ref.read(serverSettingsNotifierProvider);
+    final serverSettings = ref.read(serverSettingsProvider);
 
     return ResponsiveLayout(
       body: _buildBody(context, ref, downloadedItemsAsync),
@@ -25,7 +25,10 @@ class DownloadsPage extends ConsumerWidget {
   }
 
   Widget _buildBody(
-      BuildContext context, WidgetRef ref, AsyncValue downloadedItemsAsync) {
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue downloadedItemsAsync,
+  ) {
     return downloadedItemsAsync.when(
       data: (items) {
         if (items.isEmpty) {
@@ -33,26 +36,16 @@ class DownloadsPage extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.download_outlined,
-                  size: 64,
-                  color: Colors.grey,
-                ),
+                Icon(Icons.download_outlined, size: 64, color: Colors.grey),
                 SizedBox(height: 16),
                 Text(
                   'No downloads yet',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
                 ),
                 SizedBox(height: 8),
                 Text(
                   'Download audiobooks to listen offline',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
               ],
             ),
@@ -77,7 +70,8 @@ class DownloadsPage extends ConsumerWidget {
                         builder: (context) => AlertDialog(
                           title: const Text('Delete Download'),
                           content: Text(
-                              'Are you sure you want to delete "${item.title}"?'),
+                            'Are you sure you want to delete "${item.title}"?',
+                          ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(false),
@@ -92,8 +86,9 @@ class DownloadsPage extends ConsumerWidget {
                       );
 
                       if (confirmed == true) {
-                        final downloadService =
-                            ref.read(downloadServiceProvider);
+                        final downloadService = ref.read(
+                          downloadServiceProvider,
+                        );
                         final success = await downloadService
                             .deleteDownloadedItem(item.path);
 
@@ -141,18 +136,12 @@ class DownloadsPage extends ConsumerWidget {
           },
         );
       },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red,
-            ),
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
             const SizedBox(height: 16),
             Text(
               'Error loading downloads',

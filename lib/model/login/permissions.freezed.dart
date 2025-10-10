@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,300 +9,293 @@ part of 'permissions.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
 
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-Permissions _$PermissionsFromJson(Map<String, dynamic> json) {
-  return _Permissions.fromJson(json);
-}
-
 /// @nodoc
-mixin _$Permissions {
-  bool? get download => throw _privateConstructorUsedError;
-  bool? get update => throw _privateConstructorUsedError;
-  bool? get delete => throw _privateConstructorUsedError;
-  bool? get upload => throw _privateConstructorUsedError;
-  bool? get accessAllLibraries => throw _privateConstructorUsedError;
-  bool? get accessAllTags => throw _privateConstructorUsedError;
-  bool? get accessExplicitContent => throw _privateConstructorUsedError;
+mixin _$Permissions implements DiagnosticableTreeMixin {
+
+ bool? get download; bool? get update; bool? get delete; bool? get upload; bool? get accessAllLibraries; bool? get accessAllTags; bool? get accessExplicitContent;
+/// Create a copy of Permissions
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PermissionsCopyWith<Permissions> get copyWith => _$PermissionsCopyWithImpl<Permissions>(this as Permissions, _$identity);
 
   /// Serializes this Permissions to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of Permissions
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PermissionsCopyWith<Permissions> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'Permissions'))
+    ..add(DiagnosticsProperty('download', download))..add(DiagnosticsProperty('update', update))..add(DiagnosticsProperty('delete', delete))..add(DiagnosticsProperty('upload', upload))..add(DiagnosticsProperty('accessAllLibraries', accessAllLibraries))..add(DiagnosticsProperty('accessAllTags', accessAllTags))..add(DiagnosticsProperty('accessExplicitContent', accessExplicitContent));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Permissions&&(identical(other.download, download) || other.download == download)&&(identical(other.update, update) || other.update == update)&&(identical(other.delete, delete) || other.delete == delete)&&(identical(other.upload, upload) || other.upload == upload)&&(identical(other.accessAllLibraries, accessAllLibraries) || other.accessAllLibraries == accessAllLibraries)&&(identical(other.accessAllTags, accessAllTags) || other.accessAllTags == accessAllTags)&&(identical(other.accessExplicitContent, accessExplicitContent) || other.accessExplicitContent == accessExplicitContent));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,download,update,delete,upload,accessAllLibraries,accessAllTags,accessExplicitContent);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'Permissions(download: $download, update: $update, delete: $delete, upload: $upload, accessAllLibraries: $accessAllLibraries, accessAllTags: $accessAllTags, accessExplicitContent: $accessExplicitContent)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $PermissionsCopyWith<$Res> {
-  factory $PermissionsCopyWith(
-          Permissions value, $Res Function(Permissions) then) =
-      _$PermissionsCopyWithImpl<$Res, Permissions>;
-  @useResult
-  $Res call(
-      {bool? download,
-      bool? update,
-      bool? delete,
-      bool? upload,
-      bool? accessAllLibraries,
-      bool? accessAllTags,
-      bool? accessExplicitContent});
-}
+abstract mixin class $PermissionsCopyWith<$Res>  {
+  factory $PermissionsCopyWith(Permissions value, $Res Function(Permissions) _then) = _$PermissionsCopyWithImpl;
+@useResult
+$Res call({
+ bool? download, bool? update, bool? delete, bool? upload, bool? accessAllLibraries, bool? accessAllTags, bool? accessExplicitContent
+});
 
+
+
+
+}
 /// @nodoc
-class _$PermissionsCopyWithImpl<$Res, $Val extends Permissions>
+class _$PermissionsCopyWithImpl<$Res>
     implements $PermissionsCopyWith<$Res> {
-  _$PermissionsCopyWithImpl(this._value, this._then);
+  _$PermissionsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final Permissions _self;
+  final $Res Function(Permissions) _then;
 
-  /// Create a copy of Permissions
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? download = freezed,
-    Object? update = freezed,
-    Object? delete = freezed,
-    Object? upload = freezed,
-    Object? accessAllLibraries = freezed,
-    Object? accessAllTags = freezed,
-    Object? accessExplicitContent = freezed,
-  }) {
-    return _then(_value.copyWith(
-      download: freezed == download
-          ? _value.download
-          : download // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      update: freezed == update
-          ? _value.update
-          : update // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      delete: freezed == delete
-          ? _value.delete
-          : delete // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      upload: freezed == upload
-          ? _value.upload
-          : upload // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      accessAllLibraries: freezed == accessAllLibraries
-          ? _value.accessAllLibraries
-          : accessAllLibraries // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      accessAllTags: freezed == accessAllTags
-          ? _value.accessAllTags
-          : accessAllTags // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      accessExplicitContent: freezed == accessExplicitContent
-          ? _value.accessExplicitContent
-          : accessExplicitContent // ignore: cast_nullable_to_non_nullable
-              as bool?,
-    ) as $Val);
-  }
+/// Create a copy of Permissions
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? download = freezed,Object? update = freezed,Object? delete = freezed,Object? upload = freezed,Object? accessAllLibraries = freezed,Object? accessAllTags = freezed,Object? accessExplicitContent = freezed,}) {
+  return _then(_self.copyWith(
+download: freezed == download ? _self.download : download // ignore: cast_nullable_to_non_nullable
+as bool?,update: freezed == update ? _self.update : update // ignore: cast_nullable_to_non_nullable
+as bool?,delete: freezed == delete ? _self.delete : delete // ignore: cast_nullable_to_non_nullable
+as bool?,upload: freezed == upload ? _self.upload : upload // ignore: cast_nullable_to_non_nullable
+as bool?,accessAllLibraries: freezed == accessAllLibraries ? _self.accessAllLibraries : accessAllLibraries // ignore: cast_nullable_to_non_nullable
+as bool?,accessAllTags: freezed == accessAllTags ? _self.accessAllTags : accessAllTags // ignore: cast_nullable_to_non_nullable
+as bool?,accessExplicitContent: freezed == accessExplicitContent ? _self.accessExplicitContent : accessExplicitContent // ignore: cast_nullable_to_non_nullable
+as bool?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$PermissionsImplCopyWith<$Res>
-    implements $PermissionsCopyWith<$Res> {
-  factory _$$PermissionsImplCopyWith(
-          _$PermissionsImpl value, $Res Function(_$PermissionsImpl) then) =
-      __$$PermissionsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {bool? download,
-      bool? update,
-      bool? delete,
-      bool? upload,
-      bool? accessAllLibraries,
-      bool? accessAllTags,
-      bool? accessExplicitContent});
 }
 
-/// @nodoc
-class __$$PermissionsImplCopyWithImpl<$Res>
-    extends _$PermissionsCopyWithImpl<$Res, _$PermissionsImpl>
-    implements _$$PermissionsImplCopyWith<$Res> {
-  __$$PermissionsImplCopyWithImpl(
-      _$PermissionsImpl _value, $Res Function(_$PermissionsImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of Permissions
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? download = freezed,
-    Object? update = freezed,
-    Object? delete = freezed,
-    Object? upload = freezed,
-    Object? accessAllLibraries = freezed,
-    Object? accessAllTags = freezed,
-    Object? accessExplicitContent = freezed,
-  }) {
-    return _then(_$PermissionsImpl(
-      download: freezed == download
-          ? _value.download
-          : download // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      update: freezed == update
-          ? _value.update
-          : update // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      delete: freezed == delete
-          ? _value.delete
-          : delete // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      upload: freezed == upload
-          ? _value.upload
-          : upload // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      accessAllLibraries: freezed == accessAllLibraries
-          ? _value.accessAllLibraries
-          : accessAllLibraries // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      accessAllTags: freezed == accessAllTags
-          ? _value.accessAllTags
-          : accessAllTags // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      accessExplicitContent: freezed == accessExplicitContent
-          ? _value.accessExplicitContent
-          : accessExplicitContent // ignore: cast_nullable_to_non_nullable
-              as bool?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [Permissions].
+extension PermissionsPatterns on Permissions {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Permissions value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Permissions() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Permissions value)  $default,){
+final _that = this;
+switch (_that) {
+case _Permissions():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Permissions value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Permissions() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool? download,  bool? update,  bool? delete,  bool? upload,  bool? accessAllLibraries,  bool? accessAllTags,  bool? accessExplicitContent)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Permissions() when $default != null:
+return $default(_that.download,_that.update,_that.delete,_that.upload,_that.accessAllLibraries,_that.accessAllTags,_that.accessExplicitContent);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool? download,  bool? update,  bool? delete,  bool? upload,  bool? accessAllLibraries,  bool? accessAllTags,  bool? accessExplicitContent)  $default,) {final _that = this;
+switch (_that) {
+case _Permissions():
+return $default(_that.download,_that.update,_that.delete,_that.upload,_that.accessAllLibraries,_that.accessAllTags,_that.accessExplicitContent);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool? download,  bool? update,  bool? delete,  bool? upload,  bool? accessAllLibraries,  bool? accessAllTags,  bool? accessExplicitContent)?  $default,) {final _that = this;
+switch (_that) {
+case _Permissions() when $default != null:
+return $default(_that.download,_that.update,_that.delete,_that.upload,_that.accessAllLibraries,_that.accessAllTags,_that.accessExplicitContent);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$PermissionsImpl with DiagnosticableTreeMixin implements _Permissions {
-  const _$PermissionsImpl(
-      {this.download,
-      this.update,
-      this.delete,
-      this.upload,
-      this.accessAllLibraries,
-      this.accessAllTags,
-      this.accessExplicitContent});
 
-  factory _$PermissionsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PermissionsImplFromJson(json);
+class _Permissions with DiagnosticableTreeMixin implements Permissions {
+  const _Permissions({this.download, this.update, this.delete, this.upload, this.accessAllLibraries, this.accessAllTags, this.accessExplicitContent});
+  factory _Permissions.fromJson(Map<String, dynamic> json) => _$PermissionsFromJson(json);
 
-  @override
-  final bool? download;
-  @override
-  final bool? update;
-  @override
-  final bool? delete;
-  @override
-  final bool? upload;
-  @override
-  final bool? accessAllLibraries;
-  @override
-  final bool? accessAllTags;
-  @override
-  final bool? accessExplicitContent;
+@override final  bool? download;
+@override final  bool? update;
+@override final  bool? delete;
+@override final  bool? upload;
+@override final  bool? accessAllLibraries;
+@override final  bool? accessAllTags;
+@override final  bool? accessExplicitContent;
 
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Permissions(download: $download, update: $update, delete: $delete, upload: $upload, accessAllLibraries: $accessAllLibraries, accessAllTags: $accessAllTags, accessExplicitContent: $accessExplicitContent)';
-  }
+/// Create a copy of Permissions
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PermissionsCopyWith<_Permissions> get copyWith => __$PermissionsCopyWithImpl<_Permissions>(this, _$identity);
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'Permissions'))
-      ..add(DiagnosticsProperty('download', download))
-      ..add(DiagnosticsProperty('update', update))
-      ..add(DiagnosticsProperty('delete', delete))
-      ..add(DiagnosticsProperty('upload', upload))
-      ..add(DiagnosticsProperty('accessAllLibraries', accessAllLibraries))
-      ..add(DiagnosticsProperty('accessAllTags', accessAllTags))
-      ..add(
-          DiagnosticsProperty('accessExplicitContent', accessExplicitContent));
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PermissionsImpl &&
-            (identical(other.download, download) ||
-                other.download == download) &&
-            (identical(other.update, update) || other.update == update) &&
-            (identical(other.delete, delete) || other.delete == delete) &&
-            (identical(other.upload, upload) || other.upload == upload) &&
-            (identical(other.accessAllLibraries, accessAllLibraries) ||
-                other.accessAllLibraries == accessAllLibraries) &&
-            (identical(other.accessAllTags, accessAllTags) ||
-                other.accessAllTags == accessAllTags) &&
-            (identical(other.accessExplicitContent, accessExplicitContent) ||
-                other.accessExplicitContent == accessExplicitContent));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, download, update, delete, upload,
-      accessAllLibraries, accessAllTags, accessExplicitContent);
-
-  /// Create a copy of Permissions
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$PermissionsImplCopyWith<_$PermissionsImpl> get copyWith =>
-      __$$PermissionsImplCopyWithImpl<_$PermissionsImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PermissionsImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$PermissionsToJson(this, );
+}
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'Permissions'))
+    ..add(DiagnosticsProperty('download', download))..add(DiagnosticsProperty('update', update))..add(DiagnosticsProperty('delete', delete))..add(DiagnosticsProperty('upload', upload))..add(DiagnosticsProperty('accessAllLibraries', accessAllLibraries))..add(DiagnosticsProperty('accessAllTags', accessAllTags))..add(DiagnosticsProperty('accessExplicitContent', accessExplicitContent));
 }
 
-abstract class _Permissions implements Permissions {
-  const factory _Permissions(
-      {final bool? download,
-      final bool? update,
-      final bool? delete,
-      final bool? upload,
-      final bool? accessAllLibraries,
-      final bool? accessAllTags,
-      final bool? accessExplicitContent}) = _$PermissionsImpl;
-
-  factory _Permissions.fromJson(Map<String, dynamic> json) =
-      _$PermissionsImpl.fromJson;
-
-  @override
-  bool? get download;
-  @override
-  bool? get update;
-  @override
-  bool? get delete;
-  @override
-  bool? get upload;
-  @override
-  bool? get accessAllLibraries;
-  @override
-  bool? get accessAllTags;
-  @override
-  bool? get accessExplicitContent;
-
-  /// Create a copy of Permissions
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PermissionsImplCopyWith<_$PermissionsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Permissions&&(identical(other.download, download) || other.download == download)&&(identical(other.update, update) || other.update == update)&&(identical(other.delete, delete) || other.delete == delete)&&(identical(other.upload, upload) || other.upload == upload)&&(identical(other.accessAllLibraries, accessAllLibraries) || other.accessAllLibraries == accessAllLibraries)&&(identical(other.accessAllTags, accessAllTags) || other.accessAllTags == accessAllTags)&&(identical(other.accessExplicitContent, accessExplicitContent) || other.accessExplicitContent == accessExplicitContent));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,download,update,delete,upload,accessAllLibraries,accessAllTags,accessExplicitContent);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'Permissions(download: $download, update: $update, delete: $delete, upload: $upload, accessAllLibraries: $accessAllLibraries, accessAllTags: $accessAllTags, accessExplicitContent: $accessExplicitContent)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PermissionsCopyWith<$Res> implements $PermissionsCopyWith<$Res> {
+  factory _$PermissionsCopyWith(_Permissions value, $Res Function(_Permissions) _then) = __$PermissionsCopyWithImpl;
+@override @useResult
+$Res call({
+ bool? download, bool? update, bool? delete, bool? upload, bool? accessAllLibraries, bool? accessAllTags, bool? accessExplicitContent
+});
+
+
+
+
+}
+/// @nodoc
+class __$PermissionsCopyWithImpl<$Res>
+    implements _$PermissionsCopyWith<$Res> {
+  __$PermissionsCopyWithImpl(this._self, this._then);
+
+  final _Permissions _self;
+  final $Res Function(_Permissions) _then;
+
+/// Create a copy of Permissions
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? download = freezed,Object? update = freezed,Object? delete = freezed,Object? upload = freezed,Object? accessAllLibraries = freezed,Object? accessAllTags = freezed,Object? accessExplicitContent = freezed,}) {
+  return _then(_Permissions(
+download: freezed == download ? _self.download : download // ignore: cast_nullable_to_non_nullable
+as bool?,update: freezed == update ? _self.update : update // ignore: cast_nullable_to_non_nullable
+as bool?,delete: freezed == delete ? _self.delete : delete // ignore: cast_nullable_to_non_nullable
+as bool?,upload: freezed == upload ? _self.upload : upload // ignore: cast_nullable_to_non_nullable
+as bool?,accessAllLibraries: freezed == accessAllLibraries ? _self.accessAllLibraries : accessAllLibraries // ignore: cast_nullable_to_non_nullable
+as bool?,accessAllTags: freezed == accessAllTags ? _self.accessAllTags : accessAllTags // ignore: cast_nullable_to_non_nullable
+as bool?,accessExplicitContent: freezed == accessExplicitContent ? _self.accessExplicitContent : accessExplicitContent // ignore: cast_nullable_to_non_nullable
+as bool?,
+  ));
+}
+
+
+}
+
+// dart format on

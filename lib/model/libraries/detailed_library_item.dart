@@ -7,7 +7,7 @@ part 'detailed_library_item.freezed.dart';
 part 'detailed_library_item.g.dart';
 
 @freezed
-class DetailedLibraryItem with _$DetailedLibraryItem {
+sealed class DetailedLibraryItem with _$DetailedLibraryItem {
   const factory DetailedLibraryItem({
     required String id,
     required String ino,

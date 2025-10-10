@@ -6,7 +6,7 @@ part 'library_item.freezed.dart';
 part 'library_item.g.dart';
 
 @freezed
-class LibraryItem with _$LibraryItem {
+sealed class LibraryItem with _$LibraryItem {
   const factory LibraryItem({
     required String id,
     required String? ino,

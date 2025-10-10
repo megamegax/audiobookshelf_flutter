@@ -56,7 +56,7 @@ class _AuthorDetailsPageState extends ConsumerState<AuthorDetailsPage> {
         _error = null;
       });
 
-      final userModel = ref.read(userModelNotifierProvider);
+      final userModel = ref.read(userModelProvider);
       if (userModel == null) {
         setState(() {
           _error = 'User not logged in';
@@ -98,7 +98,7 @@ class _AuthorDetailsPageState extends ConsumerState<AuthorDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final serverSettings = ref.read(serverSettingsNotifierProvider);
+    final serverSettings = ref.read(serverSettingsProvider);
 
     return ResponsiveLayout(
       body: _buildBody(context),

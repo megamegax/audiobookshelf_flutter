@@ -4,7 +4,7 @@ part 'device_info_response.freezed.dart';
 part 'device_info_response.g.dart';
 
 @freezed
-class DeviceInfoResponse with _$DeviceInfoResponse {
+sealed class DeviceInfoResponse with _$DeviceInfoResponse {
   const factory DeviceInfoResponse({required String clientVersion}) =
       _DeviceInfoResponse;
 

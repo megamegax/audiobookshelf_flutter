@@ -32,10 +32,10 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final bookmarksAsync =
-        ref.watch(bookmarkNotifierProvider(widget.libraryItemId));
-    final bookmarkNotifier =
-        ref.read(bookmarkNotifierProvider(widget.libraryItemId).notifier);
+    final bookmarksAsync = ref.watch(bookmarkProvider(widget.libraryItemId));
+    final bookmarkNotifier = ref.read(
+      bookmarkProvider(widget.libraryItemId).notifier,
+    );
 
     return Dialog(
       child: Container(
@@ -47,8 +47,9 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
+                ),
               ),
               child: Row(
                 children: [
@@ -63,23 +64,23 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
                       children: [
                         Text(
                           'Bookmarks',
-                          style:
-                              Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onPrimaryContainer,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                         Text(
                           widget.bookTitle,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onPrimaryContainer
-                                        .withOpacity(0.8),
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer
+                                    .withOpacity(0.8),
+                              ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -121,10 +122,8 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
                       Text(
                         error.toString(),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
@@ -144,8 +143,9 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
-                    color:
-                        Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outline.withOpacity(0.2),
                   ),
                 ),
               ),
@@ -158,7 +158,9 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
   }
 
   Widget _buildBookmarksList(
-      List<Bookmark> bookmarks, BookmarkNotifier bookmarkNotifier) {
+    List<Bookmark> bookmarks,
+    BookmarkNotifier bookmarkNotifier,
+  ) {
     if (bookmarks.isEmpty) {
       return Center(
         child: Column(
@@ -173,15 +175,15 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
             Text(
               'No bookmarks yet',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               'Add your first bookmark using the form below',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -200,7 +202,9 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
   }
 
   Widget _buildBookmarkItem(
-      Bookmark bookmark, BookmarkNotifier bookmarkNotifier) {
+    Bookmark bookmark,
+    BookmarkNotifier bookmarkNotifier,
+  ) {
     final timeFormatted = _formatTime(bookmark.time);
 
     return Card(
@@ -211,23 +215,19 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
           child: Text(
             timeFormatted,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  fontWeight: FontWeight.bold,
-                ),
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         title: Text(
           bookmark.title,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: bookmark.note?.isNotEmpty == true
-            ? Text(
-                bookmark.note!,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              )
+            ? Text(bookmark.note!, maxLines: 2, overflow: TextOverflow.ellipsis)
             : null,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -260,9 +260,9 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
       children: [
         Text(
           _editingBookmark != null ? 'Edit Bookmark' : 'Add Bookmark',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 12),
         TextField(
@@ -288,10 +288,7 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             if (_editingBookmark != null) ...[
-              TextButton(
-                onPressed: _cancelEdit,
-                child: const Text('Cancel'),
-              ),
+              TextButton(onPressed: _cancelEdit, child: const Text('Cancel')),
               const SizedBox(width: 8),
             ],
             ElevatedButton(
@@ -322,14 +319,10 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
       _cancelEdit();
     } else {
       // Add new bookmark at current position
-      final playerService = ref.read(playerServiceProvider.notifier);
+      final playerService = ref.read(playerServiceProvider);
       final currentTime = playerService.overallCurrentTime();
 
-      await bookmarkNotifier.addBookmark(
-        currentTime.round(),
-        title,
-        note,
-      );
+      await bookmarkNotifier.addBookmark(currentTime.round(), title, note);
 
       _clearForm();
     }
@@ -356,7 +349,9 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
   }
 
   void _deleteBookmark(
-      Bookmark bookmark, BookmarkNotifier bookmarkNotifier) async {
+    Bookmark bookmark,
+    BookmarkNotifier bookmarkNotifier,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -385,7 +380,7 @@ class _BookmarksDialogState extends ConsumerState<BookmarksDialog> {
   }
 
   void _jumpToBookmark(Bookmark bookmark) async {
-    final playerService = ref.read(playerServiceProvider.notifier);
+    final playerService = ref.read(playerServiceProvider);
     await playerService.seekTo(bookmark.time.toDouble());
     Navigator.of(context).pop();
   }

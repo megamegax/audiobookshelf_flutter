@@ -7,7 +7,7 @@ part 'login_response.freezed.dart';
 part 'login_response.g.dart';
 
 @freezed
-class LoginResponse with _$LoginResponse {
+sealed class LoginResponse with _$LoginResponse {
   const factory LoginResponse({
     required UserModel user,
     required String userDefaultLibraryId,

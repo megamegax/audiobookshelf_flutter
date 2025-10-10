@@ -1,5 +1,8 @@
 import 'package:audiobookshelf_flutter/services/download_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'download_provider.g.dart';
 
 // Download progress state
 class DownloadProgress {
@@ -31,9 +34,10 @@ class DownloadProgress {
 }
 
 // Download state notifier
-class DownloadStateNotifier
-    extends StateNotifier<Map<String, DownloadProgress>> {
-  DownloadStateNotifier() : super({});
+@riverpod
+class DownloadStateNotifier extends _$DownloadStateNotifier {
+  @override
+  Map<String, DownloadProgress> build() => {};
 
   void startDownload(String itemId) {
     state = {
@@ -49,7 +53,8 @@ class DownloadStateNotifier
   void updateProgress(String itemId, double progress) {
     state = {
       ...state,
-      itemId: state[itemId]?.copyWith(progress: progress) ??
+      itemId:
+          state[itemId]?.copyWith(progress: progress) ??
           DownloadProgress(
             itemId: itemId,
             progress: progress,
@@ -61,25 +66,17 @@ class DownloadStateNotifier
   void completeDownload(String itemId) {
     state = {
       ...state,
-      itemId: state[itemId]?.copyWith(
-            progress: 1.0,
-            isDownloading: false,
-          ) ??
-          DownloadProgress(
-            itemId: itemId,
-            progress: 1.0,
-            isDownloading: false,
-          ),
+      itemId:
+          state[itemId]?.copyWith(progress: 1.0, isDownloading: false) ??
+          DownloadProgress(itemId: itemId, progress: 1.0, isDownloading: false),
     };
   }
 
   void errorDownload(String itemId, String error) {
     state = {
       ...state,
-      itemId: state[itemId]?.copyWith(
-            isDownloading: false,
-            error: error,
-          ) ??
+      itemId:
+          state[itemId]?.copyWith(isDownloading: false, error: error) ??
           DownloadProgress(
             itemId: itemId,
             progress: 0.0,
@@ -104,15 +101,8 @@ class DownloadStateNotifier
   }
 }
 
-// Providers
-final downloadStateProvider =
-    StateNotifierProvider<DownloadStateNotifier, Map<String, DownloadProgress>>(
-        (ref) {
-  return DownloadStateNotifier();
-});
-
-final downloadedItemsProvider =
-    FutureProvider<List<DownloadedItem>>((ref) async {
+@riverpod
+Future<List<DownloadedItem>> downloadedItems(Ref ref) async {
   final downloadService = ref.watch(downloadServiceProvider);
   return await downloadService.getDownloadedItems();
-});
+}

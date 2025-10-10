@@ -5,7 +5,8 @@ import 'package:audiobookshelf_flutter/widgets/bookmarks_dialog.dart';
 import 'package:audiobookshelf_flutter/widgets/playback_speed_button.dart';
 import 'package:audiobookshelf_flutter/widgets/sleep_timer_dialog.dart';
 import 'package:audiobookshelf_flutter/provider/sleep_timer_provider.dart';
-import 'package:audiobookshelf_flutter/provider/player_state_provider.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_notifier.dart';
+import 'package:audiobookshelf_flutter/provider/player_overlay_notifier.dart';
 
 import 'package:audiobookshelf_flutter/widgets/full_screen_wavy_progress_bar.dart';
 import 'dart:ui';
@@ -15,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 
-class PlayerOverlay extends ConsumerStatefulWidget {
+class PlayerOverlay extends ConsumerWidget {
   final AudioPlayer audioPlayer;
   final MediaItem mediaItem;
   final LibraryItemEntity libraryItem;
@@ -26,23 +27,21 @@ class PlayerOverlay extends ConsumerStatefulWidget {
       {super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PlayerOverlayState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the player overlay state
+    final playerOverlayState = ref.watch(playerOverlayProvider(
+      audioPlayer: audioPlayer,
+      playerService: playerService,
+      mediaItem: mediaItem,
+    ));
+    final playerOverlayNotifier = ref.read(playerOverlayProvider(
+      audioPlayer: audioPlayer,
+      playerService: playerService,
+      mediaItem: mediaItem,
+    ).notifier);
 
-class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Create provider parameters
-    final providerParams = {
-      'audioPlayer': widget.audioPlayer,
-      'playerService': widget.playerService,
-      'mediaItem': widget.mediaItem,
-    };
+    // Watch the audio player state for play/pause
+    final audioPlayerState = ref.watch(audioPlayerProvider);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -50,7 +49,7 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
         children: [
           // Blurred background image - covers entire screen
           Positioned.fill(
-            child: widget.mediaItem.extras!['coverBytes'] != null
+            child: mediaItem.extras!['coverBytes'] != null
                 ? Stack(
                     children: [
                       // Full screen blurred background image
@@ -59,8 +58,8 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                         height: double.infinity,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: MemoryImage(widget
-                                .mediaItem.extras!['coverBytes'] as Uint8List),
+                            image: MemoryImage(
+                                mediaItem.extras!['coverBytes'] as Uint8List),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -89,7 +88,7 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                     ),
                     child: Center(
                       child: Hero(
-                        tag: 'playerCover${widget.libraryItem.itemId}',
+                        tag: 'playerCover${libraryItem.itemId}',
                         child: Container(
                           width: 280,
                           height: 280,
@@ -155,8 +154,8 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                             showDialog(
                               context: context,
                               builder: (context) => BookmarksDialog(
-                                libraryItemId: widget.libraryItem.itemId,
-                                bookTitle: widget.mediaItem.title,
+                                libraryItemId: libraryItem.itemId,
+                                bookTitle: mediaItem.title,
                               ),
                             );
                           },
@@ -206,10 +205,9 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                           const SizedBox(height: 24),
 
                           // Cover image
-                          if (widget.mediaItem.extras!['coverBytes'] != null)
+                          if (mediaItem.extras!['coverBytes'] != null)
                             Hero(
-                              tag:
-                                  'fallbackPlayerCover${widget.libraryItem.itemId}',
+                              tag: 'fallbackPlayerCover${libraryItem.itemId}',
                               child: Container(
                                 width: 200,
                                 height: 200,
@@ -226,7 +224,7 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(16),
                                   child: Image.memory(
-                                    widget.mediaItem.extras!['coverBytes']
+                                    mediaItem.extras!['coverBytes']
                                         as Uint8List,
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
@@ -248,7 +246,7 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                               ),
                             ),
 
-                          if (widget.mediaItem.extras!['coverBytes'] != null)
+                          if (mediaItem.extras!['coverBytes'] != null)
                             const SizedBox(height: 24),
 
                           // Title and author
@@ -256,7 +254,7 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                widget.mediaItem.title,
+                                mediaItem.title,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall
@@ -272,7 +270,7 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                widget.mediaItem.displayDescription ?? '',
+                                mediaItem.displayDescription ?? '',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -297,94 +295,80 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                           const SizedBox(height: 24),
 
                           // Progress section - using Riverpod
-                          Consumer(
-                            builder: (context, ref, child) {
-                              final playerState = ref.watch(
-                                  playerOverlayStateProvider(providerParams));
-                              final playerNotifier = ref.read(
-                                  playerOverlayStateProvider(providerParams)
-                                      .notifier);
-
-                              return Column(
-                                children: [
-                                  // Time display
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          durationToReadable(
-                                              playerState.position),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurfaceVariant,
-                                                fontFamily: 'monospace',
-                                              ),
-                                        ),
-                                        const Spacer(),
-                                        Text(
-                                          playerState.isChapterMode
-                                              ? "-${durationToReadable(Duration(seconds: (playerState.currentChapterDuration.inSeconds - (playerState.position.inSeconds - widget.playerService.currentTrackStartOffset().round())).clamp(0, playerState.currentChapterDuration.inSeconds)))}"
-                                              : "-${durationToReadable(Duration(seconds: (playerState.duration ?? Duration.zero).inSeconds - (playerState.position.inSeconds).round()))}",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurfaceVariant,
-                                                fontFamily: 'monospace',
-                                              ),
-                                        ),
-                                      ],
+                          Column(
+                            children: [
+                              // Time display
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      durationToReadable(
+                                          playerOverlayState.position),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                            fontFamily: 'monospace',
+                                          ),
                                     ),
-                                  ),
+                                    const Spacer(),
+                                    Text(
+                                      playerOverlayState.isChapterMode
+                                          ? "-${durationToReadable(Duration(seconds: (playerOverlayState.currentChapterDuration.inSeconds - (playerOverlayState.position.inSeconds - playerService.currentTrackStartOffset().round())).clamp(0, playerOverlayState.currentChapterDuration.inSeconds)))}"
+                                          : "-${durationToReadable(Duration(seconds: (playerOverlayState.duration.inSeconds - (playerOverlayState.position.inSeconds).round())))}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                            fontFamily: 'monospace',
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
 
-                                  const SizedBox(height: 16),
+                              const SizedBox(height: 16),
 
-                                  // Enhanced wavy progress bar with toggle
-                                  FullScreenWavyProgressBar(
-                                    playerService: widget.playerService,
-                                    progress: playerState.isChapterMode
-                                        ? playerState.chapterProgress
-                                            .clamp(0.0, 1.0)
-                                        : playerState.progress,
-                                    currentPosition: playerState.position,
-                                    totalDuration: playerState.isChapterMode
-                                        ? playerState.currentChapterDuration
-                                        : (playerState.duration ??
-                                            Duration.zero),
-                                    isChapterMode: playerState.isChapterMode,
-                                    onToggleMode: () {
-                                      playerNotifier.toggleChapterMode();
-                                    },
-                                    onSeek: (seekProgress) {
-                                      if (playerState.isChapterMode) {
-                                        widget.playerService
-                                            .seekWithinCurrentTrack(
-                                                seekProgress);
-                                      } else {
-                                        final seekPosition = Duration(
-                                          seconds: ((playerState.duration
-                                                          ?.inSeconds ??
-                                                      0) *
-                                                  seekProgress)
-                                              .round(),
-                                        );
-                                        widget.audioPlayer.seek(seekPosition);
-                                      }
-                                      widget.playerService
-                                          .updateMediaProgress();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
+                              // Enhanced wavy progress bar with toggle
+                              FullScreenWavyProgressBar(
+                                playerService: playerService,
+                                progress: playerOverlayState.isChapterMode
+                                    ? playerOverlayState.chapterProgress
+                                        .clamp(0.0, 1.0)
+                                    : playerOverlayState.progress,
+                                currentPosition: playerOverlayState.position,
+                                totalDuration: playerOverlayState.isChapterMode
+                                    ? playerOverlayState.currentChapterDuration
+                                    : playerOverlayState.duration,
+                                isChapterMode: playerOverlayState.isChapterMode,
+                                onToggleMode: () {
+                                  playerOverlayNotifier.toggleChapterMode();
+                                },
+                                onSeek: (seekProgress) {
+                                  if (playerOverlayState.isChapterMode) {
+                                    playerService
+                                        .seekWithinCurrentTrack(seekProgress);
+                                  } else {
+                                    final seekPosition = Duration(
+                                      seconds: ((playerOverlayState
+                                                  .duration.inSeconds) *
+                                              seekProgress)
+                                          .round(),
+                                    );
+                                    audioPlayer.seek(seekPosition);
+                                  }
+                                  playerService.updateMediaProgress();
+                                },
+                              ),
+                            ],
                           ),
 
                           const SizedBox(height: 24),
@@ -396,22 +380,20 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                               // Previous chapter button
                               Container(
                                 decoration: BoxDecoration(
-                                  color:
-                                      widget.playerService.hasPreviousChapter()
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .surfaceContainerHighest
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .surfaceContainerHighest
-                                              .withOpacity(0.5),
+                                  color: playerService.hasPreviousChapter()
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainerHighest
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainerHighest
+                                          .withOpacity(0.5),
                                   shape: BoxShape.circle,
                                 ),
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.skip_previous,
-                                    color: widget.playerService
-                                            .hasPreviousChapter()
+                                    color: playerService.hasPreviousChapter()
                                         ? Theme.of(context)
                                             .colorScheme
                                             .onSurface
@@ -420,13 +402,11 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                                             .onSurface
                                             .withOpacity(0.5),
                                   ),
-                                  onPressed:
-                                      widget.playerService.hasPreviousChapter()
-                                          ? () {
-                                              widget.playerService
-                                                  .previousChapter();
-                                            }
-                                          : null,
+                                  onPressed: playerService.hasPreviousChapter()
+                                      ? () {
+                                          playerService.previousChapter();
+                                        }
+                                      : null,
                                   iconSize: 24,
                                   padding: const EdgeInsets.all(12),
                                 ),
@@ -447,7 +427,7 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                                         Theme.of(context).colorScheme.onSurface,
                                   ),
                                   onPressed: () {
-                                    widget.playerService.skipBackward(10);
+                                    playerService.skipBackward(10);
                                   },
                                   iconSize: 28,
                                   padding: const EdgeInsets.all(16),
@@ -472,23 +452,22 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                                 ),
                                 child: IconButton(
                                   icon: Icon(
-                                    widget.audioPlayer.playing
+                                    audioPlayerState.isPlaying
                                         ? Icons.pause
                                         : Icons.play_arrow,
                                     color:
                                         Theme.of(context).colorScheme.onPrimary,
                                   ),
                                   onPressed: () async {
-                                    if (widget.audioPlayer.playing) {
-                                      setState(() {
-                                        widget.audioPlayer.pause();
-                                      });
-                                      widget.playerService
-                                          .updateMediaProgress();
+                                    if (audioPlayerState.isPlaying) {
+                                      await ref
+                                          .read(audioPlayerProvider.notifier)
+                                          .pause();
+                                      playerService.updateMediaProgress();
                                     } else {
-                                      setState(() {
-                                        widget.audioPlayer.play();
-                                      });
+                                      await ref
+                                          .read(audioPlayerProvider.notifier)
+                                          .play();
                                     }
                                   },
                                   iconSize: 36,
@@ -511,7 +490,7 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                                         Theme.of(context).colorScheme.onSurface,
                                   ),
                                   onPressed: () {
-                                    widget.playerService.skipForward(10);
+                                    playerService.skipForward(10);
                                   },
                                   iconSize: 28,
                                   padding: const EdgeInsets.all(16),
@@ -521,7 +500,7 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                               // Next chapter button
                               Container(
                                 decoration: BoxDecoration(
-                                  color: widget.playerService.hasNextChapter()
+                                  color: playerService.hasNextChapter()
                                       ? Theme.of(context)
                                           .colorScheme
                                           .surfaceContainerHighest
@@ -534,7 +513,7 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.skip_next,
-                                    color: widget.playerService.hasNextChapter()
+                                    color: playerService.hasNextChapter()
                                         ? Theme.of(context)
                                             .colorScheme
                                             .onSurface
@@ -543,10 +522,9 @@ class _PlayerOverlayState extends ConsumerState<PlayerOverlay> {
                                             .onSurface
                                             .withOpacity(0.5),
                                   ),
-                                  onPressed: widget.playerService
-                                          .hasNextChapter()
+                                  onPressed: playerService.hasNextChapter()
                                       ? () {
-                                          widget.playerService.nextChapter();
+                                          playerService.nextChapter();
                                         }
                                       : null,
                                   iconSize: 24,

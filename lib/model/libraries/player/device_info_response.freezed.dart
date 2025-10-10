@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,159 +9,263 @@ part of 'device_info_response.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-DeviceInfoResponse _$DeviceInfoResponseFromJson(Map<String, dynamic> json) {
-  return _DeviceInfoResponse.fromJson(json);
-}
 
 /// @nodoc
 mixin _$DeviceInfoResponse {
-  String get clientVersion => throw _privateConstructorUsedError;
+
+ String get clientVersion;
+/// Create a copy of DeviceInfoResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DeviceInfoResponseCopyWith<DeviceInfoResponse> get copyWith => _$DeviceInfoResponseCopyWithImpl<DeviceInfoResponse>(this as DeviceInfoResponse, _$identity);
 
   /// Serializes this DeviceInfoResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of DeviceInfoResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DeviceInfoResponseCopyWith<DeviceInfoResponse> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeviceInfoResponse&&(identical(other.clientVersion, clientVersion) || other.clientVersion == clientVersion));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,clientVersion);
+
+@override
+String toString() {
+  return 'DeviceInfoResponse(clientVersion: $clientVersion)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $DeviceInfoResponseCopyWith<$Res> {
-  factory $DeviceInfoResponseCopyWith(
-          DeviceInfoResponse value, $Res Function(DeviceInfoResponse) then) =
-      _$DeviceInfoResponseCopyWithImpl<$Res, DeviceInfoResponse>;
-  @useResult
-  $Res call({String clientVersion});
-}
+abstract mixin class $DeviceInfoResponseCopyWith<$Res>  {
+  factory $DeviceInfoResponseCopyWith(DeviceInfoResponse value, $Res Function(DeviceInfoResponse) _then) = _$DeviceInfoResponseCopyWithImpl;
+@useResult
+$Res call({
+ String clientVersion
+});
 
+
+
+
+}
 /// @nodoc
-class _$DeviceInfoResponseCopyWithImpl<$Res, $Val extends DeviceInfoResponse>
+class _$DeviceInfoResponseCopyWithImpl<$Res>
     implements $DeviceInfoResponseCopyWith<$Res> {
-  _$DeviceInfoResponseCopyWithImpl(this._value, this._then);
+  _$DeviceInfoResponseCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final DeviceInfoResponse _self;
+  final $Res Function(DeviceInfoResponse) _then;
 
-  /// Create a copy of DeviceInfoResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? clientVersion = null,
-  }) {
-    return _then(_value.copyWith(
-      clientVersion: null == clientVersion
-          ? _value.clientVersion
-          : clientVersion // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+/// Create a copy of DeviceInfoResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? clientVersion = null,}) {
+  return _then(_self.copyWith(
+clientVersion: null == clientVersion ? _self.clientVersion : clientVersion // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$DeviceInfoResponseImplCopyWith<$Res>
-    implements $DeviceInfoResponseCopyWith<$Res> {
-  factory _$$DeviceInfoResponseImplCopyWith(_$DeviceInfoResponseImpl value,
-          $Res Function(_$DeviceInfoResponseImpl) then) =
-      __$$DeviceInfoResponseImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String clientVersion});
 }
 
-/// @nodoc
-class __$$DeviceInfoResponseImplCopyWithImpl<$Res>
-    extends _$DeviceInfoResponseCopyWithImpl<$Res, _$DeviceInfoResponseImpl>
-    implements _$$DeviceInfoResponseImplCopyWith<$Res> {
-  __$$DeviceInfoResponseImplCopyWithImpl(_$DeviceInfoResponseImpl _value,
-      $Res Function(_$DeviceInfoResponseImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of DeviceInfoResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? clientVersion = null,
-  }) {
-    return _then(_$DeviceInfoResponseImpl(
-      clientVersion: null == clientVersion
-          ? _value.clientVersion
-          : clientVersion // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+/// Adds pattern-matching-related methods to [DeviceInfoResponse].
+extension DeviceInfoResponsePatterns on DeviceInfoResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DeviceInfoResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DeviceInfoResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DeviceInfoResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _DeviceInfoResponse():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DeviceInfoResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DeviceInfoResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String clientVersion)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DeviceInfoResponse() when $default != null:
+return $default(_that.clientVersion);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String clientVersion)  $default,) {final _that = this;
+switch (_that) {
+case _DeviceInfoResponse():
+return $default(_that.clientVersion);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String clientVersion)?  $default,) {final _that = this;
+switch (_that) {
+case _DeviceInfoResponse() when $default != null:
+return $default(_that.clientVersion);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$DeviceInfoResponseImpl implements _DeviceInfoResponse {
-  const _$DeviceInfoResponseImpl({required this.clientVersion});
 
-  factory _$DeviceInfoResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$DeviceInfoResponseImplFromJson(json);
+class _DeviceInfoResponse implements DeviceInfoResponse {
+  const _DeviceInfoResponse({required this.clientVersion});
+  factory _DeviceInfoResponse.fromJson(Map<String, dynamic> json) => _$DeviceInfoResponseFromJson(json);
 
-  @override
-  final String clientVersion;
+@override final  String clientVersion;
 
-  @override
-  String toString() {
-    return 'DeviceInfoResponse(clientVersion: $clientVersion)';
-  }
+/// Create a copy of DeviceInfoResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeviceInfoResponseCopyWith<_DeviceInfoResponse> get copyWith => __$DeviceInfoResponseCopyWithImpl<_DeviceInfoResponse>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DeviceInfoResponseImpl &&
-            (identical(other.clientVersion, clientVersion) ||
-                other.clientVersion == clientVersion));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, clientVersion);
-
-  /// Create a copy of DeviceInfoResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DeviceInfoResponseImplCopyWith<_$DeviceInfoResponseImpl> get copyWith =>
-      __$$DeviceInfoResponseImplCopyWithImpl<_$DeviceInfoResponseImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$DeviceInfoResponseImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$DeviceInfoResponseToJson(this, );
 }
 
-abstract class _DeviceInfoResponse implements DeviceInfoResponse {
-  const factory _DeviceInfoResponse({required final String clientVersion}) =
-      _$DeviceInfoResponseImpl;
-
-  factory _DeviceInfoResponse.fromJson(Map<String, dynamic> json) =
-      _$DeviceInfoResponseImpl.fromJson;
-
-  @override
-  String get clientVersion;
-
-  /// Create a copy of DeviceInfoResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DeviceInfoResponseImplCopyWith<_$DeviceInfoResponseImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeviceInfoResponse&&(identical(other.clientVersion, clientVersion) || other.clientVersion == clientVersion));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,clientVersion);
+
+@override
+String toString() {
+  return 'DeviceInfoResponse(clientVersion: $clientVersion)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeviceInfoResponseCopyWith<$Res> implements $DeviceInfoResponseCopyWith<$Res> {
+  factory _$DeviceInfoResponseCopyWith(_DeviceInfoResponse value, $Res Function(_DeviceInfoResponse) _then) = __$DeviceInfoResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ String clientVersion
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeviceInfoResponseCopyWithImpl<$Res>
+    implements _$DeviceInfoResponseCopyWith<$Res> {
+  __$DeviceInfoResponseCopyWithImpl(this._self, this._then);
+
+  final _DeviceInfoResponse _self;
+  final $Res Function(_DeviceInfoResponse) _then;
+
+/// Create a copy of DeviceInfoResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? clientVersion = null,}) {
+  return _then(_DeviceInfoResponse(
+clientVersion: null == clientVersion ? _self.clientVersion : clientVersion // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+// dart format on

@@ -5,7 +5,7 @@ part 'e_book_file.freezed.dart';
 part 'e_book_file.g.dart';
 
 @freezed
-class EBookFile with _$EBookFile {
+sealed class EBookFile with _$EBookFile {
   const factory EBookFile({
     required String ino,
     FileMetadata? metadata,

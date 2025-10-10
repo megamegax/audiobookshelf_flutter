@@ -1,45 +1,37 @@
 import 'package:audiobookshelf_flutter/model/bookmark.dart';
-import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/services/bookmark_service.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'bookmark_provider.g.dart';
 
 // Provider for BookmarkService
-final bookmarkServiceProvider = Provider<BookmarkService>((ref) {
+@riverpod
+BookmarkService bookmarkService(Ref ref) {
   final libraryService = ref.read(libraryServiceProvider);
   return BookmarkService(libraryService);
-});
+}
 
 // Provider for bookmarks of a specific library item
-final bookmarksProvider =
-    FutureProvider.family<List<Bookmark>, String>((ref, libraryItemId) async {
+@riverpod
+Future<List<Bookmark>> bookmarks(Ref ref, String libraryItemId) async {
   final bookmarkService = ref.read(bookmarkServiceProvider);
-  final userModel = ref.read(userModelNotifierProvider);
+  final userModel = ref.read(userModelProvider);
   if (userModel == null) return [];
   return await bookmarkService.getBookmarks(libraryItemId, userModel);
-});
+}
 
 // Notifier for managing bookmark operations
-class BookmarkNotifier extends StateNotifier<AsyncValue<List<Bookmark>>> {
-  final BookmarkService _bookmarkService;
-  final String _libraryItemId;
-  final UserModel _userModel;
-
-  BookmarkNotifier(this._bookmarkService, this._libraryItemId, this._userModel)
-      : super(const AsyncValue.loading()) {
-    _loadBookmarks();
-  }
-
-  Future<void> _loadBookmarks() async {
-    state = const AsyncValue.loading();
-    try {
-      final bookmarks =
-          await _bookmarkService.getBookmarks(_libraryItemId, _userModel);
-      state = AsyncValue.data(bookmarks);
-    } catch (e, stackTrace) {
-      state = AsyncValue.error(e, stackTrace);
-    }
+@riverpod
+class BookmarkNotifier extends _$BookmarkNotifier {
+  @override
+  Future<List<Bookmark>> build(String libraryItemId) async {
+    final bookmarkService = ref.read(bookmarkServiceProvider);
+    final userModel = ref.read(userModelProvider);
+    if (userModel == null) return [];
+    return await bookmarkService.getBookmarks(libraryItemId, userModel);
   }
 
   Future<void> addBookmark(
@@ -48,12 +40,16 @@ class BookmarkNotifier extends StateNotifier<AsyncValue<List<Bookmark>>> {
     state = AsyncValue.data(currentBookmarks);
 
     try {
-      final newBookmark = await _bookmarkService.createBookmark(
-        _libraryItemId,
+      final bookmarkService = ref.read(bookmarkServiceProvider);
+      final userModel = ref.read(userModelProvider);
+      if (userModel == null) return;
+
+      final newBookmark = await bookmarkService.createBookmark(
+        libraryItemId,
         timeInSeconds,
         title,
         note,
-        _userModel,
+        userModel,
       );
 
       if (newBookmark != null) {
@@ -74,12 +70,16 @@ class BookmarkNotifier extends StateNotifier<AsyncValue<List<Bookmark>>> {
     state = AsyncValue.data(currentBookmarks);
 
     try {
-      final updatedBookmark = await _bookmarkService.updateBookmark(
-        _libraryItemId,
+      final bookmarkService = ref.read(bookmarkServiceProvider);
+      final userModel = ref.read(userModelProvider);
+      if (userModel == null) return;
+
+      final updatedBookmark = await bookmarkService.updateBookmark(
+        libraryItemId,
         bookmarkId,
         title,
         note,
-        _userModel,
+        userModel,
       );
 
       if (updatedBookmark != null) {
@@ -101,8 +101,12 @@ class BookmarkNotifier extends StateNotifier<AsyncValue<List<Bookmark>>> {
     state = AsyncValue.data(currentBookmarks);
 
     try {
-      final success = await _bookmarkService.deleteBookmark(
-          _libraryItemId, bookmarkId, _userModel);
+      final bookmarkService = ref.read(bookmarkServiceProvider);
+      final userModel = ref.read(userModelProvider);
+      if (userModel == null) return;
+
+      final success = await bookmarkService.deleteBookmark(
+          libraryItemId, bookmarkId, userModel);
 
       if (success) {
         final updatedBookmarks = currentBookmarks
@@ -119,17 +123,6 @@ class BookmarkNotifier extends StateNotifier<AsyncValue<List<Bookmark>>> {
   }
 
   Future<void> refresh() async {
-    await _loadBookmarks();
+    ref.invalidateSelf();
   }
 }
-
-// Provider for bookmark notifier
-final bookmarkNotifierProvider = StateNotifierProvider.family<BookmarkNotifier,
-    AsyncValue<List<Bookmark>>, String>((ref, libraryItemId) {
-  final bookmarkService = ref.read(bookmarkServiceProvider);
-  final userModel = ref.read(userModelNotifierProvider);
-  if (userModel == null) {
-    throw Exception('User not logged in');
-  }
-  return BookmarkNotifier(bookmarkService, libraryItemId, userModel);
-});

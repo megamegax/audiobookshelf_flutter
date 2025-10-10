@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,366 +9,293 @@ part of 'library_items_response.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
 /// @nodoc
 mixin _$LibraryItemsResponse {
-  List<LibraryItemNew> get results => throw _privateConstructorUsedError;
-  int get total => throw _privateConstructorUsedError;
-  int? get limit => throw _privateConstructorUsedError;
-  int? get page => throw _privateConstructorUsedError;
-  String? get sortBy => throw _privateConstructorUsedError;
-  bool get sortDesc => throw _privateConstructorUsedError;
-  String? get filterBy => throw _privateConstructorUsedError;
-  String get mediaType => throw _privateConstructorUsedError;
-  bool get minified => throw _privateConstructorUsedError;
-  bool get collapseseries => throw _privateConstructorUsedError;
-  String? get include => throw _privateConstructorUsedError;
 
-  /// Create a copy of LibraryItemsResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $LibraryItemsResponseCopyWith<LibraryItemsResponse> get copyWith =>
-      throw _privateConstructorUsedError;
+ List<LibraryItemNew> get results; int get total; int? get limit; int? get page; String? get sortBy; bool get sortDesc; String? get filterBy; String get mediaType; bool get minified; bool get collapseseries; String? get include;
+/// Create a copy of LibraryItemsResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LibraryItemsResponseCopyWith<LibraryItemsResponse> get copyWith => _$LibraryItemsResponseCopyWithImpl<LibraryItemsResponse>(this as LibraryItemsResponse, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LibraryItemsResponse&&const DeepCollectionEquality().equals(other.results, results)&&(identical(other.total, total) || other.total == total)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.page, page) || other.page == page)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.sortDesc, sortDesc) || other.sortDesc == sortDesc)&&(identical(other.filterBy, filterBy) || other.filterBy == filterBy)&&(identical(other.mediaType, mediaType) || other.mediaType == mediaType)&&(identical(other.minified, minified) || other.minified == minified)&&(identical(other.collapseseries, collapseseries) || other.collapseseries == collapseseries)&&(identical(other.include, include) || other.include == include));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(results),total,limit,page,sortBy,sortDesc,filterBy,mediaType,minified,collapseseries,include);
+
+@override
+String toString() {
+  return 'LibraryItemsResponse(results: $results, total: $total, limit: $limit, page: $page, sortBy: $sortBy, sortDesc: $sortDesc, filterBy: $filterBy, mediaType: $mediaType, minified: $minified, collapseseries: $collapseseries, include: $include)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $LibraryItemsResponseCopyWith<$Res> {
-  factory $LibraryItemsResponseCopyWith(LibraryItemsResponse value,
-          $Res Function(LibraryItemsResponse) then) =
-      _$LibraryItemsResponseCopyWithImpl<$Res, LibraryItemsResponse>;
-  @useResult
-  $Res call(
-      {List<LibraryItemNew> results,
-      int total,
-      int? limit,
-      int? page,
-      String? sortBy,
-      bool sortDesc,
-      String? filterBy,
-      String mediaType,
-      bool minified,
-      bool collapseseries,
-      String? include});
-}
+abstract mixin class $LibraryItemsResponseCopyWith<$Res>  {
+  factory $LibraryItemsResponseCopyWith(LibraryItemsResponse value, $Res Function(LibraryItemsResponse) _then) = _$LibraryItemsResponseCopyWithImpl;
+@useResult
+$Res call({
+ List<LibraryItemNew> results, int total, int? limit, int? page, String? sortBy, bool sortDesc, String? filterBy, String mediaType, bool minified, bool collapseseries, String? include
+});
 
+
+
+
+}
 /// @nodoc
-class _$LibraryItemsResponseCopyWithImpl<$Res,
-        $Val extends LibraryItemsResponse>
+class _$LibraryItemsResponseCopyWithImpl<$Res>
     implements $LibraryItemsResponseCopyWith<$Res> {
-  _$LibraryItemsResponseCopyWithImpl(this._value, this._then);
+  _$LibraryItemsResponseCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final LibraryItemsResponse _self;
+  final $Res Function(LibraryItemsResponse) _then;
 
-  /// Create a copy of LibraryItemsResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? results = null,
-    Object? total = null,
-    Object? limit = freezed,
-    Object? page = freezed,
-    Object? sortBy = freezed,
-    Object? sortDesc = null,
-    Object? filterBy = freezed,
-    Object? mediaType = null,
-    Object? minified = null,
-    Object? collapseseries = null,
-    Object? include = freezed,
-  }) {
-    return _then(_value.copyWith(
-      results: null == results
-          ? _value.results
-          : results // ignore: cast_nullable_to_non_nullable
-              as List<LibraryItemNew>,
-      total: null == total
-          ? _value.total
-          : total // ignore: cast_nullable_to_non_nullable
-              as int,
-      limit: freezed == limit
-          ? _value.limit
-          : limit // ignore: cast_nullable_to_non_nullable
-              as int?,
-      page: freezed == page
-          ? _value.page
-          : page // ignore: cast_nullable_to_non_nullable
-              as int?,
-      sortBy: freezed == sortBy
-          ? _value.sortBy
-          : sortBy // ignore: cast_nullable_to_non_nullable
-              as String?,
-      sortDesc: null == sortDesc
-          ? _value.sortDesc
-          : sortDesc // ignore: cast_nullable_to_non_nullable
-              as bool,
-      filterBy: freezed == filterBy
-          ? _value.filterBy
-          : filterBy // ignore: cast_nullable_to_non_nullable
-              as String?,
-      mediaType: null == mediaType
-          ? _value.mediaType
-          : mediaType // ignore: cast_nullable_to_non_nullable
-              as String,
-      minified: null == minified
-          ? _value.minified
-          : minified // ignore: cast_nullable_to_non_nullable
-              as bool,
-      collapseseries: null == collapseseries
-          ? _value.collapseseries
-          : collapseseries // ignore: cast_nullable_to_non_nullable
-              as bool,
-      include: freezed == include
-          ? _value.include
-          : include // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
-  }
+/// Create a copy of LibraryItemsResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? results = null,Object? total = null,Object? limit = freezed,Object? page = freezed,Object? sortBy = freezed,Object? sortDesc = null,Object? filterBy = freezed,Object? mediaType = null,Object? minified = null,Object? collapseseries = null,Object? include = freezed,}) {
+  return _then(_self.copyWith(
+results: null == results ? _self.results : results // ignore: cast_nullable_to_non_nullable
+as List<LibraryItemNew>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,limit: freezed == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
+as int?,page: freezed == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
+as String?,sortDesc: null == sortDesc ? _self.sortDesc : sortDesc // ignore: cast_nullable_to_non_nullable
+as bool,filterBy: freezed == filterBy ? _self.filterBy : filterBy // ignore: cast_nullable_to_non_nullable
+as String?,mediaType: null == mediaType ? _self.mediaType : mediaType // ignore: cast_nullable_to_non_nullable
+as String,minified: null == minified ? _self.minified : minified // ignore: cast_nullable_to_non_nullable
+as bool,collapseseries: null == collapseseries ? _self.collapseseries : collapseseries // ignore: cast_nullable_to_non_nullable
+as bool,include: freezed == include ? _self.include : include // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$LibraryItemsResponseImplCopyWith<$Res>
-    implements $LibraryItemsResponseCopyWith<$Res> {
-  factory _$$LibraryItemsResponseImplCopyWith(_$LibraryItemsResponseImpl value,
-          $Res Function(_$LibraryItemsResponseImpl) then) =
-      __$$LibraryItemsResponseImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {List<LibraryItemNew> results,
-      int total,
-      int? limit,
-      int? page,
-      String? sortBy,
-      bool sortDesc,
-      String? filterBy,
-      String mediaType,
-      bool minified,
-      bool collapseseries,
-      String? include});
 }
 
-/// @nodoc
-class __$$LibraryItemsResponseImplCopyWithImpl<$Res>
-    extends _$LibraryItemsResponseCopyWithImpl<$Res, _$LibraryItemsResponseImpl>
-    implements _$$LibraryItemsResponseImplCopyWith<$Res> {
-  __$$LibraryItemsResponseImplCopyWithImpl(_$LibraryItemsResponseImpl _value,
-      $Res Function(_$LibraryItemsResponseImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of LibraryItemsResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? results = null,
-    Object? total = null,
-    Object? limit = freezed,
-    Object? page = freezed,
-    Object? sortBy = freezed,
-    Object? sortDesc = null,
-    Object? filterBy = freezed,
-    Object? mediaType = null,
-    Object? minified = null,
-    Object? collapseseries = null,
-    Object? include = freezed,
-  }) {
-    return _then(_$LibraryItemsResponseImpl(
-      results: null == results
-          ? _value._results
-          : results // ignore: cast_nullable_to_non_nullable
-              as List<LibraryItemNew>,
-      total: null == total
-          ? _value.total
-          : total // ignore: cast_nullable_to_non_nullable
-              as int,
-      limit: freezed == limit
-          ? _value.limit
-          : limit // ignore: cast_nullable_to_non_nullable
-              as int?,
-      page: freezed == page
-          ? _value.page
-          : page // ignore: cast_nullable_to_non_nullable
-              as int?,
-      sortBy: freezed == sortBy
-          ? _value.sortBy
-          : sortBy // ignore: cast_nullable_to_non_nullable
-              as String?,
-      sortDesc: null == sortDesc
-          ? _value.sortDesc
-          : sortDesc // ignore: cast_nullable_to_non_nullable
-              as bool,
-      filterBy: freezed == filterBy
-          ? _value.filterBy
-          : filterBy // ignore: cast_nullable_to_non_nullable
-              as String?,
-      mediaType: null == mediaType
-          ? _value.mediaType
-          : mediaType // ignore: cast_nullable_to_non_nullable
-              as String,
-      minified: null == minified
-          ? _value.minified
-          : minified // ignore: cast_nullable_to_non_nullable
-              as bool,
-      collapseseries: null == collapseseries
-          ? _value.collapseseries
-          : collapseseries // ignore: cast_nullable_to_non_nullable
-              as bool,
-      include: freezed == include
-          ? _value.include
-          : include // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [LibraryItemsResponse].
+extension LibraryItemsResponsePatterns on LibraryItemsResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _LibraryItemsResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _LibraryItemsResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _LibraryItemsResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _LibraryItemsResponse():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _LibraryItemsResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _LibraryItemsResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<LibraryItemNew> results,  int total,  int? limit,  int? page,  String? sortBy,  bool sortDesc,  String? filterBy,  String mediaType,  bool minified,  bool collapseseries,  String? include)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _LibraryItemsResponse() when $default != null:
+return $default(_that.results,_that.total,_that.limit,_that.page,_that.sortBy,_that.sortDesc,_that.filterBy,_that.mediaType,_that.minified,_that.collapseseries,_that.include);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<LibraryItemNew> results,  int total,  int? limit,  int? page,  String? sortBy,  bool sortDesc,  String? filterBy,  String mediaType,  bool minified,  bool collapseseries,  String? include)  $default,) {final _that = this;
+switch (_that) {
+case _LibraryItemsResponse():
+return $default(_that.results,_that.total,_that.limit,_that.page,_that.sortBy,_that.sortDesc,_that.filterBy,_that.mediaType,_that.minified,_that.collapseseries,_that.include);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<LibraryItemNew> results,  int total,  int? limit,  int? page,  String? sortBy,  bool sortDesc,  String? filterBy,  String mediaType,  bool minified,  bool collapseseries,  String? include)?  $default,) {final _that = this;
+switch (_that) {
+case _LibraryItemsResponse() when $default != null:
+return $default(_that.results,_that.total,_that.limit,_that.page,_that.sortBy,_that.sortDesc,_that.filterBy,_that.mediaType,_that.minified,_that.collapseseries,_that.include);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
-class _$LibraryItemsResponseImpl implements _LibraryItemsResponse {
-  const _$LibraryItemsResponseImpl(
-      {required final List<LibraryItemNew> results,
-      required this.total,
-      this.limit,
-      this.page,
-      this.sortBy,
-      required this.sortDesc,
-      this.filterBy,
-      required this.mediaType,
-      required this.minified,
-      required this.collapseseries,
-      this.include})
-      : _results = results;
 
-  final List<LibraryItemNew> _results;
-  @override
-  List<LibraryItemNew> get results {
-    if (_results is EqualUnmodifiableListView) return _results;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_results);
-  }
+class _LibraryItemsResponse implements LibraryItemsResponse {
+  const _LibraryItemsResponse({required final  List<LibraryItemNew> results, required this.total, this.limit, this.page, this.sortBy, required this.sortDesc, this.filterBy, required this.mediaType, required this.minified, required this.collapseseries, this.include}): _results = results;
+  
 
-  @override
-  final int total;
-  @override
-  final int? limit;
-  @override
-  final int? page;
-  @override
-  final String? sortBy;
-  @override
-  final bool sortDesc;
-  @override
-  final String? filterBy;
-  @override
-  final String mediaType;
-  @override
-  final bool minified;
-  @override
-  final bool collapseseries;
-  @override
-  final String? include;
-
-  @override
-  String toString() {
-    return 'LibraryItemsResponse(results: $results, total: $total, limit: $limit, page: $page, sortBy: $sortBy, sortDesc: $sortDesc, filterBy: $filterBy, mediaType: $mediaType, minified: $minified, collapseseries: $collapseseries, include: $include)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LibraryItemsResponseImpl &&
-            const DeepCollectionEquality().equals(other._results, _results) &&
-            (identical(other.total, total) || other.total == total) &&
-            (identical(other.limit, limit) || other.limit == limit) &&
-            (identical(other.page, page) || other.page == page) &&
-            (identical(other.sortBy, sortBy) || other.sortBy == sortBy) &&
-            (identical(other.sortDesc, sortDesc) ||
-                other.sortDesc == sortDesc) &&
-            (identical(other.filterBy, filterBy) ||
-                other.filterBy == filterBy) &&
-            (identical(other.mediaType, mediaType) ||
-                other.mediaType == mediaType) &&
-            (identical(other.minified, minified) ||
-                other.minified == minified) &&
-            (identical(other.collapseseries, collapseseries) ||
-                other.collapseseries == collapseseries) &&
-            (identical(other.include, include) || other.include == include));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_results),
-      total,
-      limit,
-      page,
-      sortBy,
-      sortDesc,
-      filterBy,
-      mediaType,
-      minified,
-      collapseseries,
-      include);
-
-  /// Create a copy of LibraryItemsResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LibraryItemsResponseImplCopyWith<_$LibraryItemsResponseImpl>
-      get copyWith =>
-          __$$LibraryItemsResponseImplCopyWithImpl<_$LibraryItemsResponseImpl>(
-              this, _$identity);
+ final  List<LibraryItemNew> _results;
+@override List<LibraryItemNew> get results {
+  if (_results is EqualUnmodifiableListView) return _results;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_results);
 }
 
-abstract class _LibraryItemsResponse implements LibraryItemsResponse {
-  const factory _LibraryItemsResponse(
-      {required final List<LibraryItemNew> results,
-      required final int total,
-      final int? limit,
-      final int? page,
-      final String? sortBy,
-      required final bool sortDesc,
-      final String? filterBy,
-      required final String mediaType,
-      required final bool minified,
-      required final bool collapseseries,
-      final String? include}) = _$LibraryItemsResponseImpl;
+@override final  int total;
+@override final  int? limit;
+@override final  int? page;
+@override final  String? sortBy;
+@override final  bool sortDesc;
+@override final  String? filterBy;
+@override final  String mediaType;
+@override final  bool minified;
+@override final  bool collapseseries;
+@override final  String? include;
 
-  @override
-  List<LibraryItemNew> get results;
-  @override
-  int get total;
-  @override
-  int? get limit;
-  @override
-  int? get page;
-  @override
-  String? get sortBy;
-  @override
-  bool get sortDesc;
-  @override
-  String? get filterBy;
-  @override
-  String get mediaType;
-  @override
-  bool get minified;
-  @override
-  bool get collapseseries;
-  @override
-  String? get include;
+/// Create a copy of LibraryItemsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LibraryItemsResponseCopyWith<_LibraryItemsResponse> get copyWith => __$LibraryItemsResponseCopyWithImpl<_LibraryItemsResponse>(this, _$identity);
 
-  /// Create a copy of LibraryItemsResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$LibraryItemsResponseImplCopyWith<_$LibraryItemsResponseImpl>
-      get copyWith => throw _privateConstructorUsedError;
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LibraryItemsResponse&&const DeepCollectionEquality().equals(other._results, _results)&&(identical(other.total, total) || other.total == total)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.page, page) || other.page == page)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.sortDesc, sortDesc) || other.sortDesc == sortDesc)&&(identical(other.filterBy, filterBy) || other.filterBy == filterBy)&&(identical(other.mediaType, mediaType) || other.mediaType == mediaType)&&(identical(other.minified, minified) || other.minified == minified)&&(identical(other.collapseseries, collapseseries) || other.collapseseries == collapseseries)&&(identical(other.include, include) || other.include == include));
 }
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_results),total,limit,page,sortBy,sortDesc,filterBy,mediaType,minified,collapseseries,include);
+
+@override
+String toString() {
+  return 'LibraryItemsResponse(results: $results, total: $total, limit: $limit, page: $page, sortBy: $sortBy, sortDesc: $sortDesc, filterBy: $filterBy, mediaType: $mediaType, minified: $minified, collapseseries: $collapseseries, include: $include)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LibraryItemsResponseCopyWith<$Res> implements $LibraryItemsResponseCopyWith<$Res> {
+  factory _$LibraryItemsResponseCopyWith(_LibraryItemsResponse value, $Res Function(_LibraryItemsResponse) _then) = __$LibraryItemsResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ List<LibraryItemNew> results, int total, int? limit, int? page, String? sortBy, bool sortDesc, String? filterBy, String mediaType, bool minified, bool collapseseries, String? include
+});
+
+
+
+
+}
+/// @nodoc
+class __$LibraryItemsResponseCopyWithImpl<$Res>
+    implements _$LibraryItemsResponseCopyWith<$Res> {
+  __$LibraryItemsResponseCopyWithImpl(this._self, this._then);
+
+  final _LibraryItemsResponse _self;
+  final $Res Function(_LibraryItemsResponse) _then;
+
+/// Create a copy of LibraryItemsResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? results = null,Object? total = null,Object? limit = freezed,Object? page = freezed,Object? sortBy = freezed,Object? sortDesc = null,Object? filterBy = freezed,Object? mediaType = null,Object? minified = null,Object? collapseseries = null,Object? include = freezed,}) {
+  return _then(_LibraryItemsResponse(
+results: null == results ? _self._results : results // ignore: cast_nullable_to_non_nullable
+as List<LibraryItemNew>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int,limit: freezed == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
+as int?,page: freezed == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
+as String?,sortDesc: null == sortDesc ? _self.sortDesc : sortDesc // ignore: cast_nullable_to_non_nullable
+as bool,filterBy: freezed == filterBy ? _self.filterBy : filterBy // ignore: cast_nullable_to_non_nullable
+as String?,mediaType: null == mediaType ? _self.mediaType : mediaType // ignore: cast_nullable_to_non_nullable
+as String,minified: null == minified ? _self.minified : minified // ignore: cast_nullable_to_non_nullable
+as bool,collapseseries: null == collapseseries ? _self.collapseseries : collapseseries // ignore: cast_nullable_to_non_nullable
+as bool,include: freezed == include ? _self.include : include // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+// dart format on

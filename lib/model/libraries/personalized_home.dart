@@ -27,7 +27,7 @@ enum SectionType {
 }
 
 @freezed
-class PersonalizedHome with _$PersonalizedHome {
+sealed class PersonalizedHome with _$PersonalizedHome {
   const factory PersonalizedHome({
     required SectionType id,
     required String type,
@@ -39,7 +39,7 @@ class PersonalizedHome with _$PersonalizedHome {
 }
 
 @freezed
-class PersonalizedHomeEntity with _$PersonalizedHomeEntity {
+sealed class PersonalizedHomeEntity with _$PersonalizedHomeEntity {
   const factory PersonalizedHomeEntity({
     required SectionType id,
     required String type,
@@ -48,10 +48,8 @@ class PersonalizedHomeEntity with _$PersonalizedHomeEntity {
 }
 
 @freezed
-class PersonalizedEntity with _$PersonalizedEntity {
-  const factory PersonalizedEntity({
-    required String id,
-  }) = _PersonalizedEntity;
+sealed class PersonalizedEntity with _$PersonalizedEntity {
+  const factory PersonalizedEntity({required String id}) = _PersonalizedEntity;
 
   // factory PersonalizedEntity.fromJson(Map<String, dynamic> json) =>
   //     _$PersonalizedEntityFromJson(json); // Temporarily commented out due to build issues

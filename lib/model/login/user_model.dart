@@ -7,7 +7,7 @@ part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
 @freezed
-class UserModel with _$UserModel {
+sealed class UserModel with _$UserModel {
   const factory UserModel({
     String? id,
     String? oldUserId,
@@ -29,6 +29,6 @@ class UserModel with _$UserModel {
     bool? hasOpenIDLink,
   }) = _UserModel;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 }
-

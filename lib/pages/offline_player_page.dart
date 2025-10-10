@@ -1,6 +1,6 @@
 import 'package:audiobookshelf_flutter/services/offline_player_service.dart';
 import 'package:audiobookshelf_flutter/services/download_service.dart';
-import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
@@ -23,7 +23,8 @@ class _OfflinePlayerPageState extends ConsumerState<OfflinePlayerPage> {
   @override
   void initState() {
     super.initState();
-    _audioPlayer = ref.read(audioPlayerProvider);
+    final audioPlayerNotifier = ref.read(audioPlayerProvider.notifier);
+    _audioPlayer = audioPlayerNotifier.audioPlayer;
     _offlinePlayerService = ref.read(offlinePlayerServiceProvider);
     _initializePlayer();
   }
@@ -84,11 +85,7 @@ class _OfflinePlayerPageState extends ConsumerState<OfflinePlayerPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red,
-            ),
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
             const SizedBox(height: 16),
             Text(
               'Error loading offline content',
@@ -113,26 +110,25 @@ class _OfflinePlayerPageState extends ConsumerState<OfflinePlayerPage> {
     return StreamBuilder<PlayerState>(
       stream: _audioPlayer.playerStateStream,
       builder: (context, snapshot) {
-        final playerState = snapshot.data ?? PlayerState(false, ProcessingState.idle);
-        
+        final playerState =
+            snapshot.data ?? PlayerState(false, ProcessingState.idle);
+
         return Column(
           children: [
             // Cover and basic info
             _buildCoverSection(),
-            
+
             // Track info
             _buildTrackInfo(),
-            
+
             // Progress bar
             _buildProgressSection(),
-            
+
             // Controls
             _buildControlsSection(playerState),
-            
+
             // Track list
-            Expanded(
-              child: _buildTrackList(),
-            ),
+            Expanded(child: _buildTrackList()),
           ],
         );
       },
@@ -203,7 +199,7 @@ class _OfflinePlayerPageState extends ConsumerState<OfflinePlayerPage> {
         final sequenceState = snapshot.data;
         final currentIndex = sequenceState?.currentIndex ?? 0;
         final currentItem = sequenceState?.currentSource?.tag;
-        
+
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -240,29 +236,30 @@ class _OfflinePlayerPageState extends ConsumerState<OfflinePlayerPage> {
                 builder: (context, positionSnapshot) {
                   final position = positionSnapshot.data ?? Duration.zero;
                   final duration = durationSnapshot.data ?? Duration.zero;
-              
-              return Column(
-                children: [
-                  Slider(
-                    value: duration.inMilliseconds > 0 
-                        ? position.inMilliseconds / duration.inMilliseconds 
-                        : 0.0,
-                    onChanged: (value) {
-                      final newPosition = Duration(
-                        milliseconds: (value * duration.inMilliseconds).round(),
-                      );
-                      _audioPlayer.seek(newPosition);
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                  return Column(
                     children: [
-                      Text(_formatDuration(position)),
-                      Text(_formatDuration(duration)),
+                      Slider(
+                        value: duration.inMilliseconds > 0
+                            ? position.inMilliseconds / duration.inMilliseconds
+                            : 0.0,
+                        onChanged: (value) {
+                          final newPosition = Duration(
+                            milliseconds: (value * duration.inMilliseconds)
+                                .round(),
+                          );
+                          _audioPlayer.seek(newPosition);
+                        },
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(_formatDuration(position)),
+                          Text(_formatDuration(duration)),
+                        ],
+                      ),
                     ],
-                  ),
-                ],
-              );
+                  );
                 },
               );
             },
@@ -286,14 +283,12 @@ class _OfflinePlayerPageState extends ConsumerState<OfflinePlayerPage> {
                 : null,
           ),
           IconButton(
-            icon: Icon(
-              playerState.playing ? Icons.pause : Icons.play_arrow,
-            ),
+            icon: Icon(playerState.playing ? Icons.pause : Icons.play_arrow),
             iconSize: 48,
             onPressed: playerState.processingState == ProcessingState.ready
-                ? () => playerState.playing 
-                    ? _audioPlayer.pause() 
-                    : _audioPlayer.play()
+                ? () => playerState.playing
+                      ? _audioPlayer.pause()
+                      : _audioPlayer.play()
                 : null,
           ),
           IconButton(
@@ -314,14 +309,14 @@ class _OfflinePlayerPageState extends ConsumerState<OfflinePlayerPage> {
       builder: (context, snapshot) {
         final sequenceState = snapshot.data;
         final tracks = sequenceState?.sequence ?? [];
-        
+
         return ListView.builder(
           itemCount: tracks.length,
           itemBuilder: (context, index) {
             final track = tracks[index];
             final isCurrentTrack = index == sequenceState?.currentIndex;
             final mediaItem = track.tag;
-            
+
             return ListTile(
               leading: isCurrentTrack
                   ? Icon(
@@ -367,7 +362,7 @@ class _OfflinePlayerPageState extends ConsumerState<OfflinePlayerPage> {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
     final seconds = duration.inSeconds.remainder(60);
-    
+
     if (hours > 0) {
       return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     } else {

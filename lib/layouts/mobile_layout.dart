@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audiobookshelf_flutter/widgets/morphing_navigation_drawer.dart';
 import 'package:audiobookshelf_flutter/model/login/server_settings.dart';
-import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_notifier.dart';
 import 'package:audiobookshelf_flutter/widgets/player.dart';
 
 /// Mobile layout with traditional drawer overlay
@@ -29,11 +29,7 @@ class MobileLayout extends ConsumerWidget {
     final audioPlayer = ref.watch(audioPlayerProvider);
 
     return Scaffold(
-      appBar: appBar ??
-          AppBar(
-            title: Text(title),
-            actions: appBarActions,
-          ),
+      appBar: appBar ?? AppBar(title: Text(title), actions: appBarActions),
       drawer: MorphingNavigationDrawer(
         selectedItem: selectedDrawerItem,
         serverSettings: serverSettings,

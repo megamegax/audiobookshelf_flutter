@@ -5,7 +5,7 @@ part 'permissions.freezed.dart';
 part 'permissions.g.dart';
 
 @freezed
-class Permissions with _$Permissions {
+sealed class Permissions with _$Permissions {
   const factory Permissions({
     bool? download,
     bool? update,

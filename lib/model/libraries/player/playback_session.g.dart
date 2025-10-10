@@ -6,16 +6,16 @@ part of 'playback_session.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PlaybackSessionImpl _$$PlaybackSessionImplFromJson(
-        Map<String, dynamic> json) =>
-    _$PlaybackSessionImpl(
+_PlaybackSession _$PlaybackSessionFromJson(Map<String, dynamic> json) =>
+    _PlaybackSession(
       id: json['id'] as String,
       userId: json['userId'] as String?,
       libraryItemId: json['libraryItemId'] as String?,
       episodeId: json['episodeId'] as String?,
       mediaType: json['mediaType'] as String,
       deviceInfo: DeviceInfoResponse.fromJson(
-          json['deviceInfo'] as Map<String, dynamic>),
+        json['deviceInfo'] as Map<String, dynamic>,
+      ),
       chapters: (json['chapters'] as List<dynamic>)
           .map((e) => BookChapter.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -34,7 +34,8 @@ _$PlaybackSessionImpl _$$PlaybackSessionImplFromJson(
       libraryItem: json['libraryItem'] == null
           ? null
           : LibraryItemNew.fromJson(
-              json['libraryItem'] as Map<String, dynamic>),
+              json['libraryItem'] as Map<String, dynamic>,
+            ),
       localEpisodeId: json['localEpisodeId'] as String?,
       serverConnectionConfigId: json['serverConnectionConfigId'] as String?,
       serverAddress: json['serverAddress'] as String?,

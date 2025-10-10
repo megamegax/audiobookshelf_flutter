@@ -37,6 +37,7 @@ const MediaEntitySchema = Schema(
       id: 4,
       name: r'metadata',
       type: IsarType.object,
+
       target: r'MetadataEntity',
     ),
     r'numAudioFiles': PropertySchema(
@@ -68,19 +69,13 @@ const MediaEntitySchema = Schema(
       id: 10,
       name: r'progress',
       type: IsarType.object,
+
       target: r'MediaProgressEntity',
     ),
-    r'size': PropertySchema(
-      id: 11,
-      name: r'size',
-      type: IsarType.long,
-    ),
-    r'tags': PropertySchema(
-      id: 12,
-      name: r'tags',
-      type: IsarType.stringList,
-    )
+    r'size': PropertySchema(id: 11, name: r'size', type: IsarType.long),
+    r'tags': PropertySchema(id: 12, name: r'tags', type: IsarType.stringList),
   },
+
   estimateSize: _mediaEntityEstimateSize,
   serialize: _mediaEntitySerialize,
   deserialize: _mediaEntityDeserialize,
@@ -114,17 +109,25 @@ int _mediaEntityEstimateSize(
   {
     final value = object.metadata;
     if (value != null) {
-      bytesCount += 3 +
+      bytesCount +=
+          3 +
           MetadataEntitySchema.estimateSize(
-              value, allOffsets[MetadataEntity]!, allOffsets);
+            value,
+            allOffsets[MetadataEntity]!,
+            allOffsets,
+          );
     }
   }
   {
     final value = object.progress;
     if (value != null) {
-      bytesCount += 3 +
+      bytesCount +=
+          3 +
           MediaProgressEntitySchema.estimateSize(
-              value, allOffsets[MediaProgressEntity]!, allOffsets);
+            value,
+            allOffsets[MediaProgressEntity]!,
+            allOffsets,
+          );
     }
   }
   {
@@ -222,10 +225,11 @@ P _mediaEntityDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readObjectOrNull<MetadataEntity>(
-        offset,
-        MetadataEntitySchema.deserialize,
-        allOffsets,
-      )) as P;
+            offset,
+            MetadataEntitySchema.deserialize,
+            allOffsets,
+          ))
+          as P;
     case 5:
       return (reader.readLongOrNull(offset)) as P;
     case 6:
@@ -238,10 +242,11 @@ P _mediaEntityDeserializeProp<P>(
       return (reader.readLongOrNull(offset)) as P;
     case 10:
       return (reader.readObjectOrNull<MediaProgressEntity>(
-        offset,
-        MediaProgressEntitySchema.deserialize,
-        allOffsets,
-      )) as P;
+            offset,
+            MediaProgressEntitySchema.deserialize,
+            allOffsets,
+          ))
+          as P;
     case 11:
       return (reader.readLongOrNull(offset)) as P;
     case 12:
@@ -254,152 +259,115 @@ P _mediaEntityDeserializeProp<P>(
 extension MediaEntityQueryFilter
     on QueryBuilder<MediaEntity, MediaEntity, QFilterCondition> {
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesIsNull() {
+  coverBytesIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'coverBytes',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'coverBytes'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesIsNotNull() {
+  coverBytesIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'coverBytes',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'coverBytes'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesElementEqualTo(int value) {
+  coverBytesElementEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'coverBytes',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'coverBytes', value: value),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesElementGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
+  coverBytesElementGreaterThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'coverBytes',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'coverBytes',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesElementLessThan(
-    int value, {
-    bool include = false,
-  }) {
+  coverBytesElementLessThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'coverBytes',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'coverBytes',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesElementBetween(
+  coverBytesElementBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'coverBytes',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        length,
-        true,
-        length,
-        true,
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'coverBytes',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
       );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesIsEmpty() {
+  coverBytesLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        0,
-        true,
-        0,
-        true,
-      );
+      return query.listLength(r'coverBytes', length, true, length, true);
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesIsNotEmpty() {
+  coverBytesIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        0,
-        false,
-        999999,
-        true,
-      );
+      return query.listLength(r'coverBytes', 0, true, 0, true);
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
+  coverBytesIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        0,
-        true,
-        length,
-        include,
-      );
+      return query.listLength(r'coverBytes', 0, false, 999999, true);
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
+  coverBytesLengthLessThan(int length, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'coverBytes',
-        length,
-        include,
-        999999,
-        true,
-      );
+      return query.listLength(r'coverBytes', 0, true, length, include);
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverBytesLengthBetween(
+  coverBytesLengthGreaterThan(int length, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(r'coverBytes', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  coverBytesLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -417,71 +385,74 @@ extension MediaEntityQueryFilter
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathIsNull() {
+  coverPathIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'coverPath',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'coverPath'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathIsNotNull() {
+  coverPathIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'coverPath',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'coverPath'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  coverPathEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'coverPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'coverPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'coverPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathLessThan(
+  coverPathGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'coverPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'coverPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathBetween(
+  coverPathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'coverPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  coverPathBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -489,102 +460,104 @@ extension MediaEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'coverPath',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'coverPath',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  coverPathStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'coverPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'coverPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  coverPathEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'coverPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'coverPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathContains(String value, {bool caseSensitive = true}) {
+  coverPathContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'coverPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'coverPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathMatches(String pattern, {bool caseSensitive = true}) {
+  coverPathMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'coverPath',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'coverPath',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathIsEmpty() {
+  coverPathIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'coverPath',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'coverPath', value: ''),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      coverPathIsNotEmpty() {
+  coverPathIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'coverPath',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'coverPath', value: ''),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      durationIsNull() {
+  durationIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'duration',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'duration'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      durationIsNotNull() {
+  durationIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'duration',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'duration'),
+      );
     });
   }
 
@@ -593,43 +566,52 @@ extension MediaEntityQueryFilter
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'duration',
-        value: value,
-        epsilon: epsilon,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'duration',
+          value: value,
+
+          epsilon: epsilon,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      durationGreaterThan(
+  durationGreaterThan(
     double? value, {
     bool include = false,
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'duration',
-        value: value,
-        epsilon: epsilon,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'duration',
+          value: value,
+
+          epsilon: epsilon,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      durationLessThan(
+  durationLessThan(
     double? value, {
     bool include = false,
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'duration',
-        value: value,
-        epsilon: epsilon,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'duration',
+          value: value,
+
+          epsilon: epsilon,
+        ),
+      );
     });
   }
 
@@ -641,83 +623,89 @@ extension MediaEntityQueryFilter
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'duration',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        epsilon: epsilon,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'duration',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+
+          epsilon: epsilon,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatIsNull() {
+  ebookFileFormatIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'ebookFileFormat',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'ebookFileFormat'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatIsNotNull() {
+  ebookFileFormatIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'ebookFileFormat',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'ebookFileFormat'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  ebookFileFormatEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'ebookFileFormat',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'ebookFileFormat',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'ebookFileFormat',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatLessThan(
+  ebookFileFormatGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'ebookFileFormat',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'ebookFileFormat',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatBetween(
+  ebookFileFormatLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'ebookFileFormat',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  ebookFileFormatBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -725,517 +713,517 @@ extension MediaEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'ebookFileFormat',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'ebookFileFormat',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  ebookFileFormatStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'ebookFileFormat',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'ebookFileFormat',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  ebookFileFormatEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'ebookFileFormat',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'ebookFileFormat',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatContains(String value, {bool caseSensitive = true}) {
+  ebookFileFormatContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'ebookFileFormat',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'ebookFileFormat',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatMatches(String pattern, {bool caseSensitive = true}) {
+  ebookFileFormatMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'ebookFileFormat',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'ebookFileFormat',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatIsEmpty() {
+  ebookFileFormatIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'ebookFileFormat',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'ebookFileFormat', value: ''),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      ebookFileFormatIsNotEmpty() {
+  ebookFileFormatIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'ebookFileFormat',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'ebookFileFormat', value: ''),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      metadataIsNull() {
+  metadataIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'metadata',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'metadata'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      metadataIsNotNull() {
+  metadataIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'metadata',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'metadata'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numAudioFilesIsNull() {
+  numAudioFilesIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'numAudioFiles',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'numAudioFiles'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numAudioFilesIsNotNull() {
+  numAudioFilesIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'numAudioFiles',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'numAudioFiles'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numAudioFilesEqualTo(int? value) {
+  numAudioFilesEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'numAudioFiles',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'numAudioFiles', value: value),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numAudioFilesGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
+  numAudioFilesGreaterThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'numAudioFiles',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'numAudioFiles',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numAudioFilesLessThan(
-    int? value, {
-    bool include = false,
-  }) {
+  numAudioFilesLessThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'numAudioFiles',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'numAudioFiles',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numAudioFilesBetween(
+  numAudioFilesBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'numAudioFiles',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'numAudioFiles',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numChaptersIsNull() {
+  numChaptersIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'numChapters',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'numChapters'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numChaptersIsNotNull() {
+  numChaptersIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'numChapters',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'numChapters'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numChaptersEqualTo(int? value) {
+  numChaptersEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'numChapters',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'numChapters', value: value),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numChaptersGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
+  numChaptersGreaterThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'numChapters',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'numChapters',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numChaptersLessThan(
-    int? value, {
-    bool include = false,
-  }) {
+  numChaptersLessThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'numChapters',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'numChapters',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numChaptersBetween(
+  numChaptersBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'numChapters',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'numChapters',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numInvalidAudioFilesIsNull() {
+  numInvalidAudioFilesIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'numInvalidAudioFiles',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'numInvalidAudioFiles'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numInvalidAudioFilesIsNotNull() {
+  numInvalidAudioFilesIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'numInvalidAudioFiles',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'numInvalidAudioFiles'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numInvalidAudioFilesEqualTo(int? value) {
+  numInvalidAudioFilesEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'numInvalidAudioFiles',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'numInvalidAudioFiles',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numInvalidAudioFilesGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
+  numInvalidAudioFilesGreaterThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'numInvalidAudioFiles',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'numInvalidAudioFiles',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numInvalidAudioFilesLessThan(
-    int? value, {
-    bool include = false,
-  }) {
+  numInvalidAudioFilesLessThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'numInvalidAudioFiles',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'numInvalidAudioFiles',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numInvalidAudioFilesBetween(
+  numInvalidAudioFilesBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'numInvalidAudioFiles',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'numInvalidAudioFiles',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numMissingPartsIsNull() {
+  numMissingPartsIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'numMissingParts',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'numMissingParts'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numMissingPartsIsNotNull() {
+  numMissingPartsIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'numMissingParts',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'numMissingParts'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numMissingPartsEqualTo(int? value) {
+  numMissingPartsEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'numMissingParts',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'numMissingParts', value: value),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numMissingPartsGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
+  numMissingPartsGreaterThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'numMissingParts',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'numMissingParts',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numMissingPartsLessThan(
-    int? value, {
-    bool include = false,
-  }) {
+  numMissingPartsLessThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'numMissingParts',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'numMissingParts',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numMissingPartsBetween(
+  numMissingPartsBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'numMissingParts',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'numMissingParts',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numTracksIsNull() {
+  numTracksIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'numTracks',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'numTracks'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numTracksIsNotNull() {
+  numTracksIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'numTracks',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'numTracks'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numTracksEqualTo(int? value) {
+  numTracksEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'numTracks',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'numTracks', value: value),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numTracksGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
+  numTracksGreaterThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'numTracks',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'numTracks',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numTracksLessThan(
-    int? value, {
-    bool include = false,
-  }) {
+  numTracksLessThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'numTracks',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'numTracks',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      numTracksBetween(
+  numTracksBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'numTracks',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'numTracks',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      progressIsNull() {
+  progressIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'progress',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'progress'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      progressIsNotNull() {
+  progressIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'progress',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'progress'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition> sizeIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'size',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'size'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      sizeIsNotNull() {
+  sizeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'size',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'size'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition> sizeEqualTo(
-      int? value) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'size',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'size', value: value),
+      );
     });
   }
 
@@ -1244,11 +1232,13 @@ extension MediaEntityQueryFilter
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'size',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'size',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1257,11 +1247,13 @@ extension MediaEntityQueryFilter
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'size',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'size',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1272,81 +1264,86 @@ extension MediaEntityQueryFilter
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'size',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'size',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition> tagsIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'tags',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'tags'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsIsNotNull() {
+  tagsIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'tags',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'tags'),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsElementEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  tagsElementEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'tags',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsElementGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsElementLessThan(
+  tagsElementGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'tags',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsElementBetween(
+  tagsElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'tags',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  tagsElementBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1354,159 +1351,125 @@ extension MediaEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'tags',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsElementStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsElementEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsElementContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsElementMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'tags',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsElementIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'tags',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsElementIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'tags',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        length,
-        true,
-        length,
-        true,
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'tags',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
       );
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  tagsElementStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'tags',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  tagsElementEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'tags',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  tagsElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'tags',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  tagsElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'tags',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  tagsElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'tags', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  tagsElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'tags', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
+  tagsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(r'tags', length, true, length, true);
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition> tagsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        0,
-        true,
-        0,
-        true,
-      );
+      return query.listLength(r'tags', 0, true, 0, true);
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsIsNotEmpty() {
+  tagsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        0,
-        false,
-        999999,
-        true,
-      );
+      return query.listLength(r'tags', 0, false, 999999, true);
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
+  tagsLengthLessThan(int length, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        0,
-        true,
-        length,
-        include,
-      );
+      return query.listLength(r'tags', 0, true, length, include);
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
+  tagsLengthGreaterThan(int length, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        length,
-        include,
-        999999,
-        true,
-      );
+      return query.listLength(r'tags', length, include, 999999, true);
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition>
-      tagsLengthBetween(
+  tagsLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1527,14 +1490,16 @@ extension MediaEntityQueryFilter
 extension MediaEntityQueryObject
     on QueryBuilder<MediaEntity, MediaEntity, QFilterCondition> {
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition> metadata(
-      FilterQuery<MetadataEntity> q) {
+    FilterQuery<MetadataEntity> q,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'metadata');
     });
   }
 
   QueryBuilder<MediaEntity, MediaEntity, QAfterFilterCondition> progress(
-      FilterQuery<MediaProgressEntity> q) {
+    FilterQuery<MediaProgressEntity> q,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'progress');
     });

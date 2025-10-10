@@ -5,7 +5,7 @@ part 'media_progress.freezed.dart';
 part 'media_progress.g.dart';
 
 @freezed
-class MediaProgress with _$MediaProgress {
+sealed class MediaProgress with _$MediaProgress {
   const factory MediaProgress({
     String? id,
     String? userId,

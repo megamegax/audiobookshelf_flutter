@@ -5,7 +5,7 @@ part 'library.freezed.dart';
 part 'library.g.dart';
 
 @freezed
-class Library with _$Library {
+sealed class Library with _$Library {
   const factory Library({
     required String id,
     required String name,

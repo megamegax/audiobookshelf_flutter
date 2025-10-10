@@ -13,11 +13,7 @@ const MetadataEntitySchema = Schema(
   name: r'MetadataEntity',
   id: -8246610549508231888,
   properties: {
-    r'asin': PropertySchema(
-      id: 0,
-      name: r'asin',
-      type: IsarType.string,
-    ),
+    r'asin': PropertySchema(id: 0, name: r'asin', type: IsarType.string),
     r'authorName': PropertySchema(
       id: 1,
       name: r'authorName',
@@ -28,21 +24,13 @@ const MetadataEntitySchema = Schema(
       name: r'description',
       type: IsarType.string,
     ),
-    r'explicit': PropertySchema(
-      id: 3,
-      name: r'explicit',
-      type: IsarType.bool,
-    ),
+    r'explicit': PropertySchema(id: 3, name: r'explicit', type: IsarType.bool),
     r'genres': PropertySchema(
       id: 4,
       name: r'genres',
       type: IsarType.stringList,
     ),
-    r'isbn': PropertySchema(
-      id: 5,
-      name: r'isbn',
-      type: IsarType.string,
-    ),
+    r'isbn': PropertySchema(id: 5, name: r'isbn', type: IsarType.string),
     r'language': PropertySchema(
       id: 6,
       name: r'language',
@@ -78,17 +66,14 @@ const MetadataEntitySchema = Schema(
       name: r'subtitle',
       type: IsarType.string,
     ),
-    r'title': PropertySchema(
-      id: 13,
-      name: r'title',
-      type: IsarType.string,
-    ),
+    r'title': PropertySchema(id: 13, name: r'title', type: IsarType.string),
     r'titleIgnorePrefix': PropertySchema(
       id: 14,
       name: r'titleIgnorePrefix',
       type: IsarType.string,
-    )
+    ),
   },
+
   estimateSize: _metadataEntityEstimateSize,
   serialize: _metadataEntitySerialize,
   deserialize: _metadataEntityDeserialize,
@@ -288,71 +273,74 @@ P _metadataEntityDeserializeProp<P>(
 extension MetadataEntityQueryFilter
     on QueryBuilder<MetadataEntity, MetadataEntity, QFilterCondition> {
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinIsNull() {
+  asinIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'asin',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'asin'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinIsNotNull() {
+  asinIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'asin',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'asin'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  asinEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'asin',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'asin',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'asin',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinLessThan(
+  asinGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'asin',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'asin',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinBetween(
+  asinLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'asin',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  asinBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -360,153 +348,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'asin',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'asin',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  asinStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'asin',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'asin',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  asinEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'asin',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'asin',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinContains(String value, {bool caseSensitive = true}) {
+  asinContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'asin',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'asin',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinMatches(String pattern, {bool caseSensitive = true}) {
+  asinMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'asin',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'asin',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinIsEmpty() {
+  asinIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'asin',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'asin', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      asinIsNotEmpty() {
+  asinIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'asin',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'asin', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameIsNull() {
+  authorNameIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'authorName',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'authorName'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameIsNotNull() {
+  authorNameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'authorName',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'authorName'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  authorNameEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'authorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'authorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'authorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameLessThan(
+  authorNameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'authorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'authorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameBetween(
+  authorNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'authorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  authorNameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -514,153 +507,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'authorName',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'authorName',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  authorNameStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'authorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'authorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  authorNameEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'authorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'authorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameContains(String value, {bool caseSensitive = true}) {
+  authorNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'authorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'authorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameMatches(String pattern, {bool caseSensitive = true}) {
+  authorNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'authorName',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'authorName',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameIsEmpty() {
+  authorNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'authorName',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'authorName', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      authorNameIsNotEmpty() {
+  authorNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'authorName',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'authorName', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionIsNull() {
+  descriptionIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'description',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'description'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionIsNotNull() {
+  descriptionIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'description',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'description'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  descriptionEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'description',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionLessThan(
+  descriptionGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'description',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionBetween(
+  descriptionLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'description',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  descriptionBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -668,181 +666,185 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'description',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'description',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  descriptionStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'description',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  descriptionEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'description',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionContains(String value, {bool caseSensitive = true}) {
+  descriptionContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'description',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionMatches(String pattern, {bool caseSensitive = true}) {
+  descriptionMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'description',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'description',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionIsEmpty() {
+  descriptionIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'description',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'description', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      descriptionIsNotEmpty() {
+  descriptionIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'description',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'description', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      explicitIsNull() {
+  explicitIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'explicit',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'explicit'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      explicitIsNotNull() {
+  explicitIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'explicit',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'explicit'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      explicitEqualTo(bool? value) {
+  explicitEqualTo(bool? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'explicit',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'explicit', value: value),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresIsNull() {
+  genresIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'genres',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'genres'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresIsNotNull() {
+  genresIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'genres',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'genres'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresElementEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  genresElementEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'genres',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'genres',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresElementGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'genres',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresElementLessThan(
+  genresElementGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'genres',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'genres',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresElementBetween(
+  genresElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'genres',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  genresElementBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -850,160 +852,126 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'genres',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresElementStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'genres',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresElementEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'genres',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresElementContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'genres',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresElementMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'genres',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresElementIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'genres',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresElementIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'genres',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'genres',
-        length,
-        true,
-        length,
-        true,
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'genres',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
       );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresIsEmpty() {
+  genresElementStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'genres',
-        0,
-        true,
-        0,
-        true,
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'genres',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
       );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresIsNotEmpty() {
+  genresElementEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'genres',
-        0,
-        false,
-        999999,
-        true,
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'genres',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
       );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
+  genresElementContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'genres',
-        0,
-        true,
-        length,
-        include,
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'genres',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
       );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
+  genresElementMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'genres',
-        length,
-        include,
-        999999,
-        true,
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'genres',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
       );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      genresLengthBetween(
+  genresElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'genres', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  genresElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'genres', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  genresLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(r'genres', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  genresIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(r'genres', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  genresIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(r'genres', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  genresLengthLessThan(int length, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(r'genres', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  genresLengthGreaterThan(int length, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(r'genres', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  genresLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1021,71 +989,74 @@ extension MetadataEntityQueryFilter
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnIsNull() {
+  isbnIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'isbn',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'isbn'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnIsNotNull() {
+  isbnIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'isbn',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'isbn'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  isbnEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isbn',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'isbn',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'isbn',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnLessThan(
+  isbnGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'isbn',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'isbn',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnBetween(
+  isbnLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'isbn',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  isbnBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1093,153 +1064,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'isbn',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'isbn',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  isbnStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'isbn',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'isbn',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  isbnEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'isbn',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'isbn',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnContains(String value, {bool caseSensitive = true}) {
+  isbnContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'isbn',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'isbn',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnMatches(String pattern, {bool caseSensitive = true}) {
+  isbnMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'isbn',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'isbn',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnIsEmpty() {
+  isbnIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isbn',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'isbn', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      isbnIsNotEmpty() {
+  isbnIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'isbn',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'isbn', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageIsNull() {
+  languageIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'language',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'language'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageIsNotNull() {
+  languageIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'language',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'language'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  languageEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'language',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'language',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'language',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageLessThan(
+  languageGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'language',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'language',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageBetween(
+  languageLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'language',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  languageBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1247,153 +1223,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'language',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'language',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  languageStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'language',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'language',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  languageEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'language',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'language',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageContains(String value, {bool caseSensitive = true}) {
+  languageContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'language',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'language',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageMatches(String pattern, {bool caseSensitive = true}) {
+  languageMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'language',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'language',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageIsEmpty() {
+  languageIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'language',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'language', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      languageIsNotEmpty() {
+  languageIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'language',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'language', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameIsNull() {
+  narratorNameIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'narratorName',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'narratorName'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameIsNotNull() {
+  narratorNameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'narratorName',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'narratorName'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  narratorNameEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'narratorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'narratorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'narratorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameLessThan(
+  narratorNameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'narratorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'narratorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameBetween(
+  narratorNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'narratorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  narratorNameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1401,153 +1382,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'narratorName',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'narratorName',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  narratorNameStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'narratorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'narratorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  narratorNameEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'narratorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'narratorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameContains(String value, {bool caseSensitive = true}) {
+  narratorNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'narratorName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'narratorName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameMatches(String pattern, {bool caseSensitive = true}) {
+  narratorNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'narratorName',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'narratorName',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameIsEmpty() {
+  narratorNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'narratorName',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'narratorName', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      narratorNameIsNotEmpty() {
+  narratorNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'narratorName',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'narratorName', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateIsNull() {
+  publishedDateIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'publishedDate',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'publishedDate'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateIsNotNull() {
+  publishedDateIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'publishedDate',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'publishedDate'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  publishedDateEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'publishedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'publishedDate',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'publishedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateLessThan(
+  publishedDateGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'publishedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'publishedDate',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateBetween(
+  publishedDateLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'publishedDate',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  publishedDateBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1555,153 +1541,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'publishedDate',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'publishedDate',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  publishedDateStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'publishedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'publishedDate',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  publishedDateEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'publishedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'publishedDate',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateContains(String value, {bool caseSensitive = true}) {
+  publishedDateContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'publishedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'publishedDate',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateMatches(String pattern, {bool caseSensitive = true}) {
+  publishedDateMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'publishedDate',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'publishedDate',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateIsEmpty() {
+  publishedDateIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'publishedDate',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'publishedDate', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedDateIsNotEmpty() {
+  publishedDateIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'publishedDate',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'publishedDate', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearIsNull() {
+  publishedYearIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'publishedYear',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'publishedYear'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearIsNotNull() {
+  publishedYearIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'publishedYear',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'publishedYear'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  publishedYearEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'publishedYear',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'publishedYear',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'publishedYear',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearLessThan(
+  publishedYearGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'publishedYear',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'publishedYear',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearBetween(
+  publishedYearLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'publishedYear',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  publishedYearBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1709,153 +1700,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'publishedYear',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'publishedYear',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  publishedYearStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'publishedYear',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'publishedYear',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  publishedYearEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'publishedYear',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'publishedYear',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearContains(String value, {bool caseSensitive = true}) {
+  publishedYearContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'publishedYear',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'publishedYear',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearMatches(String pattern, {bool caseSensitive = true}) {
+  publishedYearMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'publishedYear',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'publishedYear',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearIsEmpty() {
+  publishedYearIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'publishedYear',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'publishedYear', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publishedYearIsNotEmpty() {
+  publishedYearIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'publishedYear',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'publishedYear', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherIsNull() {
+  publisherIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'publisher',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'publisher'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherIsNotNull() {
+  publisherIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'publisher',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'publisher'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  publisherEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'publisher',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'publisher',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'publisher',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherLessThan(
+  publisherGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'publisher',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'publisher',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherBetween(
+  publisherLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'publisher',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  publisherBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1863,153 +1859,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'publisher',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'publisher',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  publisherStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'publisher',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'publisher',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  publisherEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'publisher',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'publisher',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherContains(String value, {bool caseSensitive = true}) {
+  publisherContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'publisher',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'publisher',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherMatches(String pattern, {bool caseSensitive = true}) {
+  publisherMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'publisher',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'publisher',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherIsEmpty() {
+  publisherIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'publisher',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'publisher', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      publisherIsNotEmpty() {
+  publisherIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'publisher',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'publisher', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameIsNull() {
+  seriesNameIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'seriesName',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'seriesName'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameIsNotNull() {
+  seriesNameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'seriesName',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'seriesName'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  seriesNameEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'seriesName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'seriesName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'seriesName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameLessThan(
+  seriesNameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'seriesName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'seriesName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameBetween(
+  seriesNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'seriesName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  seriesNameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -2017,153 +2018,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'seriesName',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'seriesName',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  seriesNameStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'seriesName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'seriesName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  seriesNameEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'seriesName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'seriesName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameContains(String value, {bool caseSensitive = true}) {
+  seriesNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'seriesName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'seriesName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameMatches(String pattern, {bool caseSensitive = true}) {
+  seriesNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'seriesName',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'seriesName',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameIsEmpty() {
+  seriesNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'seriesName',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'seriesName', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      seriesNameIsNotEmpty() {
+  seriesNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'seriesName',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'seriesName', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleIsNull() {
+  subtitleIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'subtitle',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'subtitle'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleIsNotNull() {
+  subtitleIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'subtitle',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'subtitle'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  subtitleEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'subtitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'subtitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'subtitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleLessThan(
+  subtitleGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'subtitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'subtitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleBetween(
+  subtitleLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'subtitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  subtitleBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -2171,153 +2177,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'subtitle',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'subtitle',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  subtitleStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'subtitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'subtitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  subtitleEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'subtitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'subtitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleContains(String value, {bool caseSensitive = true}) {
+  subtitleContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'subtitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'subtitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleMatches(String pattern, {bool caseSensitive = true}) {
+  subtitleMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'subtitle',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'subtitle',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleIsEmpty() {
+  subtitleIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'subtitle',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'subtitle', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      subtitleIsNotEmpty() {
+  subtitleIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'subtitle',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'subtitle', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIsNull() {
+  titleIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'title',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'title'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIsNotNull() {
+  titleIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'title',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'title'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  titleEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'title',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'title',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'title',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleLessThan(
+  titleGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'title',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'title',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleBetween(
+  titleLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'title',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  titleBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -2325,153 +2336,158 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'title',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'title',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  titleStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'title',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'title',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  titleEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'title',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'title',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleContains(String value, {bool caseSensitive = true}) {
+  titleContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'title',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'title',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleMatches(String pattern, {bool caseSensitive = true}) {
+  titleMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'title',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'title',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIsEmpty() {
+  titleIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'title',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'title', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIsNotEmpty() {
+  titleIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'title',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'title', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixIsNull() {
+  titleIgnorePrefixIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'titleIgnorePrefix',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'titleIgnorePrefix'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixIsNotNull() {
+  titleIgnorePrefixIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'titleIgnorePrefix',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'titleIgnorePrefix'),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  titleIgnorePrefixEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'titleIgnorePrefix',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'titleIgnorePrefix',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'titleIgnorePrefix',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixLessThan(
+  titleIgnorePrefixGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'titleIgnorePrefix',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'titleIgnorePrefix',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixBetween(
+  titleIgnorePrefixLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'titleIgnorePrefix',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
+  titleIgnorePrefixBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -2479,84 +2495,86 @@ extension MetadataEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'titleIgnorePrefix',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'titleIgnorePrefix',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  titleIgnorePrefixStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'titleIgnorePrefix',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'titleIgnorePrefix',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  titleIgnorePrefixEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'titleIgnorePrefix',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'titleIgnorePrefix',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixContains(String value, {bool caseSensitive = true}) {
+  titleIgnorePrefixContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'titleIgnorePrefix',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'titleIgnorePrefix',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixMatches(String pattern, {bool caseSensitive = true}) {
+  titleIgnorePrefixMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'titleIgnorePrefix',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'titleIgnorePrefix',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixIsEmpty() {
+  titleIgnorePrefixIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'titleIgnorePrefix',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'titleIgnorePrefix', value: ''),
+      );
     });
   }
 
   QueryBuilder<MetadataEntity, MetadataEntity, QAfterFilterCondition>
-      titleIgnorePrefixIsNotEmpty() {
+  titleIgnorePrefixIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'titleIgnorePrefix',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'titleIgnorePrefix', value: ''),
+      );
     });
   }
 }

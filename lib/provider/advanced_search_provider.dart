@@ -2,70 +2,41 @@ import 'dart:async';
 import 'package:audiobookshelf_flutter/services/advanced_search_service.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// Provider for advanced search state
-final advancedSearchStateProvider =
-    StateNotifierProvider<AdvancedSearchStateNotifier, AdvancedSearchState>(
-        (ref) {
-  return AdvancedSearchStateNotifier(
-      ref.watch(advancedSearchServiceProvider), ref);
-});
+part 'advanced_search_provider.g.dart';
+part 'advanced_search_provider.freezed.dart';
 
 /// Advanced search state
-class AdvancedSearchState {
-  final List<SearchResult> results;
-  final SearchFilters filters;
-  final bool isLoading;
-  final String? error;
-  final String? currentQuery;
-  final int totalResults;
-  final bool hasMore;
-  final List<String> suggestions;
-
-  const AdvancedSearchState({
-    this.results = const [],
-    required this.filters,
-    this.isLoading = false,
-    this.error,
-    this.currentQuery,
-    this.totalResults = 0,
-    this.hasMore = false,
-    this.suggestions = const [],
-  });
-
-  AdvancedSearchState copyWith({
-    List<SearchResult>? results,
-    SearchFilters? filters,
-    bool? isLoading,
+@freezed
+sealed class AdvancedSearchState with _$AdvancedSearchState {
+  const factory AdvancedSearchState({
+    @Default([]) List<SearchResult> results,
+    required SearchFilters filters,
+    @Default(false) bool isLoading,
     String? error,
     String? currentQuery,
-    int? totalResults,
-    bool? hasMore,
-    List<String>? suggestions,
-  }) {
-    return AdvancedSearchState(
-      results: results ?? this.results,
-      filters: filters ?? this.filters,
-      isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
-      currentQuery: currentQuery ?? this.currentQuery,
-      totalResults: totalResults ?? this.totalResults,
-      hasMore: hasMore ?? this.hasMore,
-      suggestions: suggestions ?? this.suggestions,
-    );
-  }
+    @Default(0) int totalResults,
+    @Default(false) bool hasMore,
+    @Default([]) List<String> suggestions,
+  }) = _AdvancedSearchState;
 }
 
 /// Advanced search state notifier
-class AdvancedSearchStateNotifier extends StateNotifier<AdvancedSearchState> {
-  final AdvancedSearchService _searchService;
-  final Ref _ref;
+@riverpod
+class AdvancedSearchNotifier extends _$AdvancedSearchNotifier {
   Timer? _debounceTimer;
   int _currentOffset = 0;
   static const int _pageSize = 20;
 
-  AdvancedSearchStateNotifier(this._searchService, this._ref)
-      : super(AdvancedSearchState(filters: SearchFilters.empty()));
+  @override
+  AdvancedSearchState build() {
+    ref.onDispose(() {
+      _debounceTimer?.cancel();
+    });
+    return AdvancedSearchState(filters: SearchFilters.empty());
+  }
 
   /// Search with debouncing
   void search(String query) {
@@ -94,16 +65,14 @@ class AdvancedSearchStateNotifier extends StateNotifier<AdvancedSearchState> {
     _currentOffset = 0;
 
     try {
-      final userModel = _ref.read(userModelNotifierProvider);
+      final userModel = ref.read(userModelProvider);
       if (userModel == null) {
-        state = state.copyWith(
-          isLoading: false,
-          error: 'User not logged in',
-        );
+        state = state.copyWith(isLoading: false, error: 'User not logged in');
         return;
       }
 
-      final searchResults = await _searchService.search(
+      final searchService = ref.read(advancedSearchServiceProvider);
+      final searchResults = await searchService.search(
         userModel: userModel,
         query: query,
         mediaTypes: state.filters.mediaTypes.isNotEmpty
@@ -122,10 +91,7 @@ class AdvancedSearchStateNotifier extends StateNotifier<AdvancedSearchState> {
         hasMore: searchResults.hasMore,
       );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
@@ -139,13 +105,14 @@ class AdvancedSearchStateNotifier extends StateNotifier<AdvancedSearchState> {
     _currentOffset += _pageSize;
 
     try {
-      final userModel = _ref.read(userModelNotifierProvider);
+      final userModel = ref.read(userModelProvider);
       if (userModel == null) {
         state = state.copyWith(isLoading: false);
         return;
       }
 
-      final searchResults = await _searchService.search(
+      final searchService = ref.read(advancedSearchServiceProvider);
+      final searchResults = await searchService.search(
         userModel: userModel,
         query: state.currentQuery!,
         mediaTypes: state.filters.mediaTypes.isNotEmpty
@@ -163,10 +130,7 @@ class AdvancedSearchStateNotifier extends StateNotifier<AdvancedSearchState> {
         hasMore: searchResults.hasMore,
       );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
@@ -253,10 +217,11 @@ class AdvancedSearchStateNotifier extends StateNotifier<AdvancedSearchState> {
     }
 
     try {
-      final userModel = _ref.read(userModelNotifierProvider);
+      final userModel = ref.read(userModelProvider);
       if (userModel == null) return;
 
-      final suggestions = await _searchService.getSearchSuggestions(
+      final searchService = ref.read(advancedSearchServiceProvider);
+      final suggestions = await searchService.getSearchSuggestions(
         userModel: userModel,
         query: query,
         limit: 10,
@@ -266,11 +231,5 @@ class AdvancedSearchStateNotifier extends StateNotifier<AdvancedSearchState> {
     } catch (e) {
       // Ignore suggestion errors
     }
-  }
-
-  @override
-  void dispose() {
-    _debounceTimer?.cancel();
-    super.dispose();
   }
 }

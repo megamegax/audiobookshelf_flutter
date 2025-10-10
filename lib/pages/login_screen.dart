@@ -41,9 +41,13 @@ class LoginScreen extends HookConsumerWidget {
             print('[LOGIN] Szerver cím üres, hibaüzenet megjelenítése');
           }
           // If no server address is set, show error
-          ref.read(loginStateProvider.notifier).updateState(const LoginState
-              .error(
-              'Nincs szerver cím beállítva. Kérlek, add meg a szerver címet!'));
+          ref
+              .read(loginStateProvider.notifier)
+              .updateState(
+                const LoginState.error(
+                  'Nincs szerver cím beállítva. Kérlek, add meg a szerver címet!',
+                ),
+              );
         }
       });
 
@@ -71,8 +75,11 @@ class LoginScreen extends HookConsumerWidget {
                   icon: const Icon(Icons.edit),
                   onPressed: () {
                     // Navigate back to init screen to edit server address
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const InitScreen()));
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const InitScreen(),
+                      ),
+                    );
                   },
                 ),
               ],
@@ -136,7 +143,8 @@ class LoginScreen extends HookConsumerWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: (loginState.when(
+                onPressed:
+                    (loginState.when(
                           initial: () => true,
                           login: () => true,
                           loading: () => false,
@@ -149,9 +157,11 @@ class LoginScreen extends HookConsumerWidget {
                           print('[LOGIN] Bejelentkezési folyamat kezdődik...');
                           print('[LOGIN] Szerver cím: $serverAddress');
                           print(
-                              '[LOGIN] Felhasználónév: ${usernameController.text}');
+                            '[LOGIN] Felhasználónév: ${usernameController.text}',
+                          );
                           print(
-                              '[LOGIN] Jelszó hossza: ${passwordController.text.length}');
+                            '[LOGIN] Jelszó hossza: ${passwordController.text.length}',
+                          );
                         }
 
                         // Prevent double login
@@ -168,7 +178,8 @@ class LoginScreen extends HookConsumerWidget {
                         try {
                           if (kDebugMode) {
                             print(
-                                '[LOGIN] Felhasználónév és jelszó mentése...');
+                              '[LOGIN] Felhasználónév és jelszó mentése...',
+                            );
                           }
                           saveUsername(ref, usernameController.text);
                           savePassword(ref, passwordController.text);
@@ -176,21 +187,29 @@ class LoginScreen extends HookConsumerWidget {
                           if (kDebugMode) {
                             print('[LOGIN] LoginService hívása...');
                           }
-                          final Response<LoginResponse?> response = await ref
-                              .read(loginServiceProvider)
-                              .login(usernameController.text,
-                                  passwordController.text);
+                          final loginService = await ref.read(
+                            loginServiceProvider.future,
+                          );
+                          final Response<LoginResponse?> response =
+                              await loginService.login(
+                                usernameController.text,
+                                passwordController.text,
+                              );
 
                           if (kDebugMode) {
                             print('[LOGIN] LoginService válasz érkezett');
                             print(
-                                '[LOGIN] Response success: ${response.success}');
+                              '[LOGIN] Response success: ${response.success}',
+                            );
                             print(
-                                '[LOGIN] Response statusCode: ${response.statusCode}');
+                              '[LOGIN] Response statusCode: ${response.statusCode}',
+                            );
                             print(
-                                '[LOGIN] Response message: ${response.message}');
+                              '[LOGIN] Response message: ${response.message}',
+                            );
                             print(
-                                '[LOGIN] Response data null: ${response.data == null}');
+                              '[LOGIN] Response data null: ${response.data == null}',
+                            );
                           }
 
                           if (response.data != null &&
@@ -198,33 +217,51 @@ class LoginScreen extends HookConsumerWidget {
                             if (kDebugMode) {
                               print('[LOGIN] Sikeres bejelentkezés!');
                               print(
-                                  '[LOGIN] User ID: ${response.data!.user.id}');
+                                '[LOGIN] User ID: ${response.data!.user.id}',
+                              );
                               print(
-                                  '[LOGIN] User name: ${response.data!.user.username}');
+                                '[LOGIN] User name: ${response.data!.user.username}',
+                              );
                             }
-
-                            ref
-                                .read(userModelNotifierProvider.notifier)
-                                .updateUserModel(response.data!.user);
 
                             if (kDebugMode) {
                               print(
-                                  '[LOGIN] UserModel frissítve, navigáció SplashScreen-re...');
+                                '[LOGIN] About to call updateUserModel with user: ${response.data!.user.username}',
+                              );
+                            }
+
+                            await ref
+                                .read(userModelProvider.notifier)
+                                .updateUserModel(response.data!.user);
+
+                            if (kDebugMode) {
+                              print('[LOGIN] updateUserModel call completed');
+                            }
+
+                            if (kDebugMode) {
+                              print(
+                                '[LOGIN] UserModel frissítve, navigáció SplashScreen-re...',
+                              );
                             }
 
                             Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SplashScreen()));
+                              MaterialPageRoute(
+                                builder: (context) => const SplashScreen(),
+                              ),
+                            );
                           } else {
                             if (kDebugMode) {
                               print('[LOGIN] Bejelentkezés sikertelen');
                               print(
-                                  '[LOGIN] Error message: ${response.message}');
+                                '[LOGIN] Error message: ${response.message}',
+                              );
                             }
                             // Show error message
-                            ref.read(loginStateProvider.notifier).updateState(
-                                LoginState.error(response.message));
+                            ref
+                                .read(loginStateProvider.notifier)
+                                .updateState(
+                                  LoginState.error(response.message),
+                                );
                           }
                         } catch (e) {
                           if (kDebugMode) {
@@ -232,9 +269,13 @@ class LoginScreen extends HookConsumerWidget {
                             print('[LOGIN] Exception type: ${e.runtimeType}');
                           }
                           // Show error message
-                          ref.read(loginStateProvider.notifier).updateState(
-                              LoginState.error(
-                                  'Hiba történt: ${e.toString()}'));
+                          ref
+                              .read(loginStateProvider.notifier)
+                              .updateState(
+                                LoginState.error(
+                                  'Hiba történt: ${e.toString()}',
+                                ),
+                              );
                         } finally {
                           // Reset login flag
                           isLoggingIn.value = false;

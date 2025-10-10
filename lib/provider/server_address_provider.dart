@@ -1,15 +1,15 @@
 import 'package:audiobookshelf_flutter/provider/shared_preferences_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final serverAddressProvider =
-    StateNotifierProvider<ServerAddressNotifier, String>((ref) {
-  return ServerAddressNotifier();
-});
+part 'server_address_provider.g.dart';
 
-class ServerAddressNotifier extends StateNotifier<String> {
-  ServerAddressNotifier() : super('');
+@riverpod
+class ServerAddressNotifier extends _$ServerAddressNotifier {
+  @override
+  String build() => '';
 
   void updateServerAddress(String address) {
     state = address;
@@ -21,13 +21,15 @@ final serverAddressLoaderProvider = FutureProvider<String>((ref) async {
     print('[SERVER_ADDRESS_PROVIDER] Szerver cím betöltése...');
   }
 
-  final SharedPreferences sharedPrefs =
-      await ref.watch(sharedPreferencesProvider.future);
+  final SharedPreferences sharedPrefs = await ref.watch(
+    sharedPreferencesProvider.future,
+  );
   final serverAddress = sharedPrefs.getString('serverAddress') ?? '';
 
   if (kDebugMode) {
     print(
-        '[SERVER_ADDRESS_PROVIDER] SharedPreferences szerver cím: $serverAddress');
+      '[SERVER_ADDRESS_PROVIDER] SharedPreferences szerver cím: $serverAddress',
+    );
   }
 
   if (serverAddress.isNotEmpty) {

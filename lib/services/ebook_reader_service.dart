@@ -127,7 +127,7 @@ class EbookReaderService {
 /// Provider for EbookReaderService
 final ebookReaderServiceProvider = Provider<EbookReaderService>((ref) {
   return EbookReaderService(
-    userModel: ref.watch(userModelNotifierProvider) ?? UserModel(),
+    userModel: ref.watch(userModelProvider) ?? UserModel(),
     libraryService: ref.watch(libraryServiceProvider),
     ref: ref,
   );

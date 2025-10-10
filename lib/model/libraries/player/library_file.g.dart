@@ -6,19 +6,18 @@ part of 'library_file.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$LibraryFileImpl _$$LibraryFileImplFromJson(Map<String, dynamic> json) =>
-    _$LibraryFileImpl(
-      ino: json['ino'] as String,
-      metadata: json['metadata'] == null
-          ? null
-          : FileMetadata.fromJson(json['metadata'] as Map<String, dynamic>),
-      isSupplementary: json['isSupplementary'] as String,
-      addedAt: (json['addedAt'] as num).toInt(),
-      updatedAt: (json['updatedAt'] as num?)?.toInt(),
-      fileType: json['fileType'] as String?,
-    );
+_LibraryFile _$LibraryFileFromJson(Map<String, dynamic> json) => _LibraryFile(
+  ino: json['ino'] as String,
+  metadata: json['metadata'] == null
+      ? null
+      : FileMetadata.fromJson(json['metadata'] as Map<String, dynamic>),
+  isSupplementary: json['isSupplementary'] as String,
+  addedAt: (json['addedAt'] as num).toInt(),
+  updatedAt: (json['updatedAt'] as num?)?.toInt(),
+  fileType: json['fileType'] as String?,
+);
 
-Map<String, dynamic> _$$LibraryFileImplToJson(_$LibraryFileImpl instance) =>
+Map<String, dynamic> _$LibraryFileToJson(_LibraryFile instance) =>
     <String, dynamic>{
       'ino': instance.ino,
       'metadata': instance.metadata,
@@ -28,8 +27,8 @@ Map<String, dynamic> _$$LibraryFileImplToJson(_$LibraryFileImpl instance) =>
       'fileType': instance.fileType,
     };
 
-_$FileMetadataImpl _$$FileMetadataImplFromJson(Map<String, dynamic> json) =>
-    _$FileMetadataImpl(
+_FileMetadata _$FileMetadataFromJson(Map<String, dynamic> json) =>
+    _FileMetadata(
       filename: json['filename'] as String?,
       ext: json['ext'] as String?,
       path: json['path'] as String?,
@@ -40,7 +39,7 @@ _$FileMetadataImpl _$$FileMetadataImplFromJson(Map<String, dynamic> json) =>
       birthtimeMs: (json['birthtimeMs'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$$FileMetadataImplToJson(_$FileMetadataImpl instance) =>
+Map<String, dynamic> _$FileMetadataToJson(_FileMetadata instance) =>
     <String, dynamic>{
       'filename': instance.filename,
       'ext': instance.ext,

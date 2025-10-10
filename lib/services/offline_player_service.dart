@@ -1,5 +1,5 @@
 import 'package:audiobookshelf_flutter/services/download_service.dart';
-import 'package:audiobookshelf_flutter/provider/audio_player_provider.dart';
+import 'package:audiobookshelf_flutter/provider/audio_player_notifier.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
@@ -7,8 +7,9 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:path/path.dart' as path;
 
 final offlinePlayerServiceProvider = Provider<OfflinePlayerService>((ref) {
+  final audioPlayerNotifier = ref.watch(audioPlayerProvider.notifier);
   return OfflinePlayerService(
-    ref.watch(audioPlayerProvider),
+    audioPlayerNotifier.audioPlayer,
     ref.watch(downloadServiceProvider),
   );
 });
@@ -16,11 +17,14 @@ final offlinePlayerServiceProvider = Provider<OfflinePlayerService>((ref) {
 class OfflinePlayerService {
   final AudioPlayer audioPlayer;
   final DownloadService downloadService;
-  
+
   OfflinePlayerService(this.audioPlayer, this.downloadService);
 
   /// Play an offline downloaded item
-  Future<void> playOfflineItem(DownloadedItem item, {bool autoStart = false}) async {
+  Future<void> playOfflineItem(
+    DownloadedItem item, {
+    bool autoStart = false,
+  }) async {
     try {
       if (item.tracks.isEmpty) {
         throw Exception('No tracks found for offline item');
@@ -30,7 +34,7 @@ class OfflinePlayerService {
       final playlist = item.tracks.map((trackPath) {
         final fileName = path.basename(trackPath);
         final trackNumber = _extractTrackNumber(fileName);
-        
+
         return AudioSource.file(
           trackPath,
           tag: MediaItem(
@@ -139,7 +143,10 @@ class OfflinePlayerService {
   }
 
   /// Save offline progress for an item
-  Future<void> saveOfflineProgress(String itemId, Map<String, dynamic> progress) async {
+  Future<void> saveOfflineProgress(
+    String itemId,
+    Map<String, dynamic> progress,
+  ) async {
     try {
       // This would typically save to a local database
       // For now, do nothing as we don't have progress tracking yet

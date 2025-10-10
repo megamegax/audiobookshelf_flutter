@@ -4,7 +4,7 @@ part 'device_info.freezed.dart';
 part 'device_info.g.dart';
 
 @freezed
-class DeviceInfo with _$DeviceInfo {
+sealed class DeviceInfo with _$DeviceInfo {
   const factory DeviceInfo({
     required String deviceId,
     required String manufacturer,

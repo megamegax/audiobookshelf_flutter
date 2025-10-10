@@ -4,7 +4,7 @@ part 'book_chapter.freezed.dart';
 part 'book_chapter.g.dart';
 
 @freezed
-class BookChapter with _$BookChapter {
+sealed class BookChapter with _$BookChapter {
   const factory BookChapter({
     required int id,
     required double start,

@@ -33,8 +33,12 @@ class HomeContentWidget extends ConsumerWidget {
         return libraryRepositoryAsync.when(
           data: (libraryRepository) {
             return FutureBuilder(
-              future: _loadData(libraryRepository, libraryItemsRepository,
-                  selectedLibrary, ref),
+              future: _loadData(
+                libraryRepository,
+                libraryItemsRepository,
+                selectedLibrary,
+                ref,
+              ),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -55,8 +59,10 @@ class HomeContentWidget extends ConsumerWidget {
                     children: [
                       const SizedBox(height: 20),
                       const BackgroundLoadingIndicator(),
-                      ...homeSections.map((homeSection) =>
-                          _buildSection(context, ref, homeSection)),
+                      ...homeSections.map(
+                        (homeSection) =>
+                            _buildSection(context, ref, homeSection),
+                      ),
                       const SizedBox(height: 20), // Extra bottom padding
                     ],
                   ),
@@ -79,31 +85,56 @@ class HomeContentWidget extends ConsumerWidget {
     dynamic selectedLibrary,
     WidgetRef ref,
   ) async {
-    final libraries = await libraryRepository.getLibrary();
-    final libraryId = selectedLibrary?.id ?? libraries[0].libraryId;
+    try {
+      final libraries = await libraryRepository.getLibrary();
+      final libraryId =
+          selectedLibrary?.id ??
+          (libraries.isNotEmpty ? libraries[0].libraryId : '');
 
-    if (kDebugMode) {
-      print('[HOME_CONTENT] Processing library: $libraryId');
+      if (libraryId.isEmpty) {
+        if (kDebugMode) {
+          print(
+            '[HOME_CONTENT] No library ID available, returning empty sections',
+          );
+        }
+        return {'sections': <PersonalizedHomeEntity>[]};
+      }
+
+      if (kDebugMode) {
+        print('[HOME_CONTENT] Processing library: $libraryId');
+      }
+
+      // Get cached books
+      final cachedBooks = await libraryItemsRepository.getBooksByLibraryId(
+        libraryId,
+      );
+
+      // Get series
+      final series = await libraryItemsRepository.getSeries(libraryId);
+
+      // Get authors
+      final authorsRepository = await ref.read(
+        authorsRepositoryProvider.future,
+      );
+      final authors = await authorsRepository.getAllAuthors();
+
+      // Build home sections
+      final homeSections = await _buildHomeSections(
+        ref,
+        cachedBooks,
+        series,
+        authors,
+        libraryId,
+      );
+
+      return {'sections': homeSections};
+    } catch (e) {
+      if (kDebugMode) {
+        print('[HOME_CONTENT_WIDGET] Error loading data: $e');
+      }
+      // Return empty sections if there's an error
+      return {'sections': <PersonalizedHomeEntity>[]};
     }
-
-    // Get cached books
-    final cachedBooks =
-        await libraryItemsRepository.getBooksByLibraryId(libraryId);
-
-    // Get series
-    final series = await libraryItemsRepository.getSeries(libraryId);
-
-    // Get authors
-    final authorsRepository = await ref.read(authorsRepositoryProvider.future);
-    final authors = await authorsRepository.getAllAuthors();
-
-    // Build home sections
-    final homeSections =
-        await _buildHomeSections(ref, cachedBooks, series, authors, libraryId);
-
-    return {
-      'sections': homeSections,
-    };
   }
 
   Future<List<PersonalizedHomeEntity>> _buildHomeSections(
@@ -115,39 +146,58 @@ class HomeContentWidget extends ConsumerWidget {
   ) async {
     final homeSections = <PersonalizedHomeEntity>[];
 
+    // Safety check: ensure we have valid data
+    if (cachedBooks.isEmpty && series.isEmpty && authors.isEmpty) {
+      if (kDebugMode) {
+        print('[HOME_CONTENT] No data available for home sections');
+      }
+      return homeSections;
+    }
+
     // 1. Continue Listening
-    final continueListeningBooks = cachedBooks
-        .where((book) =>
-            book.media.progress != null &&
-            (book.media.progress!.progress ?? 0) > 0 &&
-            (book.media.progress!.progress ?? 0) < 1)
-        .toList()
-      ..sort((a, b) {
-        final aLastAccess = a.media.progress?.lastAccessedAt ?? 0;
-        final bLastAccess = b.media.progress?.lastAccessedAt ?? 0;
-        if (aLastAccess == bLastAccess ||
-            (aLastAccess == 0 && bLastAccess == 0)) {
-          final aLastUpdate = a.media.progress?.lastUpdate ?? 0;
-          final bLastUpdate = b.media.progress?.lastUpdate ?? 0;
-          return bLastUpdate.compareTo(aLastUpdate);
-        }
-        return bLastAccess.compareTo(aLastAccess);
-      });
+    final continueListeningBooks =
+        cachedBooks
+            .where(
+              (book) =>
+                  book.media.progress != null &&
+                  (book.media.progress!.progress ?? 0) > 0 &&
+                  (book.media.progress!.progress ?? 0) < 1,
+            )
+            .toList()
+          ..sort((a, b) {
+            final aLastAccess = a.media.progress?.lastAccessedAt ?? 0;
+            final bLastAccess = b.media.progress?.lastAccessedAt ?? 0;
+            if (aLastAccess == bLastAccess ||
+                (aLastAccess == 0 && bLastAccess == 0)) {
+              final aLastUpdate = a.media.progress?.lastUpdate ?? 0;
+              final bLastUpdate = b.media.progress?.lastUpdate ?? 0;
+              return bLastUpdate.compareTo(aLastUpdate);
+            }
+            return bLastAccess.compareTo(aLastAccess);
+          });
 
     if (continueListeningBooks.isNotEmpty) {
-      homeSections.add(PersonalizedHomeEntity(
-        id: SectionType.continueListening,
-        type: "book",
-        entities: continueListeningBooks.take(10).toList(),
-      ));
+      homeSections.add(
+        PersonalizedHomeEntity(
+          id: SectionType.continueListening,
+          type: "book",
+          entities: continueListeningBooks.take(10).toList(),
+        ),
+      );
     }
 
     // 2. Continue Series
     final continueSeries = <Series>[];
     for (final seriesItem in series) {
-      final hasProgress = seriesItem.books.any((book) {
-        final progress = book.media.progress?.progress ?? 0.0;
-        return progress > 0 && progress < 1;
+      final hasProgress = seriesItem.bookIds.any((bookId) {
+        try {
+          final book = cachedBooks.firstWhere((b) => b.id.toString() == bookId);
+          final progress = book.media.progress?.progress ?? 0.0;
+          return progress > 0 && progress < 1;
+        } catch (e) {
+          // Book not found in cached books, skip this book
+          return false;
+        }
       });
       if (hasProgress) {
         continueSeries.add(seriesItem);
@@ -155,72 +205,93 @@ class HomeContentWidget extends ConsumerWidget {
     }
 
     if (continueSeries.isNotEmpty) {
-      homeSections.add(PersonalizedHomeEntity(
-        id: SectionType.continueSeries,
-        type: "series",
-        entities: continueSeries.take(10).toList(),
-      ));
+      homeSections.add(
+        PersonalizedHomeEntity(
+          id: SectionType.continueSeries,
+          type: "series",
+          entities: continueSeries.take(10).toList(),
+        ),
+      );
     }
 
     // 3. Recently Added
     final sortedBooks = cachedBooks.toList()
       ..sort((a, b) => (b.addedAt).compareTo(a.addedAt));
 
-    homeSections.add(PersonalizedHomeEntity(
-      id: SectionType.recentlyAdded,
-      type: "book",
-      entities: sortedBooks.take(20).toList(),
-    ));
+    homeSections.add(
+      PersonalizedHomeEntity(
+        id: SectionType.recentlyAdded,
+        type: "book",
+        entities: sortedBooks.take(20).toList(),
+      ),
+    );
 
     // 4. Recent Series
     if (series.isNotEmpty) {
-      homeSections.add(PersonalizedHomeEntity(
-        id: SectionType.recentSeries,
-        type: "series",
-        entities: series.take(10).toList(),
-      ));
+      homeSections.add(
+        PersonalizedHomeEntity(
+          id: SectionType.recentSeries,
+          type: "series",
+          entities: series.take(10).toList(),
+        ),
+      );
     }
 
     // 5. Discover
     if (sortedBooks.length > 20) {
-      homeSections.add(PersonalizedHomeEntity(
-        id: SectionType.discover,
-        type: "book",
-        entities: sortedBooks.skip(20).take(30).toList(),
-      ));
+      homeSections.add(
+        PersonalizedHomeEntity(
+          id: SectionType.discover,
+          type: "book",
+          entities: sortedBooks.skip(20).take(30).toList(),
+        ),
+      );
     }
 
     // 6. Listen Again
-    final finishedBooks = cachedBooks
-        .where((book) =>
-            book.media.progress != null &&
-            (book.media.progress!.progress ?? 0) >= 1)
-        .toList()
-      ..sort((a, b) => (b.media.progress?.lastUpdate ?? 0)
-          .compareTo(a.media.progress?.lastUpdate ?? 0));
+    final finishedBooks =
+        cachedBooks
+            .where(
+              (book) =>
+                  book.media.progress != null &&
+                  (book.media.progress!.progress ?? 0) >= 1,
+            )
+            .toList()
+          ..sort(
+            (a, b) => (b.media.progress?.lastUpdate ?? 0).compareTo(
+              a.media.progress?.lastUpdate ?? 0,
+            ),
+          );
 
     if (finishedBooks.isNotEmpty) {
-      homeSections.add(PersonalizedHomeEntity(
-        id: SectionType.listenAgain,
-        type: "book",
-        entities: finishedBooks.take(20).toList(),
-      ));
+      homeSections.add(
+        PersonalizedHomeEntity(
+          id: SectionType.listenAgain,
+          type: "book",
+          entities: finishedBooks.take(20).toList(),
+        ),
+      );
     }
 
     // 7. Newest Authors
     if (authors.isNotEmpty) {
-      homeSections.add(PersonalizedHomeEntity(
-        id: SectionType.newestAuthors,
-        type: "author",
-        entities: authors.take(20).toList(),
-      ));
+      homeSections.add(
+        PersonalizedHomeEntity(
+          id: SectionType.newestAuthors,
+          type: "author",
+          entities: authors.take(20).toList(),
+        ),
+      );
     }
 
     return homeSections;
   }
 
   Widget _buildSection(
-      BuildContext context, WidgetRef ref, PersonalizedHomeEntity homeSection) {
+    BuildContext context,
+    WidgetRef ref,
+    PersonalizedHomeEntity homeSection,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -228,9 +299,9 @@ class HomeContentWidget extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Text(
             _getSectionDisplayName(homeSection.id),
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(height: 8),
@@ -244,8 +315,13 @@ class HomeContentWidget extends ConsumerWidget {
               final entity = homeSection.entities[index];
               return Padding(
                 padding: const EdgeInsets.only(right: 12),
-                child:
-                    _buildEntityCard(context, ref, entity, homeSection, index),
+                child: _buildEntityCard(
+                  context,
+                  ref,
+                  entity,
+                  homeSection,
+                  index,
+                ),
               );
             },
           ),

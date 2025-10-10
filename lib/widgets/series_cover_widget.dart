@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/database/series.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,13 +22,10 @@ class SeriesCoverWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get books with valid cover images (filter out corrupted ones)
-    final booksWithCovers = series.books
-        .where((book) =>
-            book.media.coverBytes != null &&
-            book.media.coverBytes!.isNotEmpty &&
-            _isValidImageData(book.media.coverBytes!))
-        .take(10) // Limit to 10 books maximum like the official app
-        .toList();
+    // Note: We need to get the actual book entities from the bookIds
+    // For now, we'll use a placeholder approach
+    final booksWithCovers =
+        <LibraryItemEntity>[]; // TODO: Implement book lookup from bookIds
 
     if (booksWithCovers.isEmpty) {
       // Fallback to series name text when no covers available
@@ -114,10 +112,12 @@ class SeriesCoverWidget extends StatelessWidget {
   Widget _buildSingleBookCover(dynamic book) {
     if (kDebugMode) {
       print(
-          '[SERIES_COVER_WIDGET] Building single book cover for series: ${series.name}');
+        '[SERIES_COVER_WIDGET] Building single book cover for series: ${series.name}',
+      );
       print('[SERIES_COVER_WIDGET] Book title: ${book.media.metadata?.title}');
       print(
-          '[SERIES_COVER_WIDGET] CoverBytes length: ${book.media.coverBytes?.length ?? 0}');
+        '[SERIES_COVER_WIDGET] CoverBytes length: ${book.media.coverBytes?.length ?? 0}',
+      );
     }
 
     return Container(
@@ -140,7 +140,8 @@ class SeriesCoverWidget extends StatelessWidget {
           if (!_isValidImageData(book.media.coverBytes!)) {
             if (kDebugMode) {
               print(
-                  '[SERIES_COVER_WIDGET] Invalid image data for book: ${book.media.metadata?.title}');
+                '[SERIES_COVER_WIDGET] Invalid image data for book: ${book.media.metadata?.title}',
+              );
             }
             return Container(
               width: width,
@@ -153,7 +154,8 @@ class SeriesCoverWidget extends StatelessWidget {
           try {
             if (kDebugMode) {
               print(
-                  '[SERIES_COVER_WIDGET] Attempting to create Image.memory for book: ${book.media.metadata?.title}');
+                '[SERIES_COVER_WIDGET] Attempting to create Image.memory for book: ${book.media.metadata?.title}',
+              );
             }
             return Image.memory(
               Uint8List.fromList(book.media.coverBytes!.cast<int>()),
@@ -163,7 +165,8 @@ class SeriesCoverWidget extends StatelessWidget {
               errorBuilder: (context, error, stackTrace) {
                 if (kDebugMode) {
                   print(
-                      '[SERIES_COVER_WIDGET] Image.memory errorBuilder triggered for book: ${book.media.metadata?.title}');
+                    '[SERIES_COVER_WIDGET] Image.memory errorBuilder triggered for book: ${book.media.metadata?.title}',
+                  );
                 }
                 return Container(
                   width: width,
@@ -176,10 +179,12 @@ class SeriesCoverWidget extends StatelessWidget {
           } catch (e) {
             if (kDebugMode) {
               print(
-                  '[SERIES_COVER_WIDGET] Error creating Image.memory for book ${book.media.metadata?.title}: $e');
+                '[SERIES_COVER_WIDGET] Error creating Image.memory for book ${book.media.metadata?.title}: $e',
+              );
               print('[SERIES_COVER_WIDGET] Error type: ${e.runtimeType}');
               print(
-                  '[SERIES_COVER_WIDGET] CoverBytes first 20 bytes: ${book.media.coverBytes!.take(20).toList()}');
+                '[SERIES_COVER_WIDGET] CoverBytes first 20 bytes: ${book.media.coverBytes!.take(20).toList()}',
+              );
             }
             return Container(
               width: width,
@@ -222,7 +227,11 @@ class SeriesCoverWidget extends StatelessWidget {
   }
 
   Widget _buildBookCoverLayer(
-      dynamic book, double coverWidth, double coverHeight, int zIndex) {
+    dynamic book,
+    double coverWidth,
+    double coverHeight,
+    int zIndex,
+  ) {
     return Container(
       width: coverWidth,
       height: coverHeight,
@@ -249,14 +258,18 @@ class SeriesCoverWidget extends StatelessWidget {
                   image: () {
                     try {
                       return DecorationImage(
-                        image: MemoryImage(Uint8List.fromList(
-                            book.media.coverBytes!.cast<int>())),
+                        image: MemoryImage(
+                          Uint8List.fromList(
+                            book.media.coverBytes!.cast<int>(),
+                          ),
+                        ),
                         fit: BoxFit.cover,
                       );
                     } catch (e) {
                       if (kDebugMode) {
                         print(
-                            '[SERIES_COVER_WIDGET] Error creating MemoryImage: $e');
+                          '[SERIES_COVER_WIDGET] Error creating MemoryImage: $e',
+                        );
                       }
                       return null;
                     }
@@ -272,7 +285,8 @@ class SeriesCoverWidget extends StatelessWidget {
               if (!_isValidImageData(book.media.coverBytes!)) {
                 if (kDebugMode) {
                   print(
-                      '[SERIES_COVER_WIDGET] Invalid image data (composite) for book: ${book.media.metadata?.title}');
+                    '[SERIES_COVER_WIDGET] Invalid image data (composite) for book: ${book.media.metadata?.title}',
+                  );
                 }
                 return Container(
                   width: coverWidth,
@@ -285,7 +299,8 @@ class SeriesCoverWidget extends StatelessWidget {
               try {
                 if (kDebugMode) {
                   print(
-                      '[SERIES_COVER_WIDGET] Attempting to create Image.memory (composite) for book: ${book.media.metadata?.title}');
+                    '[SERIES_COVER_WIDGET] Attempting to create Image.memory (composite) for book: ${book.media.metadata?.title}',
+                  );
                 }
                 return Image.memory(
                   Uint8List.fromList(book.media.coverBytes!.cast<int>()),
@@ -297,7 +312,8 @@ class SeriesCoverWidget extends StatelessWidget {
                   errorBuilder: (context, error, stackTrace) {
                     if (kDebugMode) {
                       print(
-                          '[SERIES_COVER_WIDGET] Image.memory errorBuilder triggered (composite) for book: ${book.media.metadata?.title}');
+                        '[SERIES_COVER_WIDGET] Image.memory errorBuilder triggered (composite) for book: ${book.media.metadata?.title}',
+                      );
                     }
                     return Container(
                       width: coverWidth,
@@ -310,10 +326,12 @@ class SeriesCoverWidget extends StatelessWidget {
               } catch (e) {
                 if (kDebugMode) {
                   print(
-                      '[SERIES_COVER_WIDGET] Error creating Image.memory (composite) for book ${book.media.metadata?.title}: $e');
+                    '[SERIES_COVER_WIDGET] Error creating Image.memory (composite) for book ${book.media.metadata?.title}: $e',
+                  );
                   print('[SERIES_COVER_WIDGET] Error type: ${e.runtimeType}');
                   print(
-                      '[SERIES_COVER_WIDGET] CoverBytes first 20 bytes: ${book.media.coverBytes!.take(20).toList()}');
+                    '[SERIES_COVER_WIDGET] CoverBytes first 20 bytes: ${book.media.coverBytes!.take(20).toList()}',
+                  );
                 }
                 return Container(
                   width: coverWidth,

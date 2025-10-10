@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,416 +9,302 @@ part of 'library_settings.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-LibrarySettings _$LibrarySettingsFromJson(Map<String, dynamic> json) {
-  return _LibrarySettings.fromJson(json);
-}
 
 /// @nodoc
 mixin _$LibrarySettings {
-  int get coverAspectRatio => throw _privateConstructorUsedError;
-  bool get disableWatcher => throw _privateConstructorUsedError;
-  bool get skipMatchingMediaWithAsin => throw _privateConstructorUsedError;
-  bool get skipMatchingMediaWithIsbn => throw _privateConstructorUsedError;
-  String? get autoScanCronExpression => throw _privateConstructorUsedError;
-  bool get audiobooksOnly => throw _privateConstructorUsedError;
-  bool get hideSingleBookSeries => throw _privateConstructorUsedError;
-  List<String> get metadataPrecedence => throw _privateConstructorUsedError;
-  int? get lastScan => throw _privateConstructorUsedError;
-  String? get lastScanVersion => throw _privateConstructorUsedError;
-  int? get createdAt => throw _privateConstructorUsedError;
-  int? get lastUpdate => throw _privateConstructorUsedError;
+
+ int get coverAspectRatio; bool get disableWatcher; bool get skipMatchingMediaWithAsin; bool get skipMatchingMediaWithIsbn; String? get autoScanCronExpression; bool get audiobooksOnly; bool get hideSingleBookSeries; List<String> get metadataPrecedence; int? get lastScan; String? get lastScanVersion; int? get createdAt; int? get lastUpdate;
+/// Create a copy of LibrarySettings
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LibrarySettingsCopyWith<LibrarySettings> get copyWith => _$LibrarySettingsCopyWithImpl<LibrarySettings>(this as LibrarySettings, _$identity);
 
   /// Serializes this LibrarySettings to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of LibrarySettings
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $LibrarySettingsCopyWith<LibrarySettings> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LibrarySettings&&(identical(other.coverAspectRatio, coverAspectRatio) || other.coverAspectRatio == coverAspectRatio)&&(identical(other.disableWatcher, disableWatcher) || other.disableWatcher == disableWatcher)&&(identical(other.skipMatchingMediaWithAsin, skipMatchingMediaWithAsin) || other.skipMatchingMediaWithAsin == skipMatchingMediaWithAsin)&&(identical(other.skipMatchingMediaWithIsbn, skipMatchingMediaWithIsbn) || other.skipMatchingMediaWithIsbn == skipMatchingMediaWithIsbn)&&(identical(other.autoScanCronExpression, autoScanCronExpression) || other.autoScanCronExpression == autoScanCronExpression)&&(identical(other.audiobooksOnly, audiobooksOnly) || other.audiobooksOnly == audiobooksOnly)&&(identical(other.hideSingleBookSeries, hideSingleBookSeries) || other.hideSingleBookSeries == hideSingleBookSeries)&&const DeepCollectionEquality().equals(other.metadataPrecedence, metadataPrecedence)&&(identical(other.lastScan, lastScan) || other.lastScan == lastScan)&&(identical(other.lastScanVersion, lastScanVersion) || other.lastScanVersion == lastScanVersion)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,coverAspectRatio,disableWatcher,skipMatchingMediaWithAsin,skipMatchingMediaWithIsbn,autoScanCronExpression,audiobooksOnly,hideSingleBookSeries,const DeepCollectionEquality().hash(metadataPrecedence),lastScan,lastScanVersion,createdAt,lastUpdate);
+
+@override
+String toString() {
+  return 'LibrarySettings(coverAspectRatio: $coverAspectRatio, disableWatcher: $disableWatcher, skipMatchingMediaWithAsin: $skipMatchingMediaWithAsin, skipMatchingMediaWithIsbn: $skipMatchingMediaWithIsbn, autoScanCronExpression: $autoScanCronExpression, audiobooksOnly: $audiobooksOnly, hideSingleBookSeries: $hideSingleBookSeries, metadataPrecedence: $metadataPrecedence, lastScan: $lastScan, lastScanVersion: $lastScanVersion, createdAt: $createdAt, lastUpdate: $lastUpdate)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $LibrarySettingsCopyWith<$Res> {
-  factory $LibrarySettingsCopyWith(
-          LibrarySettings value, $Res Function(LibrarySettings) then) =
-      _$LibrarySettingsCopyWithImpl<$Res, LibrarySettings>;
-  @useResult
-  $Res call(
-      {int coverAspectRatio,
-      bool disableWatcher,
-      bool skipMatchingMediaWithAsin,
-      bool skipMatchingMediaWithIsbn,
-      String? autoScanCronExpression,
-      bool audiobooksOnly,
-      bool hideSingleBookSeries,
-      List<String> metadataPrecedence,
-      int? lastScan,
-      String? lastScanVersion,
-      int? createdAt,
-      int? lastUpdate});
-}
+abstract mixin class $LibrarySettingsCopyWith<$Res>  {
+  factory $LibrarySettingsCopyWith(LibrarySettings value, $Res Function(LibrarySettings) _then) = _$LibrarySettingsCopyWithImpl;
+@useResult
+$Res call({
+ int coverAspectRatio, bool disableWatcher, bool skipMatchingMediaWithAsin, bool skipMatchingMediaWithIsbn, String? autoScanCronExpression, bool audiobooksOnly, bool hideSingleBookSeries, List<String> metadataPrecedence, int? lastScan, String? lastScanVersion, int? createdAt, int? lastUpdate
+});
 
+
+
+
+}
 /// @nodoc
-class _$LibrarySettingsCopyWithImpl<$Res, $Val extends LibrarySettings>
+class _$LibrarySettingsCopyWithImpl<$Res>
     implements $LibrarySettingsCopyWith<$Res> {
-  _$LibrarySettingsCopyWithImpl(this._value, this._then);
+  _$LibrarySettingsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final LibrarySettings _self;
+  final $Res Function(LibrarySettings) _then;
 
-  /// Create a copy of LibrarySettings
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? coverAspectRatio = null,
-    Object? disableWatcher = null,
-    Object? skipMatchingMediaWithAsin = null,
-    Object? skipMatchingMediaWithIsbn = null,
-    Object? autoScanCronExpression = freezed,
-    Object? audiobooksOnly = null,
-    Object? hideSingleBookSeries = null,
-    Object? metadataPrecedence = null,
-    Object? lastScan = freezed,
-    Object? lastScanVersion = freezed,
-    Object? createdAt = freezed,
-    Object? lastUpdate = freezed,
-  }) {
-    return _then(_value.copyWith(
-      coverAspectRatio: null == coverAspectRatio
-          ? _value.coverAspectRatio
-          : coverAspectRatio // ignore: cast_nullable_to_non_nullable
-              as int,
-      disableWatcher: null == disableWatcher
-          ? _value.disableWatcher
-          : disableWatcher // ignore: cast_nullable_to_non_nullable
-              as bool,
-      skipMatchingMediaWithAsin: null == skipMatchingMediaWithAsin
-          ? _value.skipMatchingMediaWithAsin
-          : skipMatchingMediaWithAsin // ignore: cast_nullable_to_non_nullable
-              as bool,
-      skipMatchingMediaWithIsbn: null == skipMatchingMediaWithIsbn
-          ? _value.skipMatchingMediaWithIsbn
-          : skipMatchingMediaWithIsbn // ignore: cast_nullable_to_non_nullable
-              as bool,
-      autoScanCronExpression: freezed == autoScanCronExpression
-          ? _value.autoScanCronExpression
-          : autoScanCronExpression // ignore: cast_nullable_to_non_nullable
-              as String?,
-      audiobooksOnly: null == audiobooksOnly
-          ? _value.audiobooksOnly
-          : audiobooksOnly // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hideSingleBookSeries: null == hideSingleBookSeries
-          ? _value.hideSingleBookSeries
-          : hideSingleBookSeries // ignore: cast_nullable_to_non_nullable
-              as bool,
-      metadataPrecedence: null == metadataPrecedence
-          ? _value.metadataPrecedence
-          : metadataPrecedence // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      lastScan: freezed == lastScan
-          ? _value.lastScan
-          : lastScan // ignore: cast_nullable_to_non_nullable
-              as int?,
-      lastScanVersion: freezed == lastScanVersion
-          ? _value.lastScanVersion
-          : lastScanVersion // ignore: cast_nullable_to_non_nullable
-              as String?,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as int?,
-      lastUpdate: freezed == lastUpdate
-          ? _value.lastUpdate
-          : lastUpdate // ignore: cast_nullable_to_non_nullable
-              as int?,
-    ) as $Val);
-  }
+/// Create a copy of LibrarySettings
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? coverAspectRatio = null,Object? disableWatcher = null,Object? skipMatchingMediaWithAsin = null,Object? skipMatchingMediaWithIsbn = null,Object? autoScanCronExpression = freezed,Object? audiobooksOnly = null,Object? hideSingleBookSeries = null,Object? metadataPrecedence = null,Object? lastScan = freezed,Object? lastScanVersion = freezed,Object? createdAt = freezed,Object? lastUpdate = freezed,}) {
+  return _then(_self.copyWith(
+coverAspectRatio: null == coverAspectRatio ? _self.coverAspectRatio : coverAspectRatio // ignore: cast_nullable_to_non_nullable
+as int,disableWatcher: null == disableWatcher ? _self.disableWatcher : disableWatcher // ignore: cast_nullable_to_non_nullable
+as bool,skipMatchingMediaWithAsin: null == skipMatchingMediaWithAsin ? _self.skipMatchingMediaWithAsin : skipMatchingMediaWithAsin // ignore: cast_nullable_to_non_nullable
+as bool,skipMatchingMediaWithIsbn: null == skipMatchingMediaWithIsbn ? _self.skipMatchingMediaWithIsbn : skipMatchingMediaWithIsbn // ignore: cast_nullable_to_non_nullable
+as bool,autoScanCronExpression: freezed == autoScanCronExpression ? _self.autoScanCronExpression : autoScanCronExpression // ignore: cast_nullable_to_non_nullable
+as String?,audiobooksOnly: null == audiobooksOnly ? _self.audiobooksOnly : audiobooksOnly // ignore: cast_nullable_to_non_nullable
+as bool,hideSingleBookSeries: null == hideSingleBookSeries ? _self.hideSingleBookSeries : hideSingleBookSeries // ignore: cast_nullable_to_non_nullable
+as bool,metadataPrecedence: null == metadataPrecedence ? _self.metadataPrecedence : metadataPrecedence // ignore: cast_nullable_to_non_nullable
+as List<String>,lastScan: freezed == lastScan ? _self.lastScan : lastScan // ignore: cast_nullable_to_non_nullable
+as int?,lastScanVersion: freezed == lastScanVersion ? _self.lastScanVersion : lastScanVersion // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as int?,lastUpdate: freezed == lastUpdate ? _self.lastUpdate : lastUpdate // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$LibrarySettingsImplCopyWith<$Res>
-    implements $LibrarySettingsCopyWith<$Res> {
-  factory _$$LibrarySettingsImplCopyWith(_$LibrarySettingsImpl value,
-          $Res Function(_$LibrarySettingsImpl) then) =
-      __$$LibrarySettingsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {int coverAspectRatio,
-      bool disableWatcher,
-      bool skipMatchingMediaWithAsin,
-      bool skipMatchingMediaWithIsbn,
-      String? autoScanCronExpression,
-      bool audiobooksOnly,
-      bool hideSingleBookSeries,
-      List<String> metadataPrecedence,
-      int? lastScan,
-      String? lastScanVersion,
-      int? createdAt,
-      int? lastUpdate});
 }
 
-/// @nodoc
-class __$$LibrarySettingsImplCopyWithImpl<$Res>
-    extends _$LibrarySettingsCopyWithImpl<$Res, _$LibrarySettingsImpl>
-    implements _$$LibrarySettingsImplCopyWith<$Res> {
-  __$$LibrarySettingsImplCopyWithImpl(
-      _$LibrarySettingsImpl _value, $Res Function(_$LibrarySettingsImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of LibrarySettings
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? coverAspectRatio = null,
-    Object? disableWatcher = null,
-    Object? skipMatchingMediaWithAsin = null,
-    Object? skipMatchingMediaWithIsbn = null,
-    Object? autoScanCronExpression = freezed,
-    Object? audiobooksOnly = null,
-    Object? hideSingleBookSeries = null,
-    Object? metadataPrecedence = null,
-    Object? lastScan = freezed,
-    Object? lastScanVersion = freezed,
-    Object? createdAt = freezed,
-    Object? lastUpdate = freezed,
-  }) {
-    return _then(_$LibrarySettingsImpl(
-      coverAspectRatio: null == coverAspectRatio
-          ? _value.coverAspectRatio
-          : coverAspectRatio // ignore: cast_nullable_to_non_nullable
-              as int,
-      disableWatcher: null == disableWatcher
-          ? _value.disableWatcher
-          : disableWatcher // ignore: cast_nullable_to_non_nullable
-              as bool,
-      skipMatchingMediaWithAsin: null == skipMatchingMediaWithAsin
-          ? _value.skipMatchingMediaWithAsin
-          : skipMatchingMediaWithAsin // ignore: cast_nullable_to_non_nullable
-              as bool,
-      skipMatchingMediaWithIsbn: null == skipMatchingMediaWithIsbn
-          ? _value.skipMatchingMediaWithIsbn
-          : skipMatchingMediaWithIsbn // ignore: cast_nullable_to_non_nullable
-              as bool,
-      autoScanCronExpression: freezed == autoScanCronExpression
-          ? _value.autoScanCronExpression
-          : autoScanCronExpression // ignore: cast_nullable_to_non_nullable
-              as String?,
-      audiobooksOnly: null == audiobooksOnly
-          ? _value.audiobooksOnly
-          : audiobooksOnly // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hideSingleBookSeries: null == hideSingleBookSeries
-          ? _value.hideSingleBookSeries
-          : hideSingleBookSeries // ignore: cast_nullable_to_non_nullable
-              as bool,
-      metadataPrecedence: null == metadataPrecedence
-          ? _value._metadataPrecedence
-          : metadataPrecedence // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      lastScan: freezed == lastScan
-          ? _value.lastScan
-          : lastScan // ignore: cast_nullable_to_non_nullable
-              as int?,
-      lastScanVersion: freezed == lastScanVersion
-          ? _value.lastScanVersion
-          : lastScanVersion // ignore: cast_nullable_to_non_nullable
-              as String?,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as int?,
-      lastUpdate: freezed == lastUpdate
-          ? _value.lastUpdate
-          : lastUpdate // ignore: cast_nullable_to_non_nullable
-              as int?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [LibrarySettings].
+extension LibrarySettingsPatterns on LibrarySettings {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _LibrarySettings value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _LibrarySettings() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _LibrarySettings value)  $default,){
+final _that = this;
+switch (_that) {
+case _LibrarySettings():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _LibrarySettings value)?  $default,){
+final _that = this;
+switch (_that) {
+case _LibrarySettings() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int coverAspectRatio,  bool disableWatcher,  bool skipMatchingMediaWithAsin,  bool skipMatchingMediaWithIsbn,  String? autoScanCronExpression,  bool audiobooksOnly,  bool hideSingleBookSeries,  List<String> metadataPrecedence,  int? lastScan,  String? lastScanVersion,  int? createdAt,  int? lastUpdate)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _LibrarySettings() when $default != null:
+return $default(_that.coverAspectRatio,_that.disableWatcher,_that.skipMatchingMediaWithAsin,_that.skipMatchingMediaWithIsbn,_that.autoScanCronExpression,_that.audiobooksOnly,_that.hideSingleBookSeries,_that.metadataPrecedence,_that.lastScan,_that.lastScanVersion,_that.createdAt,_that.lastUpdate);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int coverAspectRatio,  bool disableWatcher,  bool skipMatchingMediaWithAsin,  bool skipMatchingMediaWithIsbn,  String? autoScanCronExpression,  bool audiobooksOnly,  bool hideSingleBookSeries,  List<String> metadataPrecedence,  int? lastScan,  String? lastScanVersion,  int? createdAt,  int? lastUpdate)  $default,) {final _that = this;
+switch (_that) {
+case _LibrarySettings():
+return $default(_that.coverAspectRatio,_that.disableWatcher,_that.skipMatchingMediaWithAsin,_that.skipMatchingMediaWithIsbn,_that.autoScanCronExpression,_that.audiobooksOnly,_that.hideSingleBookSeries,_that.metadataPrecedence,_that.lastScan,_that.lastScanVersion,_that.createdAt,_that.lastUpdate);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int coverAspectRatio,  bool disableWatcher,  bool skipMatchingMediaWithAsin,  bool skipMatchingMediaWithIsbn,  String? autoScanCronExpression,  bool audiobooksOnly,  bool hideSingleBookSeries,  List<String> metadataPrecedence,  int? lastScan,  String? lastScanVersion,  int? createdAt,  int? lastUpdate)?  $default,) {final _that = this;
+switch (_that) {
+case _LibrarySettings() when $default != null:
+return $default(_that.coverAspectRatio,_that.disableWatcher,_that.skipMatchingMediaWithAsin,_that.skipMatchingMediaWithIsbn,_that.autoScanCronExpression,_that.audiobooksOnly,_that.hideSingleBookSeries,_that.metadataPrecedence,_that.lastScan,_that.lastScanVersion,_that.createdAt,_that.lastUpdate);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$LibrarySettingsImpl implements _LibrarySettings {
-  const _$LibrarySettingsImpl(
-      {required this.coverAspectRatio,
-      required this.disableWatcher,
-      required this.skipMatchingMediaWithAsin,
-      required this.skipMatchingMediaWithIsbn,
-      this.autoScanCronExpression,
-      required this.audiobooksOnly,
-      required this.hideSingleBookSeries,
-      required final List<String> metadataPrecedence,
-      this.lastScan,
-      this.lastScanVersion,
-      this.createdAt,
-      this.lastUpdate})
-      : _metadataPrecedence = metadataPrecedence;
 
-  factory _$LibrarySettingsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$LibrarySettingsImplFromJson(json);
+class _LibrarySettings implements LibrarySettings {
+  const _LibrarySettings({required this.coverAspectRatio, required this.disableWatcher, required this.skipMatchingMediaWithAsin, required this.skipMatchingMediaWithIsbn, this.autoScanCronExpression, required this.audiobooksOnly, required this.hideSingleBookSeries, required final  List<String> metadataPrecedence, this.lastScan, this.lastScanVersion, this.createdAt, this.lastUpdate}): _metadataPrecedence = metadataPrecedence;
+  factory _LibrarySettings.fromJson(Map<String, dynamic> json) => _$LibrarySettingsFromJson(json);
 
-  @override
-  final int coverAspectRatio;
-  @override
-  final bool disableWatcher;
-  @override
-  final bool skipMatchingMediaWithAsin;
-  @override
-  final bool skipMatchingMediaWithIsbn;
-  @override
-  final String? autoScanCronExpression;
-  @override
-  final bool audiobooksOnly;
-  @override
-  final bool hideSingleBookSeries;
-  final List<String> _metadataPrecedence;
-  @override
-  List<String> get metadataPrecedence {
-    if (_metadataPrecedence is EqualUnmodifiableListView)
-      return _metadataPrecedence;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_metadataPrecedence);
-  }
-
-  @override
-  final int? lastScan;
-  @override
-  final String? lastScanVersion;
-  @override
-  final int? createdAt;
-  @override
-  final int? lastUpdate;
-
-  @override
-  String toString() {
-    return 'LibrarySettings(coverAspectRatio: $coverAspectRatio, disableWatcher: $disableWatcher, skipMatchingMediaWithAsin: $skipMatchingMediaWithAsin, skipMatchingMediaWithIsbn: $skipMatchingMediaWithIsbn, autoScanCronExpression: $autoScanCronExpression, audiobooksOnly: $audiobooksOnly, hideSingleBookSeries: $hideSingleBookSeries, metadataPrecedence: $metadataPrecedence, lastScan: $lastScan, lastScanVersion: $lastScanVersion, createdAt: $createdAt, lastUpdate: $lastUpdate)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LibrarySettingsImpl &&
-            (identical(other.coverAspectRatio, coverAspectRatio) ||
-                other.coverAspectRatio == coverAspectRatio) &&
-            (identical(other.disableWatcher, disableWatcher) ||
-                other.disableWatcher == disableWatcher) &&
-            (identical(other.skipMatchingMediaWithAsin,
-                    skipMatchingMediaWithAsin) ||
-                other.skipMatchingMediaWithAsin == skipMatchingMediaWithAsin) &&
-            (identical(other.skipMatchingMediaWithIsbn,
-                    skipMatchingMediaWithIsbn) ||
-                other.skipMatchingMediaWithIsbn == skipMatchingMediaWithIsbn) &&
-            (identical(other.autoScanCronExpression, autoScanCronExpression) ||
-                other.autoScanCronExpression == autoScanCronExpression) &&
-            (identical(other.audiobooksOnly, audiobooksOnly) ||
-                other.audiobooksOnly == audiobooksOnly) &&
-            (identical(other.hideSingleBookSeries, hideSingleBookSeries) ||
-                other.hideSingleBookSeries == hideSingleBookSeries) &&
-            const DeepCollectionEquality()
-                .equals(other._metadataPrecedence, _metadataPrecedence) &&
-            (identical(other.lastScan, lastScan) ||
-                other.lastScan == lastScan) &&
-            (identical(other.lastScanVersion, lastScanVersion) ||
-                other.lastScanVersion == lastScanVersion) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.lastUpdate, lastUpdate) ||
-                other.lastUpdate == lastUpdate));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      coverAspectRatio,
-      disableWatcher,
-      skipMatchingMediaWithAsin,
-      skipMatchingMediaWithIsbn,
-      autoScanCronExpression,
-      audiobooksOnly,
-      hideSingleBookSeries,
-      const DeepCollectionEquality().hash(_metadataPrecedence),
-      lastScan,
-      lastScanVersion,
-      createdAt,
-      lastUpdate);
-
-  /// Create a copy of LibrarySettings
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LibrarySettingsImplCopyWith<_$LibrarySettingsImpl> get copyWith =>
-      __$$LibrarySettingsImplCopyWithImpl<_$LibrarySettingsImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$LibrarySettingsImplToJson(
-      this,
-    );
-  }
+@override final  int coverAspectRatio;
+@override final  bool disableWatcher;
+@override final  bool skipMatchingMediaWithAsin;
+@override final  bool skipMatchingMediaWithIsbn;
+@override final  String? autoScanCronExpression;
+@override final  bool audiobooksOnly;
+@override final  bool hideSingleBookSeries;
+ final  List<String> _metadataPrecedence;
+@override List<String> get metadataPrecedence {
+  if (_metadataPrecedence is EqualUnmodifiableListView) return _metadataPrecedence;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_metadataPrecedence);
 }
 
-abstract class _LibrarySettings implements LibrarySettings {
-  const factory _LibrarySettings(
-      {required final int coverAspectRatio,
-      required final bool disableWatcher,
-      required final bool skipMatchingMediaWithAsin,
-      required final bool skipMatchingMediaWithIsbn,
-      final String? autoScanCronExpression,
-      required final bool audiobooksOnly,
-      required final bool hideSingleBookSeries,
-      required final List<String> metadataPrecedence,
-      final int? lastScan,
-      final String? lastScanVersion,
-      final int? createdAt,
-      final int? lastUpdate}) = _$LibrarySettingsImpl;
+@override final  int? lastScan;
+@override final  String? lastScanVersion;
+@override final  int? createdAt;
+@override final  int? lastUpdate;
 
-  factory _LibrarySettings.fromJson(Map<String, dynamic> json) =
-      _$LibrarySettingsImpl.fromJson;
+/// Create a copy of LibrarySettings
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LibrarySettingsCopyWith<_LibrarySettings> get copyWith => __$LibrarySettingsCopyWithImpl<_LibrarySettings>(this, _$identity);
 
-  @override
-  int get coverAspectRatio;
-  @override
-  bool get disableWatcher;
-  @override
-  bool get skipMatchingMediaWithAsin;
-  @override
-  bool get skipMatchingMediaWithIsbn;
-  @override
-  String? get autoScanCronExpression;
-  @override
-  bool get audiobooksOnly;
-  @override
-  bool get hideSingleBookSeries;
-  @override
-  List<String> get metadataPrecedence;
-  @override
-  int? get lastScan;
-  @override
-  String? get lastScanVersion;
-  @override
-  int? get createdAt;
-  @override
-  int? get lastUpdate;
-
-  /// Create a copy of LibrarySettings
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$LibrarySettingsImplCopyWith<_$LibrarySettingsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$LibrarySettingsToJson(this, );
 }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LibrarySettings&&(identical(other.coverAspectRatio, coverAspectRatio) || other.coverAspectRatio == coverAspectRatio)&&(identical(other.disableWatcher, disableWatcher) || other.disableWatcher == disableWatcher)&&(identical(other.skipMatchingMediaWithAsin, skipMatchingMediaWithAsin) || other.skipMatchingMediaWithAsin == skipMatchingMediaWithAsin)&&(identical(other.skipMatchingMediaWithIsbn, skipMatchingMediaWithIsbn) || other.skipMatchingMediaWithIsbn == skipMatchingMediaWithIsbn)&&(identical(other.autoScanCronExpression, autoScanCronExpression) || other.autoScanCronExpression == autoScanCronExpression)&&(identical(other.audiobooksOnly, audiobooksOnly) || other.audiobooksOnly == audiobooksOnly)&&(identical(other.hideSingleBookSeries, hideSingleBookSeries) || other.hideSingleBookSeries == hideSingleBookSeries)&&const DeepCollectionEquality().equals(other._metadataPrecedence, _metadataPrecedence)&&(identical(other.lastScan, lastScan) || other.lastScan == lastScan)&&(identical(other.lastScanVersion, lastScanVersion) || other.lastScanVersion == lastScanVersion)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.lastUpdate, lastUpdate) || other.lastUpdate == lastUpdate));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,coverAspectRatio,disableWatcher,skipMatchingMediaWithAsin,skipMatchingMediaWithIsbn,autoScanCronExpression,audiobooksOnly,hideSingleBookSeries,const DeepCollectionEquality().hash(_metadataPrecedence),lastScan,lastScanVersion,createdAt,lastUpdate);
+
+@override
+String toString() {
+  return 'LibrarySettings(coverAspectRatio: $coverAspectRatio, disableWatcher: $disableWatcher, skipMatchingMediaWithAsin: $skipMatchingMediaWithAsin, skipMatchingMediaWithIsbn: $skipMatchingMediaWithIsbn, autoScanCronExpression: $autoScanCronExpression, audiobooksOnly: $audiobooksOnly, hideSingleBookSeries: $hideSingleBookSeries, metadataPrecedence: $metadataPrecedence, lastScan: $lastScan, lastScanVersion: $lastScanVersion, createdAt: $createdAt, lastUpdate: $lastUpdate)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LibrarySettingsCopyWith<$Res> implements $LibrarySettingsCopyWith<$Res> {
+  factory _$LibrarySettingsCopyWith(_LibrarySettings value, $Res Function(_LibrarySettings) _then) = __$LibrarySettingsCopyWithImpl;
+@override @useResult
+$Res call({
+ int coverAspectRatio, bool disableWatcher, bool skipMatchingMediaWithAsin, bool skipMatchingMediaWithIsbn, String? autoScanCronExpression, bool audiobooksOnly, bool hideSingleBookSeries, List<String> metadataPrecedence, int? lastScan, String? lastScanVersion, int? createdAt, int? lastUpdate
+});
+
+
+
+
+}
+/// @nodoc
+class __$LibrarySettingsCopyWithImpl<$Res>
+    implements _$LibrarySettingsCopyWith<$Res> {
+  __$LibrarySettingsCopyWithImpl(this._self, this._then);
+
+  final _LibrarySettings _self;
+  final $Res Function(_LibrarySettings) _then;
+
+/// Create a copy of LibrarySettings
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? coverAspectRatio = null,Object? disableWatcher = null,Object? skipMatchingMediaWithAsin = null,Object? skipMatchingMediaWithIsbn = null,Object? autoScanCronExpression = freezed,Object? audiobooksOnly = null,Object? hideSingleBookSeries = null,Object? metadataPrecedence = null,Object? lastScan = freezed,Object? lastScanVersion = freezed,Object? createdAt = freezed,Object? lastUpdate = freezed,}) {
+  return _then(_LibrarySettings(
+coverAspectRatio: null == coverAspectRatio ? _self.coverAspectRatio : coverAspectRatio // ignore: cast_nullable_to_non_nullable
+as int,disableWatcher: null == disableWatcher ? _self.disableWatcher : disableWatcher // ignore: cast_nullable_to_non_nullable
+as bool,skipMatchingMediaWithAsin: null == skipMatchingMediaWithAsin ? _self.skipMatchingMediaWithAsin : skipMatchingMediaWithAsin // ignore: cast_nullable_to_non_nullable
+as bool,skipMatchingMediaWithIsbn: null == skipMatchingMediaWithIsbn ? _self.skipMatchingMediaWithIsbn : skipMatchingMediaWithIsbn // ignore: cast_nullable_to_non_nullable
+as bool,autoScanCronExpression: freezed == autoScanCronExpression ? _self.autoScanCronExpression : autoScanCronExpression // ignore: cast_nullable_to_non_nullable
+as String?,audiobooksOnly: null == audiobooksOnly ? _self.audiobooksOnly : audiobooksOnly // ignore: cast_nullable_to_non_nullable
+as bool,hideSingleBookSeries: null == hideSingleBookSeries ? _self.hideSingleBookSeries : hideSingleBookSeries // ignore: cast_nullable_to_non_nullable
+as bool,metadataPrecedence: null == metadataPrecedence ? _self._metadataPrecedence : metadataPrecedence // ignore: cast_nullable_to_non_nullable
+as List<String>,lastScan: freezed == lastScan ? _self.lastScan : lastScan // ignore: cast_nullable_to_non_nullable
+as int?,lastScanVersion: freezed == lastScanVersion ? _self.lastScanVersion : lastScanVersion // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as int?,lastUpdate: freezed == lastUpdate ? _self.lastUpdate : lastUpdate // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+
+}
+
+// dart format on

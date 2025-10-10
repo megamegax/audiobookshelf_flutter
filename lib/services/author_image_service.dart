@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:audiobookshelf_flutter/model/login/user_model.dart';
 import 'package:audiobookshelf_flutter/repositories/authors_repository.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
@@ -15,9 +16,9 @@ class AuthorImageService {
     required LibraryService libraryService,
     required AuthorsRepository authorsRepository,
     required UserModel userModel,
-  })  : _libraryService = libraryService,
-        _authorsRepository = authorsRepository,
-        _userModel = userModel;
+  }) : _libraryService = libraryService,
+       _authorsRepository = authorsRepository,
+       _userModel = userModel;
 
   /// Download and cache author image
   Future<Uint8List?> downloadAuthorImage(String authorId) async {
@@ -31,7 +32,8 @@ class AuthorImageService {
       if (author?.imageBytes?.isNotEmpty == true) {
         if (kDebugMode) {
           print(
-              '[AUTHOR_IMAGE_SERVICE] Image already cached for author: $authorId');
+            '[AUTHOR_IMAGE_SERVICE] Image already cached for author: $authorId',
+          );
         }
         return Uint8List.fromList(author!.imageBytes!);
       }
@@ -46,12 +48,15 @@ class AuthorImageService {
 
       if (kDebugMode) {
         print(
-            '[AUTHOR_IMAGE_SERVICE] Author $authorId has imagePath: ${author.imagePath}');
+          '[AUTHOR_IMAGE_SERVICE] Author $authorId has imagePath: ${author.imagePath}',
+        );
       }
 
       // Download image from server
-      final imageBytes =
-          await _libraryService.fetchAuthorImage(authorId, _userModel);
+      final imageBytes = await _libraryService.fetchAuthorImage(
+        authorId,
+        _userModel,
+      );
       if (imageBytes != null && imageBytes.isNotEmpty) {
         // Validate image bytes before saving
         try {
@@ -62,13 +67,15 @@ class AuthorImageService {
           await _authorsRepository.saveAuthorImage(authorId, imageBytes);
           if (kDebugMode) {
             print(
-                '[AUTHOR_IMAGE_SERVICE] Downloaded and cached image for author: $authorId');
+              '[AUTHOR_IMAGE_SERVICE] Downloaded and cached image for author: $authorId',
+            );
           }
           return imageBytes;
         } catch (e) {
           if (kDebugMode) {
             print(
-                '[AUTHOR_IMAGE_SERVICE] Invalid image bytes for author $authorId: $e');
+              '[AUTHOR_IMAGE_SERVICE] Invalid image bytes for author $authorId: $e',
+            );
           }
           return null;
         }
@@ -81,7 +88,8 @@ class AuthorImageService {
     } catch (e) {
       if (kDebugMode) {
         print(
-            '[AUTHOR_IMAGE_SERVICE] Error downloading image for author $authorId: $e');
+          '[AUTHOR_IMAGE_SERVICE] Error downloading image for author $authorId: $e',
+        );
       }
       return null;
     }
@@ -101,7 +109,8 @@ class AuthorImageService {
         } catch (e) {
           if (kDebugMode) {
             print(
-                '[AUTHOR_IMAGE_SERVICE] Corrupted cached image for author $authorId: $e');
+              '[AUTHOR_IMAGE_SERVICE] Corrupted cached image for author $authorId: $e',
+            );
           }
           // Clear the corrupted image from database
           await _authorsRepository.saveAuthorImage(authorId, []);
@@ -112,7 +121,8 @@ class AuthorImageService {
     } catch (e) {
       if (kDebugMode) {
         print(
-            '[AUTHOR_IMAGE_SERVICE] Error getting cached image for author $authorId: $e');
+          '[AUTHOR_IMAGE_SERVICE] Error getting cached image for author $authorId: $e',
+        );
       }
       return null;
     }
@@ -120,11 +130,16 @@ class AuthorImageService {
 }
 
 // Provider for AuthorImageService
-final authorImageServiceProvider =
-    FutureProvider<AuthorImageService>((ref) async {
+final authorImageServiceProvider = FutureProvider<AuthorImageService?>((
+  ref,
+) async {
   final libraryService = ref.read(libraryServiceProvider);
   final authorsRepository = await ref.read(authorsRepositoryProvider.future);
-  final userModel = ref.read(userModelNotifierProvider)!;
+  final userModel = ref.watch(userModelProvider);
+
+  if (userModel == null) {
+    return null; // Service not available yet
+  }
 
   return AuthorImageService(
     libraryService: libraryService,

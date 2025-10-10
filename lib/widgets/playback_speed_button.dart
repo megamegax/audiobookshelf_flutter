@@ -25,13 +25,9 @@ class _PlaybackSpeedButtonState extends ConsumerState<PlaybackSpeedButton>
       duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.95,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -46,8 +42,8 @@ class _PlaybackSpeedButtonState extends ConsumerState<PlaybackSpeedButton>
       _animationController.reverse();
     });
 
-    final playerService = ref.read(playerServiceProvider.notifier);
-    final currentSpeed = ref.read(playerServiceProvider).playbackSpeed;
+    final playerService = ref.read(playerServiceProvider);
+    final currentSpeed = playerService.playbackSpeed;
 
     // Find current speed index and get next speed
     final currentIndex = _speeds.indexOf(currentSpeed);
@@ -73,12 +69,15 @@ class _PlaybackSpeedButtonState extends ConsumerState<PlaybackSpeedButton>
               onTap: _onTap,
               borderRadius: BorderRadius.circular(8),
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color:
-                        Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outline.withOpacity(0.3),
                   ),
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -94,9 +93,9 @@ class _PlaybackSpeedButtonState extends ConsumerState<PlaybackSpeedButton>
                     Text(
                       '${currentSpeed.toStringAsFixed(currentSpeed == currentSpeed.toInt() ? 0 : 2)}x',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                     ),
                   ],
                 ),

@@ -4,7 +4,7 @@ part 'library_file.freezed.dart';
 part 'library_file.g.dart';
 
 @freezed
-class LibraryFile with _$LibraryFile {
+sealed class LibraryFile with _$LibraryFile {
   const factory LibraryFile({
     required String ino,
     FileMetadata? metadata,
@@ -19,7 +19,7 @@ class LibraryFile with _$LibraryFile {
 }
 
 @freezed
-class FileMetadata with _$FileMetadata {
+sealed class FileMetadata with _$FileMetadata {
   const factory FileMetadata({
     String? filename,
     String? ext,

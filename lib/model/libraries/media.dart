@@ -7,7 +7,7 @@ part 'media.freezed.dart';
 part 'media.g.dart';
 
 @freezed
-class Media with _$Media {
+sealed class Media with _$Media {
   const factory Media({
     required Metadata metadata,
     String? coverPath,

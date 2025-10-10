@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'library_items_response.freezed.dart';
 
 @Freezed(toJson: false)
-class LibraryItemsResponse with _$LibraryItemsResponse {
+sealed class LibraryItemsResponse with _$LibraryItemsResponse {
   const factory LibraryItemsResponse({
     required List<LibraryItemNew> results,
     required int total,

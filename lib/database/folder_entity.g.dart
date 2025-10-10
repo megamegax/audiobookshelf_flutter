@@ -32,8 +32,9 @@ const FolderEntitySchema = Schema(
       id: 3,
       name: r'libraryId',
       type: IsarType.string,
-    )
+    ),
   },
+
   estimateSize: _folderEntityEstimateSize,
   serialize: _folderEntitySerialize,
   deserialize: _folderEntityDeserialize,
@@ -117,145 +118,147 @@ P _folderEntityDeserializeProp<P>(
 extension FolderEntityQueryFilter
     on QueryBuilder<FolderEntity, FolderEntity, QFilterCondition> {
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      addedAtIsNull() {
+  addedAtIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'addedAt',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'addedAt'),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      addedAtIsNotNull() {
+  addedAtIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'addedAt',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'addedAt'),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      addedAtEqualTo(DateTime? value) {
+  addedAtEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'addedAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'addedAt', value: value),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      addedAtGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
+  addedAtGreaterThan(DateTime? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'addedAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'addedAt',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      addedAtLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
+  addedAtLessThan(DateTime? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'addedAt',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'addedAt',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      addedAtBetween(
+  addedAtBetween(
     DateTime? lower,
     DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'addedAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'addedAt',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdIsNull() {
+  folderIdIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'folderId',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'folderId'),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdIsNotNull() {
+  folderIdIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'folderId',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'folderId'),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  folderIdEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'folderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'folderId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'folderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdLessThan(
+  folderIdGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'folderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'folderId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdBetween(
+  folderIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'folderId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
+  folderIdBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -263,153 +266,158 @@ extension FolderEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'folderId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'folderId',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  folderIdStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'folderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'folderId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  folderIdEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'folderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'folderId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdContains(String value, {bool caseSensitive = true}) {
+  folderIdContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'folderId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'folderId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdMatches(String pattern, {bool caseSensitive = true}) {
+  folderIdMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'folderId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'folderId',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdIsEmpty() {
+  folderIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'folderId',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'folderId', value: ''),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      folderIdIsNotEmpty() {
+  folderIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'folderId',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'folderId', value: ''),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathIsNull() {
+  fullPathIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'fullPath',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'fullPath'),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathIsNotNull() {
+  fullPathIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'fullPath',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'fullPath'),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  fullPathEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'fullPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'fullPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'fullPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathLessThan(
+  fullPathGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'fullPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'fullPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathBetween(
+  fullPathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'fullPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
+  fullPathBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -417,153 +425,158 @@ extension FolderEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'fullPath',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'fullPath',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  fullPathStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'fullPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'fullPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  fullPathEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'fullPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'fullPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathContains(String value, {bool caseSensitive = true}) {
+  fullPathContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'fullPath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'fullPath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathMatches(String pattern, {bool caseSensitive = true}) {
+  fullPathMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'fullPath',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'fullPath',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathIsEmpty() {
+  fullPathIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'fullPath',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'fullPath', value: ''),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      fullPathIsNotEmpty() {
+  fullPathIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'fullPath',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'fullPath', value: ''),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdIsNull() {
+  libraryIdIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'libraryId',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'libraryId'),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdIsNotNull() {
+  libraryIdIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'libraryId',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'libraryId'),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  libraryIdEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'libraryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'libraryId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'libraryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdLessThan(
+  libraryIdGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'libraryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'libraryId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdBetween(
+  libraryIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'libraryId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
+  libraryIdBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -571,84 +584,86 @@ extension FolderEntityQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'libraryId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'libraryId',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  libraryIdStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'libraryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'libraryId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  libraryIdEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'libraryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'libraryId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdContains(String value, {bool caseSensitive = true}) {
+  libraryIdContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'libraryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'libraryId',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdMatches(String pattern, {bool caseSensitive = true}) {
+  libraryIdMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'libraryId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'libraryId',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdIsEmpty() {
+  libraryIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'libraryId',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'libraryId', value: ''),
+      );
     });
   }
 
   QueryBuilder<FolderEntity, FolderEntity, QAfterFilterCondition>
-      libraryIdIsNotEmpty() {
+  libraryIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'libraryId',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'libraryId', value: ''),
+      );
     });
   }
 }

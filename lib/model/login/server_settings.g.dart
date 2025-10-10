@@ -6,8 +6,8 @@ part of 'server_settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ServerSettingsImpl _$$ServerSettingsImplFromJson(Map<String, dynamic> json) =>
-    _$ServerSettingsImpl(
+_ServerSettings _$ServerSettingsFromJson(Map<String, dynamic> json) =>
+    _ServerSettings(
       id: json['id'] as String,
       scannerFindCovers: json['scannerFindCovers'] as bool,
       scannerCoverProvider: json['scannerCoverProvider'] as String,
@@ -55,8 +55,7 @@ _$ServerSettingsImpl _$$ServerSettingsImplFromJson(Map<String, dynamic> json) =>
       authOpenIDMatchExistingBy: json['authOpenIDMatchExistingBy'] as String?,
     );
 
-Map<String, dynamic> _$$ServerSettingsImplToJson(
-        _$ServerSettingsImpl instance) =>
+Map<String, dynamic> _$ServerSettingsToJson(_ServerSettings instance) =>
     <String, dynamic>{
       'id': instance.id,
       'scannerFindCovers': instance.scannerFindCovers,

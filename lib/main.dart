@@ -1,5 +1,7 @@
 import 'package:audiobookshelf_flutter/l10n-generated/app_localizations.dart';
 import 'package:audiobookshelf_flutter/pages/splash_screen.dart';
+import 'package:audiobookshelf_flutter/provider/provider_logger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,16 +33,20 @@ void main() async {
 
   // Add global error handler for debugging
   FlutterError.onError = (FlutterErrorDetails details) {
-    if (details.exception is FormatException) {
-      print(
-          '[GLOBAL_ERROR_HANDLER] FormatException caught: ${details.exception}');
-      print('[GLOBAL_ERROR_HANDLER] Stack trace: ${details.stack}');
-      print('[GLOBAL_ERROR_HANDLER] Context: ${details.context}');
+    print('[GLOBAL_ERROR_HANDLER] Flutter Error: ${details.exception}');
+    print('[GLOBAL_ERROR_HANDLER] Stack trace: ${details.stack}');
+    print('[GLOBAL_ERROR_HANDLER] Context: ${details.context}');
+
+    // Don't show the red error overlay in debug mode
+    if (kDebugMode) {
+      // Just log the error, don't show the overlay
+      return;
     }
+
     FlutterError.presentError(details);
   };
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(ProviderScope(observers: [ProviderLogger()], child: const MyApp()));
 }
 
 // Modern Material Design 3 Color Schemes
@@ -153,8 +159,9 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
         systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness:
-            isDark ? Brightness.light : Brightness.dark,
+        systemNavigationBarIconBrightness: isDark
+            ? Brightness.light
+            : Brightness.dark,
       ),
     ),
 
@@ -163,9 +170,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
       elevation: 0,
       shadowColor: colorScheme.shadow.withOpacity(0.1),
       surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       margin: const EdgeInsets.all(8),
     ),
 
@@ -174,9 +179,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
       style: ElevatedButton.styleFrom(
         elevation: 0,
         shadowColor: colorScheme.primary.withOpacity(0.3),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         textStyle: const TextStyle(
           fontSize: 16,
@@ -191,9 +194,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
       style: FilledButton.styleFrom(
         elevation: 0,
         shadowColor: colorScheme.primary.withOpacity(0.2),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         textStyle: const TextStyle(
           fontSize: 16,
@@ -211,9 +212,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
           color: colorScheme.outline.withOpacity(0.3),
           width: 1.5,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         textStyle: const TextStyle(
           fontSize: 16,
@@ -227,9 +226,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         textStyle: const TextStyle(
           fontSize: 16,
@@ -243,9 +240,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       elevation: 8,
       highlightElevation: 12,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       backgroundColor: colorScheme.primaryContainer,
       foregroundColor: colorScheme.onPrimaryContainer,
     ),
@@ -268,10 +263,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(
-          color: colorScheme.primary,
-          width: 2,
-        ),
+        borderSide: BorderSide(color: colorScheme.primary, width: 2),
       ),
       filled: true,
       fillColor: colorScheme.surfaceContainerLow.withOpacity(0.5),
@@ -310,9 +302,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
 
     // List Tile with sophisticated styling
     listTileTheme: ListTileThemeData(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       titleTextStyle: TextStyle(
         fontSize: 16,
@@ -348,9 +338,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
         color: colorScheme.onSecondaryContainer,
         letterSpacing: 0.25,
       ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
 
     // Dialog with glassmorphism
@@ -358,9 +346,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
       elevation: 24,
       backgroundColor: colorScheme.surfaceContainerHigh,
       surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       titleTextStyle: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w600,
@@ -396,9 +382,7 @@ ThemeData _buildAdvancedTheme(ColorScheme colorScheme, Brightness brightness) {
         color: colorScheme.onInverseSurface,
         letterSpacing: 0.25,
       ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       behavior: SnackBarBehavior.floating,
     ),
   );

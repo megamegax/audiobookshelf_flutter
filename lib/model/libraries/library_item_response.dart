@@ -5,7 +5,7 @@ part 'library_item_response.freezed.dart';
 part 'library_item_response.g.dart';
 
 @freezed
-class LibraryItemResponse with _$LibraryItemResponse {
+sealed class LibraryItemResponse with _$LibraryItemResponse {
   const factory LibraryItemResponse({
     required DetailedLibraryItem result,
     required int total,

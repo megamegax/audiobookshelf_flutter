@@ -33,14 +33,14 @@ class _AdvancedSearchPageState extends ConsumerState<AdvancedSearchPage> {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       // Load more results when near bottom
-      ref.read(advancedSearchStateProvider.notifier).loadMore();
+      ref.read(advancedSearchProvider.notifier).loadMore();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final searchState = ref.watch(advancedSearchStateProvider);
-    final searchNotifier = ref.read(advancedSearchStateProvider.notifier);
+    final searchState = ref.watch(advancedSearchProvider);
+    final searchNotifier = ref.read(advancedSearchProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -110,8 +110,8 @@ class _AdvancedSearchPageState extends ConsumerState<AdvancedSearchPage> {
   }
 
   Widget _buildFilters() {
-    final searchState = ref.watch(advancedSearchStateProvider);
-    final searchNotifier = ref.read(advancedSearchStateProvider.notifier);
+    final searchState = ref.watch(advancedSearchProvider);
+    final searchNotifier = ref.read(advancedSearchProvider.notifier);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -215,7 +215,7 @@ class _AdvancedSearchPageState extends ConsumerState<AdvancedSearchPage> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () =>
-                  ref.read(advancedSearchStateProvider.notifier).retry(),
+                  ref.read(advancedSearchProvider.notifier).retry(),
               child: const Text('Retry'),
             ),
           ],

@@ -560,7 +560,7 @@ class _MorphingBookCardState extends ConsumerState<MorphingBookCard>
       );
 
       // Get user model and library service
-      final userModel = ref.read(userModelNotifierProvider);
+      final userModel = ref.read(userModelProvider);
       final libraryService = ref.read(libraryServiceProvider);
 
       if (userModel != null) {

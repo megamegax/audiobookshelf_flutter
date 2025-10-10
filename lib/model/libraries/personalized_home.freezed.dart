@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,490 +9,783 @@ part of 'personalized_home.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
 /// @nodoc
 mixin _$PersonalizedHome {
-  SectionType get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-  List<PersonalizedEntity> get entities => throw _privateConstructorUsedError;
 
-  /// Create a copy of PersonalizedHome
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PersonalizedHomeCopyWith<PersonalizedHome> get copyWith =>
-      throw _privateConstructorUsedError;
+ SectionType get id; String get type; List<PersonalizedEntity> get entities;
+/// Create a copy of PersonalizedHome
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PersonalizedHomeCopyWith<PersonalizedHome> get copyWith => _$PersonalizedHomeCopyWithImpl<PersonalizedHome>(this as PersonalizedHome, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PersonalizedHome&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.entities, entities));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,type,const DeepCollectionEquality().hash(entities));
+
+@override
+String toString() {
+  return 'PersonalizedHome(id: $id, type: $type, entities: $entities)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $PersonalizedHomeCopyWith<$Res> {
-  factory $PersonalizedHomeCopyWith(
-          PersonalizedHome value, $Res Function(PersonalizedHome) then) =
-      _$PersonalizedHomeCopyWithImpl<$Res, PersonalizedHome>;
-  @useResult
-  $Res call({SectionType id, String type, List<PersonalizedEntity> entities});
-}
+abstract mixin class $PersonalizedHomeCopyWith<$Res>  {
+  factory $PersonalizedHomeCopyWith(PersonalizedHome value, $Res Function(PersonalizedHome) _then) = _$PersonalizedHomeCopyWithImpl;
+@useResult
+$Res call({
+ SectionType id, String type, List<PersonalizedEntity> entities
+});
 
+
+
+
+}
 /// @nodoc
-class _$PersonalizedHomeCopyWithImpl<$Res, $Val extends PersonalizedHome>
+class _$PersonalizedHomeCopyWithImpl<$Res>
     implements $PersonalizedHomeCopyWith<$Res> {
-  _$PersonalizedHomeCopyWithImpl(this._value, this._then);
+  _$PersonalizedHomeCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final PersonalizedHome _self;
+  final $Res Function(PersonalizedHome) _then;
 
-  /// Create a copy of PersonalizedHome
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-    Object? entities = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as SectionType,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      entities: null == entities
-          ? _value.entities
-          : entities // ignore: cast_nullable_to_non_nullable
-              as List<PersonalizedEntity>,
-    ) as $Val);
-  }
+/// Create a copy of PersonalizedHome
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? entities = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as SectionType,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,entities: null == entities ? _self.entities : entities // ignore: cast_nullable_to_non_nullable
+as List<PersonalizedEntity>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [PersonalizedHome].
+extension PersonalizedHomePatterns on PersonalizedHome {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PersonalizedHome value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PersonalizedHome() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PersonalizedHome value)  $default,){
+final _that = this;
+switch (_that) {
+case _PersonalizedHome():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PersonalizedHome value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PersonalizedHome() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionType id,  String type,  List<PersonalizedEntity> entities)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PersonalizedHome() when $default != null:
+return $default(_that.id,_that.type,_that.entities);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionType id,  String type,  List<PersonalizedEntity> entities)  $default,) {final _that = this;
+switch (_that) {
+case _PersonalizedHome():
+return $default(_that.id,_that.type,_that.entities);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionType id,  String type,  List<PersonalizedEntity> entities)?  $default,) {final _that = this;
+switch (_that) {
+case _PersonalizedHome() when $default != null:
+return $default(_that.id,_that.type,_that.entities);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$PersonalizedHomeImplCopyWith<$Res>
-    implements $PersonalizedHomeCopyWith<$Res> {
-  factory _$$PersonalizedHomeImplCopyWith(_$PersonalizedHomeImpl value,
-          $Res Function(_$PersonalizedHomeImpl) then) =
-      __$$PersonalizedHomeImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({SectionType id, String type, List<PersonalizedEntity> entities});
+
+
+class _PersonalizedHome implements PersonalizedHome {
+  const _PersonalizedHome({required this.id, required this.type, required final  List<PersonalizedEntity> entities}): _entities = entities;
+  
+
+@override final  SectionType id;
+@override final  String type;
+ final  List<PersonalizedEntity> _entities;
+@override List<PersonalizedEntity> get entities {
+  if (_entities is EqualUnmodifiableListView) return _entities;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_entities);
+}
+
+
+/// Create a copy of PersonalizedHome
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PersonalizedHomeCopyWith<_PersonalizedHome> get copyWith => __$PersonalizedHomeCopyWithImpl<_PersonalizedHome>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PersonalizedHome&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._entities, _entities));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,type,const DeepCollectionEquality().hash(_entities));
+
+@override
+String toString() {
+  return 'PersonalizedHome(id: $id, type: $type, entities: $entities)';
+}
+
+
 }
 
 /// @nodoc
-class __$$PersonalizedHomeImplCopyWithImpl<$Res>
-    extends _$PersonalizedHomeCopyWithImpl<$Res, _$PersonalizedHomeImpl>
-    implements _$$PersonalizedHomeImplCopyWith<$Res> {
-  __$$PersonalizedHomeImplCopyWithImpl(_$PersonalizedHomeImpl _value,
-      $Res Function(_$PersonalizedHomeImpl) _then)
-      : super(_value, _then);
+abstract mixin class _$PersonalizedHomeCopyWith<$Res> implements $PersonalizedHomeCopyWith<$Res> {
+  factory _$PersonalizedHomeCopyWith(_PersonalizedHome value, $Res Function(_PersonalizedHome) _then) = __$PersonalizedHomeCopyWithImpl;
+@override @useResult
+$Res call({
+ SectionType id, String type, List<PersonalizedEntity> entities
+});
 
-  /// Create a copy of PersonalizedHome
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-    Object? entities = null,
-  }) {
-    return _then(_$PersonalizedHomeImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as SectionType,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      entities: null == entities
-          ? _value._entities
-          : entities // ignore: cast_nullable_to_non_nullable
-              as List<PersonalizedEntity>,
-    ));
-  }
+
+
+
 }
-
 /// @nodoc
+class __$PersonalizedHomeCopyWithImpl<$Res>
+    implements _$PersonalizedHomeCopyWith<$Res> {
+  __$PersonalizedHomeCopyWithImpl(this._self, this._then);
 
-class _$PersonalizedHomeImpl implements _PersonalizedHome {
-  const _$PersonalizedHomeImpl(
-      {required this.id,
-      required this.type,
-      required final List<PersonalizedEntity> entities})
-      : _entities = entities;
+  final _PersonalizedHome _self;
+  final $Res Function(_PersonalizedHome) _then;
 
-  @override
-  final SectionType id;
-  @override
-  final String type;
-  final List<PersonalizedEntity> _entities;
-  @override
-  List<PersonalizedEntity> get entities {
-    if (_entities is EqualUnmodifiableListView) return _entities;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_entities);
-  }
-
-  @override
-  String toString() {
-    return 'PersonalizedHome(id: $id, type: $type, entities: $entities)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PersonalizedHomeImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.type, type) || other.type == type) &&
-            const DeepCollectionEquality().equals(other._entities, _entities));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, id, type, const DeepCollectionEquality().hash(_entities));
-
-  /// Create a copy of PersonalizedHome
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$PersonalizedHomeImplCopyWith<_$PersonalizedHomeImpl> get copyWith =>
-      __$$PersonalizedHomeImplCopyWithImpl<_$PersonalizedHomeImpl>(
-          this, _$identity);
+/// Create a copy of PersonalizedHome
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,Object? entities = null,}) {
+  return _then(_PersonalizedHome(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as SectionType,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,entities: null == entities ? _self._entities : entities // ignore: cast_nullable_to_non_nullable
+as List<PersonalizedEntity>,
+  ));
 }
 
-abstract class _PersonalizedHome implements PersonalizedHome {
-  const factory _PersonalizedHome(
-          {required final SectionType id,
-          required final String type,
-          required final List<PersonalizedEntity> entities}) =
-      _$PersonalizedHomeImpl;
 
-  @override
-  SectionType get id;
-  @override
-  String get type;
-  @override
-  List<PersonalizedEntity> get entities;
-
-  /// Create a copy of PersonalizedHome
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PersonalizedHomeImplCopyWith<_$PersonalizedHomeImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 mixin _$PersonalizedHomeEntity {
-  SectionType get id => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-  List<dynamic> get entities => throw _privateConstructorUsedError;
 
-  /// Create a copy of PersonalizedHomeEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PersonalizedHomeEntityCopyWith<PersonalizedHomeEntity> get copyWith =>
-      throw _privateConstructorUsedError;
+ SectionType get id; String get type; List<dynamic> get entities;
+/// Create a copy of PersonalizedHomeEntity
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PersonalizedHomeEntityCopyWith<PersonalizedHomeEntity> get copyWith => _$PersonalizedHomeEntityCopyWithImpl<PersonalizedHomeEntity>(this as PersonalizedHomeEntity, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PersonalizedHomeEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.entities, entities));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,type,const DeepCollectionEquality().hash(entities));
+
+@override
+String toString() {
+  return 'PersonalizedHomeEntity(id: $id, type: $type, entities: $entities)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $PersonalizedHomeEntityCopyWith<$Res> {
-  factory $PersonalizedHomeEntityCopyWith(PersonalizedHomeEntity value,
-          $Res Function(PersonalizedHomeEntity) then) =
-      _$PersonalizedHomeEntityCopyWithImpl<$Res, PersonalizedHomeEntity>;
-  @useResult
-  $Res call({SectionType id, String type, List<dynamic> entities});
-}
+abstract mixin class $PersonalizedHomeEntityCopyWith<$Res>  {
+  factory $PersonalizedHomeEntityCopyWith(PersonalizedHomeEntity value, $Res Function(PersonalizedHomeEntity) _then) = _$PersonalizedHomeEntityCopyWithImpl;
+@useResult
+$Res call({
+ SectionType id, String type, List<dynamic> entities
+});
 
+
+
+
+}
 /// @nodoc
-class _$PersonalizedHomeEntityCopyWithImpl<$Res,
-        $Val extends PersonalizedHomeEntity>
+class _$PersonalizedHomeEntityCopyWithImpl<$Res>
     implements $PersonalizedHomeEntityCopyWith<$Res> {
-  _$PersonalizedHomeEntityCopyWithImpl(this._value, this._then);
+  _$PersonalizedHomeEntityCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final PersonalizedHomeEntity _self;
+  final $Res Function(PersonalizedHomeEntity) _then;
 
-  /// Create a copy of PersonalizedHomeEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-    Object? entities = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as SectionType,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      entities: null == entities
-          ? _value.entities
-          : entities // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
-    ) as $Val);
-  }
+/// Create a copy of PersonalizedHomeEntity
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? entities = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as SectionType,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,entities: null == entities ? _self.entities : entities // ignore: cast_nullable_to_non_nullable
+as List<dynamic>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [PersonalizedHomeEntity].
+extension PersonalizedHomeEntityPatterns on PersonalizedHomeEntity {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PersonalizedHomeEntity value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PersonalizedHomeEntity() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PersonalizedHomeEntity value)  $default,){
+final _that = this;
+switch (_that) {
+case _PersonalizedHomeEntity():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PersonalizedHomeEntity value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PersonalizedHomeEntity() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SectionType id,  String type,  List<dynamic> entities)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PersonalizedHomeEntity() when $default != null:
+return $default(_that.id,_that.type,_that.entities);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SectionType id,  String type,  List<dynamic> entities)  $default,) {final _that = this;
+switch (_that) {
+case _PersonalizedHomeEntity():
+return $default(_that.id,_that.type,_that.entities);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SectionType id,  String type,  List<dynamic> entities)?  $default,) {final _that = this;
+switch (_that) {
+case _PersonalizedHomeEntity() when $default != null:
+return $default(_that.id,_that.type,_that.entities);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$PersonalizedHomeEntityImplCopyWith<$Res>
-    implements $PersonalizedHomeEntityCopyWith<$Res> {
-  factory _$$PersonalizedHomeEntityImplCopyWith(
-          _$PersonalizedHomeEntityImpl value,
-          $Res Function(_$PersonalizedHomeEntityImpl) then) =
-      __$$PersonalizedHomeEntityImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({SectionType id, String type, List<dynamic> entities});
+
+
+class _PersonalizedHomeEntity implements PersonalizedHomeEntity {
+  const _PersonalizedHomeEntity({required this.id, required this.type, required final  List<dynamic> entities}): _entities = entities;
+  
+
+@override final  SectionType id;
+@override final  String type;
+ final  List<dynamic> _entities;
+@override List<dynamic> get entities {
+  if (_entities is EqualUnmodifiableListView) return _entities;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_entities);
+}
+
+
+/// Create a copy of PersonalizedHomeEntity
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PersonalizedHomeEntityCopyWith<_PersonalizedHomeEntity> get copyWith => __$PersonalizedHomeEntityCopyWithImpl<_PersonalizedHomeEntity>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PersonalizedHomeEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._entities, _entities));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,type,const DeepCollectionEquality().hash(_entities));
+
+@override
+String toString() {
+  return 'PersonalizedHomeEntity(id: $id, type: $type, entities: $entities)';
+}
+
+
 }
 
 /// @nodoc
-class __$$PersonalizedHomeEntityImplCopyWithImpl<$Res>
-    extends _$PersonalizedHomeEntityCopyWithImpl<$Res,
-        _$PersonalizedHomeEntityImpl>
-    implements _$$PersonalizedHomeEntityImplCopyWith<$Res> {
-  __$$PersonalizedHomeEntityImplCopyWithImpl(
-      _$PersonalizedHomeEntityImpl _value,
-      $Res Function(_$PersonalizedHomeEntityImpl) _then)
-      : super(_value, _then);
+abstract mixin class _$PersonalizedHomeEntityCopyWith<$Res> implements $PersonalizedHomeEntityCopyWith<$Res> {
+  factory _$PersonalizedHomeEntityCopyWith(_PersonalizedHomeEntity value, $Res Function(_PersonalizedHomeEntity) _then) = __$PersonalizedHomeEntityCopyWithImpl;
+@override @useResult
+$Res call({
+ SectionType id, String type, List<dynamic> entities
+});
 
-  /// Create a copy of PersonalizedHomeEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? type = null,
-    Object? entities = null,
-  }) {
-    return _then(_$PersonalizedHomeEntityImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as SectionType,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      entities: null == entities
-          ? _value._entities
-          : entities // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
-    ));
-  }
+
+
+
 }
-
 /// @nodoc
+class __$PersonalizedHomeEntityCopyWithImpl<$Res>
+    implements _$PersonalizedHomeEntityCopyWith<$Res> {
+  __$PersonalizedHomeEntityCopyWithImpl(this._self, this._then);
 
-class _$PersonalizedHomeEntityImpl implements _PersonalizedHomeEntity {
-  const _$PersonalizedHomeEntityImpl(
-      {required this.id,
-      required this.type,
-      required final List<dynamic> entities})
-      : _entities = entities;
+  final _PersonalizedHomeEntity _self;
+  final $Res Function(_PersonalizedHomeEntity) _then;
 
-  @override
-  final SectionType id;
-  @override
-  final String type;
-  final List<dynamic> _entities;
-  @override
-  List<dynamic> get entities {
-    if (_entities is EqualUnmodifiableListView) return _entities;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_entities);
-  }
-
-  @override
-  String toString() {
-    return 'PersonalizedHomeEntity(id: $id, type: $type, entities: $entities)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PersonalizedHomeEntityImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.type, type) || other.type == type) &&
-            const DeepCollectionEquality().equals(other._entities, _entities));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, id, type, const DeepCollectionEquality().hash(_entities));
-
-  /// Create a copy of PersonalizedHomeEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$PersonalizedHomeEntityImplCopyWith<_$PersonalizedHomeEntityImpl>
-      get copyWith => __$$PersonalizedHomeEntityImplCopyWithImpl<
-          _$PersonalizedHomeEntityImpl>(this, _$identity);
+/// Create a copy of PersonalizedHomeEntity
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? type = null,Object? entities = null,}) {
+  return _then(_PersonalizedHomeEntity(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as SectionType,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,entities: null == entities ? _self._entities : entities // ignore: cast_nullable_to_non_nullable
+as List<dynamic>,
+  ));
 }
 
-abstract class _PersonalizedHomeEntity implements PersonalizedHomeEntity {
-  const factory _PersonalizedHomeEntity(
-      {required final SectionType id,
-      required final String type,
-      required final List<dynamic> entities}) = _$PersonalizedHomeEntityImpl;
 
-  @override
-  SectionType get id;
-  @override
-  String get type;
-  @override
-  List<dynamic> get entities;
-
-  /// Create a copy of PersonalizedHomeEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PersonalizedHomeEntityImplCopyWith<_$PersonalizedHomeEntityImpl>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 mixin _$PersonalizedEntity {
-  String get id => throw _privateConstructorUsedError;
 
-  /// Create a copy of PersonalizedEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PersonalizedEntityCopyWith<PersonalizedEntity> get copyWith =>
-      throw _privateConstructorUsedError;
+ String get id;
+/// Create a copy of PersonalizedEntity
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PersonalizedEntityCopyWith<PersonalizedEntity> get copyWith => _$PersonalizedEntityCopyWithImpl<PersonalizedEntity>(this as PersonalizedEntity, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PersonalizedEntity&&(identical(other.id, id) || other.id == id));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id);
+
+@override
+String toString() {
+  return 'PersonalizedEntity(id: $id)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $PersonalizedEntityCopyWith<$Res> {
-  factory $PersonalizedEntityCopyWith(
-          PersonalizedEntity value, $Res Function(PersonalizedEntity) then) =
-      _$PersonalizedEntityCopyWithImpl<$Res, PersonalizedEntity>;
-  @useResult
-  $Res call({String id});
-}
+abstract mixin class $PersonalizedEntityCopyWith<$Res>  {
+  factory $PersonalizedEntityCopyWith(PersonalizedEntity value, $Res Function(PersonalizedEntity) _then) = _$PersonalizedEntityCopyWithImpl;
+@useResult
+$Res call({
+ String id
+});
 
+
+
+
+}
 /// @nodoc
-class _$PersonalizedEntityCopyWithImpl<$Res, $Val extends PersonalizedEntity>
+class _$PersonalizedEntityCopyWithImpl<$Res>
     implements $PersonalizedEntityCopyWith<$Res> {
-  _$PersonalizedEntityCopyWithImpl(this._value, this._then);
+  _$PersonalizedEntityCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final PersonalizedEntity _self;
+  final $Res Function(PersonalizedEntity) _then;
 
-  /// Create a copy of PersonalizedEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+/// Create a copy of PersonalizedEntity
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [PersonalizedEntity].
+extension PersonalizedEntityPatterns on PersonalizedEntity {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PersonalizedEntity value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PersonalizedEntity() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PersonalizedEntity value)  $default,){
+final _that = this;
+switch (_that) {
+case _PersonalizedEntity():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PersonalizedEntity value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PersonalizedEntity() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PersonalizedEntity() when $default != null:
+return $default(_that.id);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id)  $default,) {final _that = this;
+switch (_that) {
+case _PersonalizedEntity():
+return $default(_that.id);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id)?  $default,) {final _that = this;
+switch (_that) {
+case _PersonalizedEntity() when $default != null:
+return $default(_that.id);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$PersonalizedEntityImplCopyWith<$Res>
-    implements $PersonalizedEntityCopyWith<$Res> {
-  factory _$$PersonalizedEntityImplCopyWith(_$PersonalizedEntityImpl value,
-          $Res Function(_$PersonalizedEntityImpl) then) =
-      __$$PersonalizedEntityImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String id});
+
+
+class _PersonalizedEntity implements PersonalizedEntity {
+  const _PersonalizedEntity({required this.id});
+  
+
+@override final  String id;
+
+/// Create a copy of PersonalizedEntity
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PersonalizedEntityCopyWith<_PersonalizedEntity> get copyWith => __$PersonalizedEntityCopyWithImpl<_PersonalizedEntity>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PersonalizedEntity&&(identical(other.id, id) || other.id == id));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id);
+
+@override
+String toString() {
+  return 'PersonalizedEntity(id: $id)';
+}
+
+
 }
 
 /// @nodoc
-class __$$PersonalizedEntityImplCopyWithImpl<$Res>
-    extends _$PersonalizedEntityCopyWithImpl<$Res, _$PersonalizedEntityImpl>
-    implements _$$PersonalizedEntityImplCopyWith<$Res> {
-  __$$PersonalizedEntityImplCopyWithImpl(_$PersonalizedEntityImpl _value,
-      $Res Function(_$PersonalizedEntityImpl) _then)
-      : super(_value, _then);
+abstract mixin class _$PersonalizedEntityCopyWith<$Res> implements $PersonalizedEntityCopyWith<$Res> {
+  factory _$PersonalizedEntityCopyWith(_PersonalizedEntity value, $Res Function(_PersonalizedEntity) _then) = __$PersonalizedEntityCopyWithImpl;
+@override @useResult
+$Res call({
+ String id
+});
 
-  /// Create a copy of PersonalizedEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-  }) {
-    return _then(_$PersonalizedEntityImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+
+
+
 }
-
 /// @nodoc
+class __$PersonalizedEntityCopyWithImpl<$Res>
+    implements _$PersonalizedEntityCopyWith<$Res> {
+  __$PersonalizedEntityCopyWithImpl(this._self, this._then);
 
-class _$PersonalizedEntityImpl implements _PersonalizedEntity {
-  const _$PersonalizedEntityImpl({required this.id});
+  final _PersonalizedEntity _self;
+  final $Res Function(_PersonalizedEntity) _then;
 
-  @override
-  final String id;
-
-  @override
-  String toString() {
-    return 'PersonalizedEntity(id: $id)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PersonalizedEntityImpl &&
-            (identical(other.id, id) || other.id == id));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, id);
-
-  /// Create a copy of PersonalizedEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$PersonalizedEntityImplCopyWith<_$PersonalizedEntityImpl> get copyWith =>
-      __$$PersonalizedEntityImplCopyWithImpl<_$PersonalizedEntityImpl>(
-          this, _$identity);
+/// Create a copy of PersonalizedEntity
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+  return _then(_PersonalizedEntity(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-abstract class _PersonalizedEntity implements PersonalizedEntity {
-  const factory _PersonalizedEntity({required final String id}) =
-      _$PersonalizedEntityImpl;
 
-  @override
-  String get id;
-
-  /// Create a copy of PersonalizedEntity
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PersonalizedEntityImplCopyWith<_$PersonalizedEntityImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
+
+// dart format on

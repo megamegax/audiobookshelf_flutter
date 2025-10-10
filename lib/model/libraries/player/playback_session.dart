@@ -8,32 +8,33 @@ part 'playback_session.freezed.dart';
 part 'playback_session.g.dart';
 
 @Freezed(toJson: false)
-class PlaybackSession with _$PlaybackSession {
-  const factory PlaybackSession(
-      {required String id,
-      String? userId,
-      String? libraryItemId,
-      String? episodeId,
-      required String mediaType,
-      //MediaTypeMetadata mediaMetadata,
-      required DeviceInfoResponse deviceInfo,
-      required List<BookChapter> chapters,
-      String? displayTitle,
-      String? displayAuthor,
-      String? coverPath,
-      required double duration,
-      required int playMethod,
-      required int startedAt,
-      required int updatedAt,
-      required int timeListening,
-      required List<AudioTrack> audioTracks,
-      required double currentTime,
-      LibraryItemNew? libraryItem,
-      //LocalLibraryItem? localLibraryItem,
-      String? localEpisodeId,
-      String? serverConnectionConfigId,
-      String? serverAddress,
-      String? mediaPlayer}) = _PlaybackSession;
+sealed class PlaybackSession with _$PlaybackSession {
+  const factory PlaybackSession({
+    required String id,
+    String? userId,
+    String? libraryItemId,
+    String? episodeId,
+    required String mediaType,
+    //MediaTypeMetadata mediaMetadata,
+    required DeviceInfoResponse deviceInfo,
+    required List<BookChapter> chapters,
+    String? displayTitle,
+    String? displayAuthor,
+    String? coverPath,
+    required double duration,
+    required int playMethod,
+    required int startedAt,
+    required int updatedAt,
+    required int timeListening,
+    required List<AudioTrack> audioTracks,
+    required double currentTime,
+    LibraryItemNew? libraryItem,
+    //LocalLibraryItem? localLibraryItem,
+    String? localEpisodeId,
+    String? serverConnectionConfigId,
+    String? serverAddress,
+    String? mediaPlayer,
+  }) = _PlaybackSession;
   factory PlaybackSession.fromJson(Map<String, dynamic> json) =>
       _$PlaybackSessionFromJson(json);
 }

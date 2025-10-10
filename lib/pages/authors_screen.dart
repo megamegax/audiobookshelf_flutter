@@ -19,7 +19,7 @@ class AuthorsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final serverSettings = ref.read(serverSettingsNotifierProvider);
+    final serverSettings = ref.read(serverSettingsProvider);
 
     return ResponsiveLayout(
       body: _buildBody(context, ref),
@@ -67,32 +67,27 @@ class AuthorsScreen extends ConsumerWidget {
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final author = authors[index];
-                    return AuthorCard(
-                      author: author,
-                      isCompact: true,
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                AuthorDetailsPage(author: author),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  childCount: authors.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final author = authors[index];
+                  return AuthorCard(
+                    author: author,
+                    isCompact: true,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              AuthorDetailsPage(author: author),
+                        ),
+                      );
+                    },
+                  );
+                }, childCount: authors.length),
               ),
             ),
           ],
         );
       },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

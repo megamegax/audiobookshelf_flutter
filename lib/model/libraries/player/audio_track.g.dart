@@ -6,20 +6,19 @@ part of 'audio_track.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AudioTrackImpl _$$AudioTrackImplFromJson(Map<String, dynamic> json) =>
-    _$AudioTrackImpl(
-      index: (json['index'] as num?)?.toInt(),
-      startOffset: (json['startOffset'] as num?)?.toDouble(),
-      duration: (json['duration'] as num?)?.toDouble(),
-      title: json['title'] as String?,
-      contentUrl: json['contentUrl'] as String?,
-      mimeType: json['mimeType'] as String?,
-      isLocal: json['isLocal'] as bool?,
-      localFileId: json['localFileId'] as String?,
-      serverIndex: (json['serverIndex'] as num?)?.toInt(),
-    );
+_AudioTrack _$AudioTrackFromJson(Map<String, dynamic> json) => _AudioTrack(
+  index: (json['index'] as num?)?.toInt(),
+  startOffset: (json['startOffset'] as num?)?.toDouble(),
+  duration: (json['duration'] as num?)?.toDouble(),
+  title: json['title'] as String?,
+  contentUrl: json['contentUrl'] as String?,
+  mimeType: json['mimeType'] as String?,
+  isLocal: json['isLocal'] as bool?,
+  localFileId: json['localFileId'] as String?,
+  serverIndex: (json['serverIndex'] as num?)?.toInt(),
+);
 
-Map<String, dynamic> _$$AudioTrackImplToJson(_$AudioTrackImpl instance) =>
+Map<String, dynamic> _$AudioTrackToJson(_AudioTrack instance) =>
     <String, dynamic>{
       'index': instance.index,
       'startOffset': instance.startOffset,

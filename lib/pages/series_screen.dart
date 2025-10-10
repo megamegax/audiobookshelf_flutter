@@ -12,8 +12,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Provider for real series data
 final seriesProvider = FutureProvider<List<Series>>((ref) async {
-  final libraryItemsRepository =
-      await ref.read(libraryItemsRepositoryProvider.future);
+  final libraryItemsRepository = await ref.read(
+    libraryItemsRepositoryProvider.future,
+  );
   // For now, let's get series from all libraries by getting all books and extracting unique series
   // This is a simplified approach - in a real app you might want to store series separately
   final libraryRepository = await ref.read(libraryRepositoryProvider.future);
@@ -23,8 +24,9 @@ final seriesProvider = FutureProvider<List<Series>>((ref) async {
   // Get books from all libraries
   for (final library in libraries) {
     if (library.libraryId != null) {
-      final books =
-          await libraryItemsRepository.getBooksByLibraryId(library.libraryId!);
+      final books = await libraryItemsRepository.getBooksByLibraryId(
+        library.libraryId!,
+      );
       allBooks.addAll(books);
     }
   }
@@ -59,7 +61,7 @@ class SeriesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final serverSettings = ref.read(serverSettingsNotifierProvider);
+    final serverSettings = ref.read(serverSettingsProvider);
 
     return ResponsiveLayout(
       body: _buildBody(context, ref),
@@ -79,8 +81,11 @@ class SeriesScreen extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.library_books_outlined,
-                    size: 64, color: Colors.grey),
+                Icon(
+                  Icons.library_books_outlined,
+                  size: 64,
+                  color: Colors.grey,
+                ),
                 SizedBox(height: 16),
                 Text(
                   'No series found',
@@ -107,21 +112,16 @@ class SeriesScreen extends ConsumerWidget {
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final seriesItem = series[index];
-                    return _buildSeriesCard(context, seriesItem);
-                  },
-                  childCount: series.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final seriesItem = series[index];
+                  return _buildSeriesCard(context, seriesItem);
+                }, childCount: series.length),
               ),
             ),
           ],
         );
       },
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -157,9 +157,7 @@ class SeriesScreen extends ConsumerWidget {
               context,
               // Placeholder for series detail screen
               Scaffold(
-                appBar: AppBar(
-                  title: Text(series.name),
-                ),
+                appBar: AppBar(title: Text(series.name)),
                 body: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -211,10 +209,8 @@ class SeriesScreen extends ConsumerWidget {
                     children: [
                       Text(
                         series.name,
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w600),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -222,12 +218,12 @@ class SeriesScreen extends ConsumerWidget {
                         const SizedBox(height: 4),
                         Text(
                           series.description!,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
-                                  ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -236,11 +232,9 @@ class SeriesScreen extends ConsumerWidget {
                       Text(
                         '${series.numBooks} book${series.numBooks != 1 ? 's' : ''}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
