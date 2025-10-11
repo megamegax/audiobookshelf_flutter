@@ -14,6 +14,8 @@ import 'package:audiobookshelf_flutter/provider/book_details_state.dart';
 import 'package:audiobookshelf_flutter/provider/login_provider.dart';
 import 'package:audiobookshelf_flutter/services/library_service.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
+import 'package:audiobookshelf_flutter/services/download_service.dart';
+import 'package:audiobookshelf_flutter/services/background_download_service.dart';
 import 'package:audiobookshelf_flutter/pages/ebook_reader_page.dart';
 // import 'package:audiobookshelf_flutter/widgets/expandable_text.dart';
 
@@ -306,17 +308,7 @@ class BookDetails extends ConsumerWidget {
               if (detailedItem.media.ebookFile != null)
                 const SizedBox(width: 12),
               // Download button (only if not downloaded)
-              if (!_isBookDownloaded())
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => _handleDownload(context),
-                    icon: const Icon(Icons.download),
-                    label: const Text("Download"),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                  ),
-                ),
+              _buildDownloadButton(context, ref),
             ],
           );
         },
@@ -425,7 +417,7 @@ class BookDetails extends ConsumerWidget {
             _buildCollapsibleSection(
               context,
               'Chapters',
-              _buildChaptersList(context, detailedItem.media.chapters!),
+              _buildChaptersList(context, ref, detailedItem.media.chapters!),
             ),
 
           // Audio Tracks
@@ -433,7 +425,11 @@ class BookDetails extends ConsumerWidget {
             _buildCollapsibleSection(
               context,
               'Audio Tracks',
-              _buildAudioTracksList(context, detailedItem.media.audioFiles!),
+              _buildAudioTracksList(
+                context,
+                ref,
+                detailedItem.media.audioFiles!,
+              ),
             ),
 
           // E-Book Files
@@ -441,7 +437,9 @@ class BookDetails extends ConsumerWidget {
             _buildCollapsibleSection(
               context,
               'E-Book Files',
-              _buildEBookFilesList(context, [detailedItem.media.ebookFile!]),
+              _buildEBookFilesList(context, ref, detailedItem, [
+                detailedItem.media.ebookFile!,
+              ]),
             ),
 
           // Library Files
@@ -520,7 +518,11 @@ class BookDetails extends ConsumerWidget {
     );
   }
 
-  Widget _buildChaptersList(BuildContext context, List<BookChapter> chapters) {
+  Widget _buildChaptersList(
+    BuildContext context,
+    WidgetRef ref,
+    List<BookChapter> chapters,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.1),
@@ -548,15 +550,7 @@ class BookDetails extends ConsumerWidget {
             ),
             trailing: IconButton(
               icon: const Icon(Icons.play_arrow),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Play chapter ${chapter.title} not yet implemented.',
-                    ),
-                  ),
-                );
-              },
+              onPressed: () => _handlePlayChapter(context, ref, chapter),
             ),
           );
         },
@@ -566,6 +560,7 @@ class BookDetails extends ConsumerWidget {
 
   Widget _buildAudioTracksList(
     BuildContext context,
+    WidgetRef ref,
     List<AudioFile> audioFiles,
   ) {
     return Container(
@@ -595,15 +590,7 @@ class BookDetails extends ConsumerWidget {
             ),
             trailing: IconButton(
               icon: const Icon(Icons.play_arrow),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Play audio file ${audioFile.metadata?.filename} not yet implemented.',
-                    ),
-                  ),
-                );
-              },
+              onPressed: () => _handlePlayAudioTrack(context, ref, audioFile),
             ),
           );
         },
@@ -613,6 +600,8 @@ class BookDetails extends ConsumerWidget {
 
   Widget _buildEBookFilesList(
     BuildContext context,
+    WidgetRef ref,
+    DetailedLibraryItem detailedItem,
     List<EBookFile> ebookFiles,
   ) {
     return Container(
@@ -642,13 +631,7 @@ class BookDetails extends ConsumerWidget {
             ),
             trailing: IconButton(
               icon: const Icon(Icons.menu_book),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Ebook reader not yet implemented.'),
-                  ),
-                );
-              },
+              onPressed: () => _handleRead(context, ref, detailedItem),
             ),
           );
         },
@@ -764,26 +747,283 @@ class BookDetails extends ConsumerWidget {
     }
   }
 
-  void _handleDownload(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Download functionality is coming soon!'),
-        duration: const Duration(seconds: 3),
-        backgroundColor: Theme.of(context).colorScheme.tertiary,
-        action: SnackBarAction(
-          label: 'OK',
-          textColor: Theme.of(context).colorScheme.onTertiary,
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  Future<void> _handlePlayChapter(
+    BuildContext context,
+    WidgetRef ref,
+    BookChapter chapter,
+  ) async {
+    try {
+      final playerService = ref.read(playerServiceProvider);
+      final audioPlayerState = ref.read(audioPlayerProvider);
+
+      // If not playing this book, start it
+      if (!_isCurrentBookPlaying(audioPlayerState)) {
+        await playerService.preparePlayer(
+          item,
+          autoStart: false,
+          onPrepared: () {
+            if (kDebugMode) {
+              print(
+                '[BOOK_DETAILS] Player prepared for chapter: ${chapter.title}',
+              );
+            }
           },
-        ),
-      ),
+        );
+      }
+
+      // Seek to chapter start
+      await playerService.seekTo(chapter.start);
+      await ref.read(audioPlayerProvider.notifier).play();
+
+      // Show success feedback
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Playing chapter: ${chapter.title}'),
+            duration: const Duration(seconds: 2),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] Error playing chapter: $e');
+      }
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error playing chapter: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handlePlayAudioTrack(
+    BuildContext context,
+    WidgetRef ref,
+    AudioFile audioFile,
+  ) async {
+    try {
+      final playerService = ref.read(playerServiceProvider);
+      final audioPlayerState = ref.read(audioPlayerProvider);
+
+      // If not playing this book, start it
+      if (!_isCurrentBookPlaying(audioPlayerState)) {
+        await playerService.preparePlayer(
+          item,
+          autoStart: false,
+          onPrepared: () {
+            if (kDebugMode) {
+              print(
+                '[BOOK_DETAILS] Player prepared for audio track: ${audioFile.metadata?.filename}',
+              );
+            }
+          },
+        );
+      }
+
+      // For audio files, we need to find the corresponding track
+      // Since AudioFile doesn't have startOffset, we'll start from the beginning
+      // and let the user navigate to the specific track
+      await ref.read(audioPlayerProvider.notifier).play();
+
+      // Show success feedback
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Playing audio file: ${audioFile.metadata?.filename ?? 'Unknown'}',
+            ),
+            duration: const Duration(seconds: 2),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] Error playing audio track: $e');
+      }
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error playing audio track: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleDownload(BuildContext context, WidgetRef ref) async {
+    try {
+      final backgroundDownloadService = ref.read(backgroundDownloadServiceProvider);
+      final userModel = ref.read(userModelProvider);
+      final libraryService = ref.read(libraryServiceProvider);
+
+      if (userModel == null) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('User not logged in'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+
+      // Get playback session for tracks info
+      final session = await libraryService.playBook(userModel, item);
+      
+      // Start background download
+      await backgroundDownloadService.downloadAllTracksInBackground(
+        userModel: userModel,
+        playbackSession: session,
+        libraryItemId: item.itemId,
+        libraryItemTitle: item.media.metadata?.title ?? 'Unknown Book',
+      );
+
+      // Show success feedback
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Download started: ${item.media.metadata?.title ?? 'Unknown Book'}',
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            action: SnackBarAction(
+              label: 'View Downloads',
+              onPressed: () {
+                // TODO: Navigate to downloads page
+              },
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] Error starting download: $e');
+      }
+      
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Download failed: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Widget _buildDownloadButton(BuildContext context, WidgetRef ref) {
+    return FutureBuilder<bool>(
+      future: _isBookDownloaded(ref),
+      builder: (context, snapshot) {
+        final isDownloaded = snapshot.data ?? false;
+        if (isDownloaded) {
+          return const SizedBox.shrink();
+        }
+
+        // Watch background download service for progress
+        final backgroundDownloadService = ref.watch(backgroundDownloadServiceProvider);
+        final activeDownloads = backgroundDownloadService.activeDownloads;
+        
+        // Check if this book is currently downloading
+        final isDownloading = activeDownloads.values.any(
+          (task) => task.libraryItemId == item.itemId,
+        );
+        
+        if (isDownloading) {
+          // Find the download task for this book
+          final downloadTasks = activeDownloads.values.where(
+            (task) => task.libraryItemId == item.itemId,
+          ).toList();
+          
+          if (downloadTasks.isEmpty) {
+            // Fallback to regular download button if no task found
+            return Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () => _handleDownload(context, ref),
+                icon: const Icon(Icons.download),
+                label: const Text("Download"),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+            );
+          }
+          
+          final downloadTask = downloadTasks.first;
+          
+          return Expanded(
+            child: Column(
+              children: [
+                OutlinedButton.icon(
+                  onPressed: null, // Disabled while downloading
+                  icon: const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  label: Text("Downloading ${(downloadTask.progress * 100).toInt()}%"),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                LinearProgressIndicator(
+                  value: downloadTask.progress,
+                  backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return Expanded(
+          child: OutlinedButton.icon(
+            onPressed: () => _handleDownload(context, ref),
+            icon: const Icon(Icons.download),
+            label: const Text("Download"),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+          ),
+        );
+      },
     );
   }
 
-  bool _isBookDownloaded() {
-    // TODO: Implement download check
-    return false;
+  Future<bool> _isBookDownloaded(WidgetRef ref) async {
+    try {
+      final downloadService = ref.read(downloadServiceProvider);
+      final downloadedItems = await downloadService.getDownloadedItems();
+      
+      // Check if this book is in the downloaded items
+      final bookTitle = item.media.metadata?.title ?? '';
+      final sanitizedTitle = _sanitizeFilename(bookTitle);
+      
+      return downloadedItems.any((downloadedItem) => 
+        downloadedItem.id == sanitizedTitle || 
+        downloadedItem.title == sanitizedTitle
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        print('[BOOK_DETAILS] Error checking download status: $e');
+      }
+      return false;
+    }
+  }
+
+  String _sanitizeFilename(String filename) {
+    // Remove invalid characters for file system
+    return filename.replaceAll(RegExp(r'[<>:"/\\|?*]'), '_').trim();
   }
 
   String _formatDuration(int? seconds) {

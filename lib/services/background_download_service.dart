@@ -12,7 +12,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 
-final backgroundDownloadServiceProvider = Provider<BackgroundDownloadService>((ref) {
+final backgroundDownloadServiceProvider = Provider<BackgroundDownloadService>((
+  ref,
+) {
   return BackgroundDownloadService(
     ref.watch(httpClientProvider),
     ref.watch(serverAddressProvider),
@@ -22,12 +24,12 @@ final backgroundDownloadServiceProvider = Provider<BackgroundDownloadService>((r
 class BackgroundDownloadService {
   final http.Client httpClient;
   final String serverAddress;
-  
+
   // Active downloads tracking
   final Map<String, DownloadTask> _activeDownloads = {};
-  final StreamController<DownloadProgress> _progressController = 
+  final StreamController<DownloadProgress> _progressController =
       StreamController<DownloadProgress>.broadcast();
-  
+
   BackgroundDownloadService(this.httpClient, this.serverAddress);
 
   /// Stream of download progress updates
@@ -37,7 +39,8 @@ class BackgroundDownloadService {
   int get activeDownloadsCount => _activeDownloads.length;
 
   /// Get all active downloads
-  Map<String, DownloadTask> get activeDownloads => Map.unmodifiable(_activeDownloads);
+  Map<String, DownloadTask> get activeDownloads =>
+      Map.unmodifiable(_activeDownloads);
 
   /// Start background download for a track
   Future<void> startBackgroundDownload({
@@ -49,7 +52,7 @@ class BackgroundDownloadService {
     int? priority = 0,
   }) async {
     final taskId = '${libraryItemId}_${track.index}';
-    
+
     // Check if already downloading
     if (_activeDownloads.containsKey(taskId)) {
       debugPrint('Download already in progress for task: $taskId');
@@ -93,7 +96,7 @@ class BackgroundDownloadService {
         track: track,
         priority: priority,
       );
-      
+
       // Small delay between track downloads to avoid overwhelming the server
       await Future.delayed(const Duration(milliseconds: 100));
     }
@@ -172,14 +175,16 @@ class BackgroundDownloadService {
       if (task.track.contentUrl?.startsWith('/hls') == true) {
         downloadUrl = "$serverAddress${task.track.contentUrl}";
       } else {
-        downloadUrl = "$serverAddress/public/session/${playbackSession.id}/track/${task.track.index ?? 1}";
+        downloadUrl =
+            "$serverAddress/public/session/${playbackSession.id}/track/${task.track.index ?? 1}";
       }
 
       // Add authentication token
       downloadUrl += "?token=${userModel.token}";
 
       // Create file path
-      final fileName = 'track_${task.track.index ?? 1}.${_getFileExtension(task.track.contentUrl)}';
+      final fileName =
+          'track_${task.track.index ?? 1}.${_getFileExtension(task.track.contentUrl)}';
       final filePath = path.join(downloadDir.path, fileName);
       final file = File(filePath);
 
@@ -197,7 +202,9 @@ class BackgroundDownloadService {
       final streamedResponse = await httpClient.send(request);
 
       if (streamedResponse.statusCode != 200) {
-        throw Exception('Download failed with status: ${streamedResponse.statusCode}');
+        throw Exception(
+          'Download failed with status: ${streamedResponse.statusCode}',
+        );
       }
 
       final totalBytes = streamedResponse.contentLength ?? 0;
@@ -223,7 +230,9 @@ class BackgroundDownloadService {
 
         if (totalBytes > 0) {
           task.progress = downloadedBytes / totalBytes;
-          _progressController.add(DownloadProgress(taskId: task.id, task: task));
+          _progressController.add(
+            DownloadProgress(taskId: task.id, task: task),
+          );
         }
       }
 
@@ -234,7 +243,6 @@ class BackgroundDownloadService {
       task.progress = 1.0;
       _progressController.add(DownloadProgress(taskId: task.id, task: task));
       _activeDownloads.remove(task.id);
-
     } catch (e) {
       task.status = DownloadStatus.failed;
       task.error = e.toString();
@@ -260,12 +268,16 @@ class BackgroundDownloadService {
     try {
       Directory appDir;
       if (Platform.isAndroid) {
-        appDir = await getExternalStorageDirectory() ?? await getApplicationDocumentsDirectory();
+        appDir =
+            await getExternalStorageDirectory() ??
+            await getApplicationDocumentsDirectory();
       } else {
         appDir = await getApplicationDocumentsDirectory();
       }
 
-      final downloadDir = Directory(path.join(appDir.path, 'downloads', libraryItemId));
+      final downloadDir = Directory(
+        path.join(appDir.path, 'downloads', libraryItemId),
+      );
       if (!await downloadDir.exists()) {
         await downloadDir.create(recursive: true);
       }
@@ -279,7 +291,7 @@ class BackgroundDownloadService {
   /// Get file extension from URL
   String _getFileExtension(String? url) {
     if (url == null) return 'mp3';
-    
+
     final uri = Uri.parse(url);
     final pathSegments = uri.pathSegments;
     if (pathSegments.isNotEmpty) {
@@ -338,8 +350,5 @@ class DownloadProgress {
   final String taskId;
   final DownloadTask task;
 
-  DownloadProgress({
-    required this.taskId,
-    required this.task,
-  });
+  DownloadProgress({required this.taskId, required this.task});
 }

@@ -34,16 +34,24 @@ class DownloadService {
     Function(double)? onProgress,
   }) async {
     try {
-      // Request storage permission
-      final permission = await Permission.storage.request();
-      if (!permission.isGranted) {
-        throw Exception('Storage permission denied');
+      // Request storage permission (skip on platforms that don't need it)
+      try {
+        final permission = await Permission.storage.request();
+        if (!permission.isGranted) {
+          throw Exception('Storage permission denied');
+        }
+      } catch (e) {
+        // Permission plugin not available on this platform, continue without permission check
+        if (kDebugMode) {
+          print('[DOWNLOAD_SERVICE] Permission check skipped: $e');
+        }
       }
 
       // Get download directory
       final directory = await getApplicationDocumentsDirectory();
-      final downloadDir =
-          Directory(path.join(directory.path, 'audiobookshelf', 'downloads'));
+      final downloadDir = Directory(
+        path.join(directory.path, 'audiobookshelf', 'downloads'),
+      );
 
       if (!await downloadDir.exists()) {
         await downloadDir.create(recursive: true);
@@ -82,7 +90,8 @@ class DownloadService {
 
       if (streamedResponse.statusCode != 200) {
         throw Exception(
-            'Failed to download track: ${streamedResponse.statusCode}');
+          'Failed to download track: ${streamedResponse.statusCode}',
+        );
       }
 
       final file = File(filePath);
@@ -154,8 +163,9 @@ class DownloadService {
   Future<List<DownloadedItem>> getDownloadedItems() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final downloadDir =
-          Directory(path.join(directory.path, 'audiobookshelf', 'downloads'));
+      final downloadDir = Directory(
+        path.join(directory.path, 'audiobookshelf', 'downloads'),
+      );
 
       if (!await downloadDir.exists()) {
         return [];
@@ -168,12 +178,14 @@ class DownloadService {
           if (await metadataFile.exists()) {
             final metadata = await metadataFile.readAsString();
             // Parse metadata and create DownloadedItem
-            items.add(DownloadedItem(
-              id: path.basename(entity.path),
-              title: path.basename(entity.path),
-              path: entity.path,
-              tracks: await _getTracksInDirectory(entity.path),
-            ));
+            items.add(
+              DownloadedItem(
+                id: path.basename(entity.path),
+                title: path.basename(entity.path),
+                path: entity.path,
+                tracks: await _getTracksInDirectory(entity.path),
+              ),
+            );
           }
         }
       }
@@ -217,7 +229,10 @@ class DownloadService {
   }
 
   Future<void> _saveTrackMetadata(
-      String dirPath, AudioTrack track, String libraryItemId) async {
+    String dirPath,
+    AudioTrack track,
+    String libraryItemId,
+  ) async {
     final metadataFile = File(path.join(dirPath, 'metadata.json'));
     final metadata = {
       'libraryItemId': libraryItemId,
