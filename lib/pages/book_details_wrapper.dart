@@ -1,3 +1,6 @@
+import 'dart:ui';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
@@ -18,7 +21,17 @@ class BookDetailsWrapper extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch the mini player visibility provider
     final miniPlayerVisible = ref.watch(miniPlayerVisibilityProvider);
-    final audioPlayer = ref.watch(audioPlayerProvider);
+    final audioSource = ref.watch(
+      audioPlayerProvider.select((state) => state.audioSource),
+    );
+
+    // Get cover image for full-screen background
+    ImageProvider? coverImageProvider;
+    if (item.media.coverBytes?.isNotEmpty == true) {
+      coverImageProvider = MemoryImage(
+        Uint8List.fromList(item.media.coverBytes!),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -34,33 +47,48 @@ class BookDetailsWrapper extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         elevation: 0,
-        flexibleSpace: ClipRRect(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black.withOpacity(0.7),
-                  Colors.black.withOpacity(0.3),
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
       body: Stack(
         children: [
+          // Full-screen blurred background
+          if (coverImageProvider != null)
+            Positioned.fill(
+              child: Stack(
+                children: [
+                  Image(
+                    image: coverImageProvider,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.7),
+                            Colors.black.withOpacity(0.3),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           // Main book details content
           BookDetails(item: item, heroTag: heroTag),
           // Global mini player - positioned at bottom
           // Show mini player when visible
-          if (miniPlayerVisible && audioPlayer.audioSource != null)
+          if (miniPlayerVisible && audioSource != null)
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: Player(source: audioPlayer.audioSource!),
+              child: Player(source: audioSource),
             ),
         ],
       ),

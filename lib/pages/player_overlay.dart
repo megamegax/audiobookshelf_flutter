@@ -23,22 +23,30 @@ class PlayerOverlay extends ConsumerWidget {
   final PlayerService playerService;
 
   const PlayerOverlay(
-      this.audioPlayer, this.mediaItem, this.libraryItem, this.playerService,
-      {super.key});
+    this.audioPlayer,
+    this.mediaItem,
+    this.libraryItem,
+    this.playerService, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch the player overlay state
-    final playerOverlayState = ref.watch(playerOverlayProvider(
-      audioPlayer: audioPlayer,
-      playerService: playerService,
-      mediaItem: mediaItem,
-    ));
-    final playerOverlayNotifier = ref.read(playerOverlayProvider(
-      audioPlayer: audioPlayer,
-      playerService: playerService,
-      mediaItem: mediaItem,
-    ).notifier);
+    final playerOverlayState = ref.watch(
+      playerOverlayProvider(
+        audioPlayer: audioPlayer,
+        playerService: playerService,
+        mediaItem: mediaItem,
+      ),
+    );
+    final playerOverlayNotifier = ref.read(
+      playerOverlayProvider(
+        audioPlayer: audioPlayer,
+        playerService: playerService,
+        mediaItem: mediaItem,
+      ).notifier,
+    );
 
     // Watch the audio player state for play/pause
     final audioPlayerState = ref.watch(audioPlayerProvider);
@@ -59,17 +67,17 @@ class PlayerOverlay extends ConsumerWidget {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: MemoryImage(
-                                mediaItem.extras!['coverBytes'] as Uint8List),
+                              mediaItem.extras!['coverBytes'] as Uint8List,
+                            ),
                             fit: BoxFit.cover,
                           ),
                         ),
                         child: BackdropFilter(
                           filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
                           child: Container(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .surface
-                                .withOpacity(0.7),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.surface.withOpacity(0.7),
                           ),
                         ),
                       ),
@@ -93,16 +101,15 @@ class PlayerOverlay extends ConsumerWidget {
                           width: 280,
                           height: 280,
                           decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHighest,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .shadow
-                                    .withOpacity(0.3),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.shadow.withOpacity(0.3),
                                 blurRadius: 30,
                                 offset: const Offset(0, 10),
                               ),
@@ -111,8 +118,9 @@ class PlayerOverlay extends ConsumerWidget {
                           child: Icon(
                             Icons.library_music,
                             size: 64,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ),
@@ -163,8 +171,9 @@ class PlayerOverlay extends ConsumerWidget {
                         // Sleep timer button
                         Consumer(
                           builder: (context, ref, child) {
-                            final sleepTimerState =
-                                ref.watch(sleepTimerProvider);
+                            final sleepTimerState = ref.watch(
+                              sleepTimerProvider,
+                            );
                             return IconButton(
                               icon: Icon(
                                 Icons.bedtime,
@@ -229,15 +238,15 @@ class PlayerOverlay extends ConsumerWidget {
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Container(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .surfaceContainerHighest,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.surfaceContainerHighest,
                                         child: Icon(
                                           Icons.library_music,
                                           size: 48,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurfaceVariant,
                                         ),
                                       );
                                     },
@@ -255,13 +264,11 @@ class PlayerOverlay extends ConsumerWidget {
                             children: [
                               Text(
                                 mediaItem.title,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
+                                style: Theme.of(context).textTheme.headlineSmall
                                     ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface,
                                       fontWeight: FontWeight.w600,
                                     ),
                                 textAlign: TextAlign.center,
@@ -271,19 +278,35 @@ class PlayerOverlay extends ConsumerWidget {
                               const SizedBox(height: 8),
                               Text(
                                 mediaItem.displayDescription ?? '',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
+                                style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
                                       fontWeight: FontWeight.w400,
                                     ),
                                 textAlign: TextAlign.center,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
+                              const SizedBox(height: 8),
+                              // Current chapter title
+                              if (playerOverlayState
+                                  .currentChapterTitle
+                                  .isNotEmpty)
+                                Text(
+                                  playerOverlayState.currentChapterTitle,
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                             ],
                           ),
 
@@ -300,34 +323,44 @@ class PlayerOverlay extends ConsumerWidget {
                               // Time display
                               Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
+                                  horizontal: 16.0,
+                                ),
                                 child: Row(
                                   children: [
                                     Text(
-                                      durationToReadable(
-                                          playerOverlayState.position),
+                                      playerOverlayState.isChapterMode
+                                          ? durationToReadable(
+                                              playerOverlayState.position,
+                                            )
+                                          : durationToReadable(
+                                              Duration(
+                                                seconds: playerService
+                                                    .overallCurrentTime()
+                                                    .round(),
+                                              ),
+                                            ),
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
                                           ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurfaceVariant,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
                                             fontFamily: 'monospace',
                                           ),
                                     ),
                                     const Spacer(),
                                     Text(
                                       playerOverlayState.isChapterMode
-                                          ? "-${durationToReadable(Duration(seconds: (playerOverlayState.currentChapterDuration.inSeconds - (playerOverlayState.position.inSeconds - playerService.currentTrackStartOffset().round())).clamp(0, playerOverlayState.currentChapterDuration.inSeconds)))}"
-                                          : "-${durationToReadable(Duration(seconds: (playerOverlayState.duration.inSeconds - (playerOverlayState.position.inSeconds).round())))}",
+                                          ? "-${durationToReadable(Duration(seconds: (playerOverlayState.currentChapterDuration.inSeconds - playerOverlayState.position.inSeconds).clamp(0, playerOverlayState.currentChapterDuration.inSeconds)))}"
+                                          : "-${durationToReadable(Duration(seconds: (playerService.totalDuration() - playerService.overallCurrentTime()).round().clamp(0, double.infinity).toInt()))}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
                                           ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurfaceVariant,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
                                             fontFamily: 'monospace',
                                           ),
                                     ),
@@ -341,8 +374,10 @@ class PlayerOverlay extends ConsumerWidget {
                               FullScreenWavyProgressBar(
                                 playerService: playerService,
                                 progress: playerOverlayState.isChapterMode
-                                    ? playerOverlayState.chapterProgress
-                                        .clamp(0.0, 1.0)
+                                    ? playerOverlayState.chapterProgress.clamp(
+                                        0.0,
+                                        1.0,
+                                      )
                                     : playerOverlayState.progress,
                                 currentPosition: playerOverlayState.position,
                                 totalDuration: playerOverlayState.isChapterMode
@@ -354,16 +389,16 @@ class PlayerOverlay extends ConsumerWidget {
                                 },
                                 onSeek: (seekProgress) {
                                   if (playerOverlayState.isChapterMode) {
-                                    playerService
-                                        .seekWithinCurrentTrack(seekProgress);
-                                  } else {
-                                    final seekPosition = Duration(
-                                      seconds: ((playerOverlayState
-                                                  .duration.inSeconds) *
-                                              seekProgress)
-                                          .round(),
+                                    playerService.seekWithinCurrentTrack(
+                                      seekProgress,
                                     );
-                                    audioPlayer.seek(seekPosition);
+                                  } else {
+                                    // For full book mode, seek to the overall position in the book
+                                    final totalDuration = playerService
+                                        .totalDuration();
+                                    final seekTime =
+                                        totalDuration * seekProgress;
+                                    playerService.seekTo(seekTime);
                                   }
                                   playerService.updateMediaProgress();
                                 },
@@ -381,26 +416,26 @@ class PlayerOverlay extends ConsumerWidget {
                               Container(
                                 decoration: BoxDecoration(
                                   color: playerService.hasPreviousChapter()
-                                      ? Theme.of(context)
-                                          .colorScheme
-                                          .surfaceContainerHighest
+                                      ? Theme.of(
+                                          context,
+                                        ).colorScheme.surfaceContainerHighest
                                       : Theme.of(context)
-                                          .colorScheme
-                                          .surfaceContainerHighest
-                                          .withOpacity(0.5),
+                                            .colorScheme
+                                            .surfaceContainerHighest
+                                            .withOpacity(0.5),
                                   shape: BoxShape.circle,
                                 ),
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.skip_previous,
                                     color: playerService.hasPreviousChapter()
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
+                                        ? Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface
                                         : Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withOpacity(0.5),
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.5),
                                   ),
                                   onPressed: playerService.hasPreviousChapter()
                                       ? () {
@@ -415,16 +450,17 @@ class PlayerOverlay extends ConsumerWidget {
                               // Previous 10s button
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .surfaceContainerHighest,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainerHighest,
                                   shape: BoxShape.circle,
                                 ),
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.replay_10,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                   ),
                                   onPressed: () {
                                     playerService.skipBackward(10);
@@ -441,10 +477,9 @@ class PlayerOverlay extends ConsumerWidget {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .shadow
-                                          .withOpacity(0.3),
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.shadow.withOpacity(0.3),
                                       blurRadius: 16,
                                       offset: const Offset(0, 4),
                                     ),
@@ -455,8 +490,9 @@ class PlayerOverlay extends ConsumerWidget {
                                     audioPlayerState.isPlaying
                                         ? Icons.pause
                                         : Icons.play_arrow,
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
                                   ),
                                   onPressed: () async {
                                     if (audioPlayerState.isPlaying) {
@@ -478,16 +514,17 @@ class PlayerOverlay extends ConsumerWidget {
                               // Next 10s button
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .surfaceContainerHighest,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainerHighest,
                                   shape: BoxShape.circle,
                                 ),
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.forward_10,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                   ),
                                   onPressed: () {
                                     playerService.skipForward(10);
@@ -501,26 +538,26 @@ class PlayerOverlay extends ConsumerWidget {
                               Container(
                                 decoration: BoxDecoration(
                                   color: playerService.hasNextChapter()
-                                      ? Theme.of(context)
-                                          .colorScheme
-                                          .surfaceContainerHighest
+                                      ? Theme.of(
+                                          context,
+                                        ).colorScheme.surfaceContainerHighest
                                       : Theme.of(context)
-                                          .colorScheme
-                                          .surfaceContainerHighest
-                                          .withOpacity(0.5),
+                                            .colorScheme
+                                            .surfaceContainerHighest
+                                            .withOpacity(0.5),
                                   shape: BoxShape.circle,
                                 ),
                                 child: IconButton(
                                   icon: Icon(
                                     Icons.skip_next,
                                     color: playerService.hasNextChapter()
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
+                                        ? Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface
                                         : Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withOpacity(0.5),
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.5),
                                   ),
                                   onPressed: playerService.hasNextChapter()
                                       ? () {
@@ -602,10 +639,10 @@ class _SleepTimerCountdown extends ConsumerWidget {
           Text(
             'Sleep timer: ${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'monospace',
-                ),
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'monospace',
+            ),
           ),
         ],
       ),

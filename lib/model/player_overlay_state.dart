@@ -12,5 +12,6 @@ sealed class PlayerOverlayState with _$PlayerOverlayState {
     @Default(0.0) double progress,
     @Default(0.0) double chapterProgress,
     @Default(Duration.zero) Duration currentChapterDuration,
+    @Default('') String currentChapterTitle,
   }) = _PlayerOverlayState;
 }

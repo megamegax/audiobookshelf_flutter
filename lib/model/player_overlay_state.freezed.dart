@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlayerOverlayState {
 
- Duration get position; Duration get duration; bool get isPlaying; bool get isChapterMode; double get progress; double get chapterProgress; Duration get currentChapterDuration;
+ Duration get position; Duration get duration; bool get isPlaying; bool get isChapterMode; double get progress; double get chapterProgress; Duration get currentChapterDuration; String get currentChapterTitle;
 /// Create a copy of PlayerOverlayState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PlayerOverlayStateCopyWith<PlayerOverlayState> get copyWith => _$PlayerOverlayS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerOverlayState&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.isPlaying, isPlaying) || other.isPlaying == isPlaying)&&(identical(other.isChapterMode, isChapterMode) || other.isChapterMode == isChapterMode)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.chapterProgress, chapterProgress) || other.chapterProgress == chapterProgress)&&(identical(other.currentChapterDuration, currentChapterDuration) || other.currentChapterDuration == currentChapterDuration));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlayerOverlayState&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.isPlaying, isPlaying) || other.isPlaying == isPlaying)&&(identical(other.isChapterMode, isChapterMode) || other.isChapterMode == isChapterMode)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.chapterProgress, chapterProgress) || other.chapterProgress == chapterProgress)&&(identical(other.currentChapterDuration, currentChapterDuration) || other.currentChapterDuration == currentChapterDuration)&&(identical(other.currentChapterTitle, currentChapterTitle) || other.currentChapterTitle == currentChapterTitle));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,position,duration,isPlaying,isChapterMode,progress,chapterProgress,currentChapterDuration);
+int get hashCode => Object.hash(runtimeType,position,duration,isPlaying,isChapterMode,progress,chapterProgress,currentChapterDuration,currentChapterTitle);
 
 @override
 String toString() {
-  return 'PlayerOverlayState(position: $position, duration: $duration, isPlaying: $isPlaying, isChapterMode: $isChapterMode, progress: $progress, chapterProgress: $chapterProgress, currentChapterDuration: $currentChapterDuration)';
+  return 'PlayerOverlayState(position: $position, duration: $duration, isPlaying: $isPlaying, isChapterMode: $isChapterMode, progress: $progress, chapterProgress: $chapterProgress, currentChapterDuration: $currentChapterDuration, currentChapterTitle: $currentChapterTitle)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PlayerOverlayStateCopyWith<$Res>  {
   factory $PlayerOverlayStateCopyWith(PlayerOverlayState value, $Res Function(PlayerOverlayState) _then) = _$PlayerOverlayStateCopyWithImpl;
 @useResult
 $Res call({
- Duration position, Duration duration, bool isPlaying, bool isChapterMode, double progress, double chapterProgress, Duration currentChapterDuration
+ Duration position, Duration duration, bool isPlaying, bool isChapterMode, double progress, double chapterProgress, Duration currentChapterDuration, String currentChapterTitle
 });
 
 
@@ -62,7 +62,7 @@ class _$PlayerOverlayStateCopyWithImpl<$Res>
 
 /// Create a copy of PlayerOverlayState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? position = null,Object? duration = null,Object? isPlaying = null,Object? isChapterMode = null,Object? progress = null,Object? chapterProgress = null,Object? currentChapterDuration = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? position = null,Object? duration = null,Object? isPlaying = null,Object? isChapterMode = null,Object? progress = null,Object? chapterProgress = null,Object? currentChapterDuration = null,Object? currentChapterTitle = null,}) {
   return _then(_self.copyWith(
 position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
 as Duration,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
@@ -71,7 +71,8 @@ as bool,isChapterMode: null == isChapterMode ? _self.isChapterMode : isChapterMo
 as bool,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
 as double,chapterProgress: null == chapterProgress ? _self.chapterProgress : chapterProgress // ignore: cast_nullable_to_non_nullable
 as double,currentChapterDuration: null == currentChapterDuration ? _self.currentChapterDuration : currentChapterDuration // ignore: cast_nullable_to_non_nullable
-as Duration,
+as Duration,currentChapterTitle: null == currentChapterTitle ? _self.currentChapterTitle : currentChapterTitle // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Duration position,  Duration duration,  bool isPlaying,  bool isChapterMode,  double progress,  double chapterProgress,  Duration currentChapterDuration)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Duration position,  Duration duration,  bool isPlaying,  bool isChapterMode,  double progress,  double chapterProgress,  Duration currentChapterDuration,  String currentChapterTitle)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PlayerOverlayState() when $default != null:
-return $default(_that.position,_that.duration,_that.isPlaying,_that.isChapterMode,_that.progress,_that.chapterProgress,_that.currentChapterDuration);case _:
+return $default(_that.position,_that.duration,_that.isPlaying,_that.isChapterMode,_that.progress,_that.chapterProgress,_that.currentChapterDuration,_that.currentChapterTitle);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.position,_that.duration,_that.isPlaying,_that.isChapterMod
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Duration position,  Duration duration,  bool isPlaying,  bool isChapterMode,  double progress,  double chapterProgress,  Duration currentChapterDuration)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Duration position,  Duration duration,  bool isPlaying,  bool isChapterMode,  double progress,  double chapterProgress,  Duration currentChapterDuration,  String currentChapterTitle)  $default,) {final _that = this;
 switch (_that) {
 case _PlayerOverlayState():
-return $default(_that.position,_that.duration,_that.isPlaying,_that.isChapterMode,_that.progress,_that.chapterProgress,_that.currentChapterDuration);}
+return $default(_that.position,_that.duration,_that.isPlaying,_that.isChapterMode,_that.progress,_that.chapterProgress,_that.currentChapterDuration,_that.currentChapterTitle);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -191,10 +192,10 @@ return $default(_that.position,_that.duration,_that.isPlaying,_that.isChapterMod
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Duration position,  Duration duration,  bool isPlaying,  bool isChapterMode,  double progress,  double chapterProgress,  Duration currentChapterDuration)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Duration position,  Duration duration,  bool isPlaying,  bool isChapterMode,  double progress,  double chapterProgress,  Duration currentChapterDuration,  String currentChapterTitle)?  $default,) {final _that = this;
 switch (_that) {
 case _PlayerOverlayState() when $default != null:
-return $default(_that.position,_that.duration,_that.isPlaying,_that.isChapterMode,_that.progress,_that.chapterProgress,_that.currentChapterDuration);case _:
+return $default(_that.position,_that.duration,_that.isPlaying,_that.isChapterMode,_that.progress,_that.chapterProgress,_that.currentChapterDuration,_that.currentChapterTitle);case _:
   return null;
 
 }
@@ -206,7 +207,7 @@ return $default(_that.position,_that.duration,_that.isPlaying,_that.isChapterMod
 
 
 class _PlayerOverlayState implements PlayerOverlayState {
-  const _PlayerOverlayState({this.position = Duration.zero, this.duration = Duration.zero, this.isPlaying = false, this.isChapterMode = false, this.progress = 0.0, this.chapterProgress = 0.0, this.currentChapterDuration = Duration.zero});
+  const _PlayerOverlayState({this.position = Duration.zero, this.duration = Duration.zero, this.isPlaying = false, this.isChapterMode = false, this.progress = 0.0, this.chapterProgress = 0.0, this.currentChapterDuration = Duration.zero, this.currentChapterTitle = ''});
   
 
 @override@JsonKey() final  Duration position;
@@ -216,6 +217,7 @@ class _PlayerOverlayState implements PlayerOverlayState {
 @override@JsonKey() final  double progress;
 @override@JsonKey() final  double chapterProgress;
 @override@JsonKey() final  Duration currentChapterDuration;
+@override@JsonKey() final  String currentChapterTitle;
 
 /// Create a copy of PlayerOverlayState
 /// with the given fields replaced by the non-null parameter values.
@@ -227,16 +229,16 @@ _$PlayerOverlayStateCopyWith<_PlayerOverlayState> get copyWith => __$PlayerOverl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerOverlayState&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.isPlaying, isPlaying) || other.isPlaying == isPlaying)&&(identical(other.isChapterMode, isChapterMode) || other.isChapterMode == isChapterMode)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.chapterProgress, chapterProgress) || other.chapterProgress == chapterProgress)&&(identical(other.currentChapterDuration, currentChapterDuration) || other.currentChapterDuration == currentChapterDuration));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlayerOverlayState&&(identical(other.position, position) || other.position == position)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.isPlaying, isPlaying) || other.isPlaying == isPlaying)&&(identical(other.isChapterMode, isChapterMode) || other.isChapterMode == isChapterMode)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.chapterProgress, chapterProgress) || other.chapterProgress == chapterProgress)&&(identical(other.currentChapterDuration, currentChapterDuration) || other.currentChapterDuration == currentChapterDuration)&&(identical(other.currentChapterTitle, currentChapterTitle) || other.currentChapterTitle == currentChapterTitle));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,position,duration,isPlaying,isChapterMode,progress,chapterProgress,currentChapterDuration);
+int get hashCode => Object.hash(runtimeType,position,duration,isPlaying,isChapterMode,progress,chapterProgress,currentChapterDuration,currentChapterTitle);
 
 @override
 String toString() {
-  return 'PlayerOverlayState(position: $position, duration: $duration, isPlaying: $isPlaying, isChapterMode: $isChapterMode, progress: $progress, chapterProgress: $chapterProgress, currentChapterDuration: $currentChapterDuration)';
+  return 'PlayerOverlayState(position: $position, duration: $duration, isPlaying: $isPlaying, isChapterMode: $isChapterMode, progress: $progress, chapterProgress: $chapterProgress, currentChapterDuration: $currentChapterDuration, currentChapterTitle: $currentChapterTitle)';
 }
 
 
@@ -247,7 +249,7 @@ abstract mixin class _$PlayerOverlayStateCopyWith<$Res> implements $PlayerOverla
   factory _$PlayerOverlayStateCopyWith(_PlayerOverlayState value, $Res Function(_PlayerOverlayState) _then) = __$PlayerOverlayStateCopyWithImpl;
 @override @useResult
 $Res call({
- Duration position, Duration duration, bool isPlaying, bool isChapterMode, double progress, double chapterProgress, Duration currentChapterDuration
+ Duration position, Duration duration, bool isPlaying, bool isChapterMode, double progress, double chapterProgress, Duration currentChapterDuration, String currentChapterTitle
 });
 
 
@@ -264,7 +266,7 @@ class __$PlayerOverlayStateCopyWithImpl<$Res>
 
 /// Create a copy of PlayerOverlayState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? position = null,Object? duration = null,Object? isPlaying = null,Object? isChapterMode = null,Object? progress = null,Object? chapterProgress = null,Object? currentChapterDuration = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? position = null,Object? duration = null,Object? isPlaying = null,Object? isChapterMode = null,Object? progress = null,Object? chapterProgress = null,Object? currentChapterDuration = null,Object? currentChapterTitle = null,}) {
   return _then(_PlayerOverlayState(
 position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
 as Duration,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
@@ -273,7 +275,8 @@ as bool,isChapterMode: null == isChapterMode ? _self.isChapterMode : isChapterMo
 as bool,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
 as double,chapterProgress: null == chapterProgress ? _self.chapterProgress : chapterProgress // ignore: cast_nullable_to_non_nullable
 as double,currentChapterDuration: null == currentChapterDuration ? _self.currentChapterDuration : currentChapterDuration // ignore: cast_nullable_to_non_nullable
-as Duration,
+as Duration,currentChapterTitle: null == currentChapterTitle ? _self.currentChapterTitle : currentChapterTitle // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

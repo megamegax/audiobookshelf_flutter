@@ -76,7 +76,7 @@ PlayerService playerService(Ref ref) {
 
 class PlayerService {
   final AudioPlayer audioPlayer;
-  late PlaybackSession _playbackSession;
+  PlaybackSession? _playbackSession;
   final LibraryService libraryService;
   final String serverAddress;
   late double _startTime;
@@ -101,7 +101,6 @@ class PlayerService {
     _playbackSession = playbackSession;
     _startTime = startTime;
   }
-
 
   Future<void> preparePlayer(
     LibraryItemEntity libraryItem, {
@@ -162,19 +161,19 @@ class PlayerService {
       '[PLAYER_SERVICE] Track contentUrl: ${currentTrackData.contentUrl}',
     );
     dev.log('[PLAYER_SERVICE] Track index: ${currentTrackData.index}');
-    dev.log('[PLAYER_SERVICE] Session ID: ${_playbackSession.id}');
-    dev.log('[PLAYER_SERVICE] Play method: ${_playbackSession.playMethod}');
+    dev.log('[PLAYER_SERVICE] Session ID: ${_playbackSession?.id}');
+    dev.log('[PLAYER_SERVICE] Play method: ${_playbackSession?.playMethod}');
 
     // Follow the same logic as the original Audiobookshelf app
     // Check if this is direct play or transcode based on playMethod
     final isDirectPlay =
-        _playbackSession.playMethod == 1; // PlayMethod.DIRECTPLAY = 1
+        _playbackSession?.playMethod == 1; // PlayMethod.DIRECTPLAY = 1
     dev.log('[PLAYER_SERVICE] Is direct play: $isDirectPlay');
 
     if (isDirectPlay) {
       // Direct play: use session URL with track index
       streamUrl =
-          "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrackData.index}";
+          "$serverAddress/public/session/${_playbackSession!.id}/track/${currentTrackData.index}";
       dev.log('[PLAYER_SERVICE] Using direct play session URL: $streamUrl');
     } else {
       // Transcode: use contentUrl (HLS)
@@ -194,7 +193,7 @@ class PlayerService {
         } else {
           // Fallback to session URL
           streamUrl =
-              "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrackData.index}";
+              "$serverAddress/public/session/${_playbackSession!.id}/track/${currentTrackData.index}";
           dev.log(
             '[PLAYER_SERVICE] Using fallback transcode session URL: $streamUrl',
           );
@@ -202,7 +201,7 @@ class PlayerService {
       } else {
         // No contentUrl, use session URL
         streamUrl =
-            "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrackData.index}";
+            "$serverAddress/public/session/${_playbackSession!.id}/track/${currentTrackData.index}";
         dev.log(
           '[PLAYER_SERVICE] Using transcode session URL (no contentUrl): $streamUrl',
         );
@@ -276,7 +275,10 @@ class PlayerService {
         album: libraryItem.media.metadata?.seriesName,
         title: libraryItem.media.metadata?.title ?? "-",
         displayDescription: libraryItem.media.metadata?.authorName ?? "-",
-        extras: {"item": libraryItem},
+        extras: {
+          "coverBytes": Uint8List.fromList(libraryItem.media.coverBytes ?? []),
+          "item": libraryItem,
+        },
         duration: Duration(seconds: libraryItem.media.duration?.toInt() ?? 0),
       ),
     );
@@ -346,12 +348,12 @@ class PlayerService {
   }
 
   int currentTrackIndex() {
-    if (_playbackSession.audioTracks.isEmpty) {
+    if (_playbackSession == null || _playbackSession!.audioTracks.isEmpty) {
       dev.log('[PLAYER_SERVICE] No audio tracks available');
       return 0;
     }
 
-    final trackIndex = _playbackSession.audioTracks.indexWhere(
+    final trackIndex = _playbackSession!.audioTracks.indexWhere(
       (t) =>
           (t.startOffset?.floor() ?? 0) <= _startTime &&
           ((t.startOffset ?? 0) + (t.duration ?? 0)).floor() > _startTime,
@@ -379,20 +381,22 @@ class PlayerService {
   }
 
   double totalDuration() {
+    if (_playbackSession == null) return 0.0;
     var total = 0.0;
-    for (var at in _playbackSession.audioTracks) {
+    for (var at in _playbackSession!.audioTracks) {
       total += (at.duration ?? 0);
     }
     return total;
   }
 
   AudioTrack? currentTrack() {
+    if (_playbackSession == null) return null;
     final index = currentTrackIndex();
-    if (index >= 0 && index < _playbackSession.audioTracks.length) {
-      return _playbackSession.audioTracks[index];
+    if (index >= 0 && index < _playbackSession!.audioTracks.length) {
+      return _playbackSession!.audioTracks[index];
     }
     dev.log(
-      '[PLAYER_SERVICE] Invalid track index: $index, tracks count: ${_playbackSession.audioTracks.length}',
+      '[PLAYER_SERVICE] Invalid track index: $index, tracks count: ${_playbackSession!.audioTracks.length}',
     );
     return null;
   }
@@ -410,9 +414,10 @@ class PlayerService {
     _startTime = timeInSeconds;
 
     // Find the correct track for this time
+    if (_playbackSession == null) return;
     final newTrackIndex = max(
       0,
-      _playbackSession.audioTracks.indexWhere(
+      _playbackSession!.audioTracks.indexWhere(
         (t) =>
             (t.startOffset?.floor() ?? 0) <= timeInSeconds &&
             ((t.startOffset ?? 0) + (t.duration ?? 0)).floor() > timeInSeconds,
@@ -421,14 +426,14 @@ class PlayerService {
 
     // If we need to change tracks, reload the audio source
     if (newTrackIndex != currentTrackIndex()) {
-      final currentTrack = _playbackSession.audioTracks[newTrackIndex];
+      final currentTrack = _playbackSession!.audioTracks[newTrackIndex];
       String streamUrl;
 
       // Use the same logic as preparePlayer
-      final isDirectPlay = _playbackSession.playMethod == 1;
+      final isDirectPlay = _playbackSession!.playMethod == 1;
       if (isDirectPlay) {
         streamUrl =
-            "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack.index}";
+            "$serverAddress/public/session/${_playbackSession!.id}/track/${currentTrack.index}";
       } else {
         if (currentTrack.contentUrl?.isNotEmpty == true) {
           if (currentTrack.contentUrl!.startsWith('http')) {
@@ -437,11 +442,11 @@ class PlayerService {
             streamUrl = "$serverAddress${currentTrack.contentUrl}";
           } else {
             streamUrl =
-                "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack.index}";
+                "$serverAddress/public/session/${_playbackSession!.id}/track/${currentTrack.index}";
           }
         } else {
           streamUrl =
-              "$serverAddress/public/session/${_playbackSession.id}/track/${currentTrack.index}";
+              "$serverAddress/public/session/${_playbackSession!.id}/track/${currentTrack.index}";
         }
       }
 
@@ -469,7 +474,7 @@ class PlayerService {
 
     // Calculate the seek position within the current track
     final currentTrackStartOffset =
-        _playbackSession.audioTracks[newTrackIndex].startOffset ?? 0.0;
+        _playbackSession!.audioTracks[newTrackIndex].startOffset ?? 0.0;
     final seekTimeInTrack = max(0, timeInSeconds - currentTrackStartOffset);
     final position = Duration(seconds: seekTimeInTrack.floor());
 
@@ -478,7 +483,7 @@ class PlayerService {
     await audioPlayer.seek(position);
 
     // Update the playbook session current time
-    _playbackSession = _playbackSession.copyWith(currentTime: timeInSeconds);
+    _playbackSession = _playbackSession!.copyWith(currentTime: timeInSeconds);
   }
 
   /// Seek within the current track/chapter (for slider usage)
@@ -500,7 +505,7 @@ class PlayerService {
     await audioPlayer.seek(Duration(seconds: targetTimeInTrack.floor()));
 
     // Update the playback session current time
-    _playbackSession = _playbackSession.copyWith(
+    _playbackSession = _playbackSession!.copyWith(
       currentTime: targetOverallTime,
     );
   }
@@ -514,7 +519,7 @@ class PlayerService {
     };
     await libraryService.sendProgressSync(
       userModel,
-      _playbackSession.id,
+      _playbackSession!.id,
       syncData,
     );
   }
@@ -615,13 +620,14 @@ class PlayerService {
 
   /// Navigate to next chapter/track
   Future<void> nextChapter() async {
+    if (_playbackSession == null) return;
     final currentIndex = currentTrackIndex();
     final nextIndex = currentIndex + 1;
 
     dev.log('[PLAYER_SERVICE] Next chapter: $currentIndex -> $nextIndex');
 
-    if (nextIndex < _playbackSession.audioTracks.length) {
-      final nextTrack = _playbackSession.audioTracks[nextIndex];
+    if (nextIndex < _playbackSession!.audioTracks.length) {
+      final nextTrack = _playbackSession!.audioTracks[nextIndex];
       final startTime = nextTrack.startOffset ?? 0.0;
 
       dev.log(
@@ -635,6 +641,7 @@ class PlayerService {
 
   /// Navigate to previous chapter/track
   Future<void> previousChapter() async {
+    if (_playbackSession == null) return;
     final currentIndex = currentTrackIndex();
     final currentPosition = audioPlayer.position.inSeconds;
 
@@ -649,7 +656,7 @@ class PlayerService {
     } else if (currentIndex > 0) {
       // Go to previous track
       final previousIndex = currentIndex - 1;
-      final previousTrack = _playbackSession.audioTracks[previousIndex];
+      final previousTrack = _playbackSession!.audioTracks[previousIndex];
       final startTime = previousTrack.startOffset ?? 0.0;
 
       dev.log(
@@ -664,11 +671,13 @@ class PlayerService {
 
   /// Check if next chapter is available
   bool hasNextChapter() {
-    return currentTrackIndex() < _playbackSession.audioTracks.length - 1;
+    if (_playbackSession == null) return false;
+    return currentTrackIndex() < _playbackSession!.audioTracks.length - 1;
   }
 
   /// Check if previous chapter is available
   bool hasPreviousChapter() {
+    if (_playbackSession == null) return false;
     return currentTrackIndex() > 0 || audioPlayer.position.inSeconds > 3;
   }
 

@@ -1,14 +1,12 @@
 import 'dart:io';
-import 'dart:developer' as dev;
+import 'dart:typed_data';
 
 import 'package:audiobookshelf_flutter/database/library_item_entity.dart';
 import 'package:audiobookshelf_flutter/pages/player_overlay.dart';
 import 'package:audiobookshelf_flutter/provider/audio_player_notifier.dart';
-import 'package:audiobookshelf_flutter/provider/audio_player_streams.dart';
 import 'package:audiobookshelf_flutter/provider/sleep_timer_provider.dart';
 import 'package:audiobookshelf_flutter/services/player_service.dart';
 import 'package:audiobookshelf_flutter/widgets/player_page_route.dart';
-import 'package:audiobookshelf_flutter/widgets/wavy_progress_bar.dart';
 import 'package:audiobookshelf_flutter/widgets/wave_animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,38 +16,90 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:text_scroll/text_scroll.dart';
 
+// Interactive progress bar widget for seeking
+class ProgressBar extends ConsumerStatefulWidget {
+  const ProgressBar({super.key});
+
+  @override
+  ConsumerState<ProgressBar> createState() => _ProgressBarState();
+}
+
+class _ProgressBarState extends ConsumerState<ProgressBar> {
+  double? _dragValue;
+  bool _isDragging = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final position = ref.watch(
+      audioPlayerProvider.select((state) => state.position),
+    );
+    final duration = ref.watch(
+      audioPlayerProvider.select((state) => state.duration),
+    );
+
+    final progress = duration?.inSeconds == null || duration!.inSeconds == 0
+        ? 0.0
+        : position.inSeconds / duration.inSeconds;
+
+    final displayProgress = _isDragging ? (_dragValue ?? progress) : progress;
+
+    return SliderTheme(
+      data: SliderTheme.of(context).copyWith(
+        trackHeight: 2.0,
+        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4.0),
+        overlayShape: const RoundSliderOverlayShape(overlayRadius: 8.0),
+        activeTrackColor: Theme.of(context).colorScheme.primary,
+        inactiveTrackColor: Colors.white.withOpacity(0.3),
+        thumbColor: Theme.of(context).colorScheme.primary,
+      ),
+      child: Slider(
+        min: 0.0,
+        max: 1.0,
+        value: displayProgress.clamp(0.0, 1.0),
+        onChanged: (value) {
+          setState(() {
+            _isDragging = true;
+            _dragValue = value;
+          });
+        },
+        onChangeEnd: (value) async {
+          final playerService = ref.read(playerServiceProvider);
+          await playerService.seekWithinCurrentTrack(value);
+          playerService.updateMediaProgress();
+          setState(() {
+            _isDragging = false;
+            _dragValue = null;
+          });
+        },
+      ),
+    );
+  }
+}
+
 class Player extends ConsumerWidget {
   final AudioSource source;
   const Player({super.key, required this.source});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the audio player state
-    final audioPlayerNotifier = ref.watch(audioPlayerProvider.notifier);
+    // Watch only the playing state to minimize rebuilds
+    final isPlaying = ref.watch(
+      audioPlayerProvider.select((state) => state.isPlaying),
+    );
+
+    // Watch position to get updates
+    final position = ref.watch(
+      audioPlayerProvider.select((state) => state.position),
+    );
+
+    // Read other values without watching to avoid constant rebuilds
+    final audioPlayerNotifier = ref.read(audioPlayerProvider.notifier);
     final audioPlayer = audioPlayerNotifier.audioPlayer;
     final playerService = ref.read(playerServiceProvider);
 
     // Get media item and library item from the source
     final mediaItem = source.sequence[0].tag as MediaItem;
     final libraryItem = mediaItem.extras!['item'] as LibraryItemEntity;
-
-    // Watch position and playing state from streams
-    final positionAsync = ref.watch(audioPositionStreamProvider);
-    final isPlayingAsync = ref.watch(audioPlayingStreamProvider);
-    final isPlaying = isPlayingAsync.value ?? false;
-
-    // Calculate progress
-    final currentTrackDuration = playerService.currentTrackDuration();
-    final position = positionAsync.value ?? Duration.zero;
-    final progress = position.inSeconds == 0 || currentTrackDuration <= 0
-        ? 0.0
-        : position.inSeconds / currentTrackDuration;
-
-    dev.log('[PLAYER_WIDGET] build() called - rendering player widget');
-    dev.log('[PLAYER_WIDGET] Current playing state: $isPlaying');
-    dev.log(
-      '[PLAYER_WIDGET] Current progress: ${(progress * 100).toStringAsFixed(1)}%',
-    );
 
     return Container(
       height: Platform.isIOS ? 220 : 200,
@@ -104,7 +154,6 @@ class Player extends ConsumerWidget {
                                     color: Theme.of(
                                       context,
                                     ).colorScheme.onSurfaceVariant,
-                                    size: 24,
                                   ),
                                 );
                               },
@@ -335,13 +384,8 @@ class Player extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  // Wavy progress bar
-                  WavyProgressBar(
-                    audioPlayer: audioPlayer,
-                    progress: progress,
-                    playerService: playerService,
-                    height: 6.0,
-                  ),
+                  // Progress bar
+                  const ProgressBar(),
                 ],
               ),
             ],

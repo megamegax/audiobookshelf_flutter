@@ -26,7 +26,9 @@ class MobileLayout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final audioPlayer = ref.watch(audioPlayerProvider);
+    final audioSource = ref.watch(
+      audioPlayerProvider.select((state) => state.audioSource),
+    );
 
     return Scaffold(
       appBar: appBar ?? AppBar(title: Text(title), actions: appBarActions),
@@ -38,12 +40,12 @@ class MobileLayout extends ConsumerWidget {
         children: [
           body,
           // Global floating player - visible on all screens when playing
-          if (audioPlayer.audioSource != null)
+          if (audioSource != null)
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: Player(source: audioPlayer.audioSource!),
+              child: Player(source: audioSource),
             ),
         ],
       ),

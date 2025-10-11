@@ -48,4 +48,4 @@ final class PlayerServiceProvider
   }
 }
 
-String _$playerServiceHash() => r'98e526dd3a2a1f4e1b2dcd409659aba4c7324f58';
+String _$playerServiceHash() => r'a488eb0c594da2fbb790bc17317a89d892cb9562';

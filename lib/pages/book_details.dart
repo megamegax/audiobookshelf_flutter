@@ -29,8 +29,8 @@ class BookDetails extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the audio player state
-    final audioPlayerState = ref.watch(audioPlayerProvider);
+    // DON'T watch audioPlayerProvider here - it causes full rebuilds!
+    // Only watch data that actually affects this widget
 
     // Watch the book details data (async)
     final bookDetailsAsync = ref.watch(bookDetailsDataProvider(item.itemId));
@@ -38,92 +38,52 @@ class BookDetails extends ConsumerWidget {
     // Watch the book details UI state
     final bookDetailsUI = ref.watch(bookDetailsUIProvider(item.itemId));
 
-    // Get cover image from cached data
-    Uint8List? coverBytes;
+    // Get cover image from cached data - this is static!
     ImageProvider? coverImageProvider;
-
     if (item.media.coverBytes?.isNotEmpty == true) {
-      coverBytes = Uint8List.fromList(item.media.coverBytes!);
-      coverImageProvider = MemoryImage(coverBytes);
+      coverImageProvider = MemoryImage(
+        Uint8List.fromList(item.media.coverBytes!),
+      );
     }
 
-    return Stack(
-      children: [
-        // Blurred background
-        if (coverImageProvider != null)
-          Positioned.fill(
-            child: Image(image: coverImageProvider, fit: BoxFit.cover),
-          ),
-        if (coverImageProvider != null)
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withOpacity(0.7),
-                      Colors.black.withOpacity(0.3),
-                    ],
-                  ),
-                ),
-              ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 100.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 100), // Space for AppBar
+            // Cover and basic info
+            _buildCoverAndInfo(context, coverImageProvider),
+
+            const SizedBox(height: 24),
+
+            // Action buttons
+            _buildActionButtons(context, ref, bookDetailsAsync),
+
+            const SizedBox(height: 24),
+
+            // Description
+            _buildDescription(context, ref, bookDetailsAsync, bookDetailsUI),
+
+            const SizedBox(height: 24),
+
+            // Progress section
+            _buildProgressSection(
+              context,
+              item.media.progress?.progress ?? 0.0,
             ),
-          ),
 
-        // Main content
-        SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 100.0),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 100), // Space for AppBar
-                // Cover and basic info
-                _buildCoverAndInfo(context, coverImageProvider),
+            const SizedBox(height: 24),
 
-                const SizedBox(height: 24),
+            // Content sections
+            _buildContentSections(context, ref, bookDetailsAsync),
 
-                // Action buttons
-                _buildActionButtons(
-                  context,
-                  ref,
-                  bookDetailsAsync,
-                  audioPlayerState,
-                ),
-
-                const SizedBox(height: 24),
-
-                // Description
-                _buildDescription(
-                  context,
-                  ref,
-                  bookDetailsAsync,
-                  bookDetailsUI,
-                ),
-
-                const SizedBox(height: 24),
-
-                // Progress section
-                _buildProgressSection(
-                  context,
-                  item.media.progress?.progress ?? 0.0,
-                ),
-
-                const SizedBox(height: 24),
-
-                // Content sections
-                _buildContentSections(context, ref, bookDetailsAsync),
-
-                const SizedBox(height: 100), // Space for mini player
-              ],
-            ),
-          ),
+            const SizedBox(height: 100), // Space for mini player
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -304,57 +264,62 @@ class BookDetails extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     AsyncValue<DetailedLibraryItem> bookDetailsAsync,
-    AudioPlayerState audioPlayerState,
   ) {
     return bookDetailsAsync.when(
-      data: (detailedItem) => Row(
-        children: [
-          // Stream/Play button
-          Expanded(
-            child: FilledButton.icon(
-              onPressed: () => _handleStreamPlay(context, ref),
-              icon: Icon(
-                _isCurrentBookPlaying(audioPlayerState)
-                    ? Icons.pause
-                    : Icons.play_arrow,
-              ),
-              label: Text(
-                _isCurrentBookPlaying(audioPlayerState) ? "Pause" : "Stream",
-              ),
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Read button (if ebook available)
-          if (detailedItem.media.ebookFile != null)
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => _handleRead(context, ref, detailedItem),
-                icon: const Icon(Icons.menu_book),
-                label: const Text("Read"),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+      data: (detailedItem) => Consumer(
+        // <-- Use Consumer for localized rebuild
+        builder: (context, ref, child) {
+          // Only THIS button rebuilds when player state changes
+          final audioPlayerState = ref.watch(audioPlayerProvider);
+          final isCurrentBookPlaying = _isCurrentBookPlaying(audioPlayerState);
+
+          return Row(
+            children: [
+              // Stream/Play button
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: () => _handleStreamPlay(context, ref),
+                  icon: Icon(
+                    isCurrentBookPlaying ? Icons.pause : Icons.play_arrow,
+                  ),
+                  label: Text(isCurrentBookPlaying ? "Pause" : "Stream"),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
                 ),
               ),
-            ),
-          if (detailedItem.media.ebookFile != null) const SizedBox(width: 12),
-          // Download button (only if not downloaded)
-          if (!_isBookDownloaded())
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => _handleDownload(context),
-                icon: const Icon(Icons.download),
-                label: const Text("Download"),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+              const SizedBox(width: 12),
+              // Read button (if ebook available)
+              if (detailedItem.media.ebookFile != null)
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _handleRead(context, ref, detailedItem),
+                    icon: const Icon(Icons.menu_book),
+                    label: const Text("Read"),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-        ],
+              if (detailedItem.media.ebookFile != null)
+                const SizedBox(width: 12),
+              // Download button (only if not downloaded)
+              if (!_isBookDownloaded())
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _handleDownload(context),
+                    icon: const Icon(Icons.download),
+                    label: const Text("Download"),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Text('Error: $error'),
@@ -369,7 +334,7 @@ class BookDetails extends ConsumerWidget {
   ) {
     return bookDetailsAsync.when(
       data: (detailedItem) {
-        final description = detailedItem.media.metadata?.description;
+        final description = detailedItem.media.metadata.description;
         if (description == null || description.isEmpty) {
           return const SizedBox.shrink();
         }

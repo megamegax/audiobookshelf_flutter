@@ -38,7 +38,9 @@ class DesktopLayout extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final audioPlayer = ref.watch(audioPlayerProvider);
+    final audioSource = ref.watch(
+      audioPlayerProvider.select((state) => state.audioSource),
+    );
 
     return Scaffold(
       body: Stack(
@@ -88,12 +90,12 @@ class DesktopLayout extends ConsumerWidget {
             ],
           ),
           // Global floating player - visible on all screens when playing
-          if (audioPlayer.audioSource != null)
+          if (audioSource != null)
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: Player(source: audioPlayer.audioSource!),
+              child: Player(source: audioSource),
             ),
         ],
       ),

@@ -8,37 +8,26 @@ part 'player_overlay_notifier.g.dart';
 
 @riverpod
 class PlayerOverlayNotifier extends _$PlayerOverlayNotifier {
+  late PlayerService _playerService;
+
   @override
   PlayerOverlayState build({
     required AudioPlayer audioPlayer,
     required PlayerService playerService,
     required MediaItem mediaItem,
   }) {
-    // Initialize state
-    final initialState = PlayerOverlayState(
-      position: audioPlayer.position,
-      duration: audioPlayer.duration ?? Duration.zero,
-      isPlaying: audioPlayer.playing,
-      isChapterMode: false,
-      progress: _calculateProgress(audioPlayer.position, audioPlayer.duration),
-      chapterProgress: 0.0,
-      currentChapterDuration: Duration.zero,
-    );
+    _playerService = playerService;
+
+    // Initialize state with proper calculations
+    final initialState = _calculateInitialState(audioPlayer);
 
     // Listen to audio player changes
     audioPlayer.positionStream.listen((position) {
-      state = state.copyWith(
-        position: position,
-        progress: _calculateProgress(position, audioPlayer.duration),
-        chapterProgress: _calculateChapterProgress(position),
-      );
+      state = _updateStateFromPosition(position, audioPlayer);
     });
 
     audioPlayer.durationStream.listen((duration) {
-      state = state.copyWith(
-        duration: duration ?? Duration.zero,
-        progress: _calculateProgress(audioPlayer.position, duration),
-      );
+      state = _updateStateFromDuration(duration, audioPlayer);
     });
 
     audioPlayer.playingStream.listen((playing) {
@@ -52,13 +41,66 @@ class PlayerOverlayNotifier extends _$PlayerOverlayNotifier {
     state = state.copyWith(isChapterMode: !state.isChapterMode);
   }
 
-  double _calculateProgress(Duration position, Duration? duration) {
-    if (duration == null || duration.inSeconds == 0) return 0.0;
-    return position.inSeconds / duration.inSeconds;
+  PlayerOverlayState _calculateInitialState(AudioPlayer audioPlayer) {
+    final currentTrack = _playerService.currentTrack();
+    final currentChapterDuration = Duration(
+      seconds: _playerService.currentTrackDuration().round(),
+    );
+    final currentChapterTitle = currentTrack?.title ?? '';
+
+    return PlayerOverlayState(
+      position: audioPlayer.position,
+      duration: audioPlayer.duration ?? Duration.zero,
+      isPlaying: audioPlayer.playing,
+      isChapterMode: false,
+      progress: _calculateFullBookProgress(audioPlayer.position),
+      chapterProgress: _calculateChapterProgress(audioPlayer.position),
+      currentChapterDuration: currentChapterDuration,
+      currentChapterTitle: currentChapterTitle,
+    );
+  }
+
+  PlayerOverlayState _updateStateFromPosition(
+    Duration position,
+    AudioPlayer audioPlayer,
+  ) {
+    final currentTrack = _playerService.currentTrack();
+    final currentChapterTitle = currentTrack?.title ?? '';
+
+    return state.copyWith(
+      position: position,
+      progress: _calculateFullBookProgress(position),
+      chapterProgress: _calculateChapterProgress(position),
+      currentChapterTitle: currentChapterTitle,
+    );
+  }
+
+  PlayerOverlayState _updateStateFromDuration(
+    Duration? duration,
+    AudioPlayer audioPlayer,
+  ) {
+    final currentChapterDuration = Duration(
+      seconds: _playerService.currentTrackDuration().round(),
+    );
+
+    return state.copyWith(
+      duration: duration ?? Duration.zero,
+      currentChapterDuration: currentChapterDuration,
+    );
+  }
+
+  double _calculateFullBookProgress(Duration position) {
+    final totalDuration = _playerService.totalDuration();
+    if (totalDuration <= 0) return 0.0;
+
+    final overallTime = _playerService.overallCurrentTime();
+    return overallTime / totalDuration;
   }
 
   double _calculateChapterProgress(Duration position) {
-    // TODO: Implement chapter progress calculation
-    return 0.0;
+    final currentTrackDuration = _playerService.currentTrackDuration();
+    if (currentTrackDuration <= 0) return 0.0;
+
+    return position.inSeconds / currentTrackDuration;
   }
 }
