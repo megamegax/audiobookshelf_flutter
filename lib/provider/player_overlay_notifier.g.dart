@@ -64,7 +64,7 @@ final class PlayerOverlayNotifierProvider
 }
 
 String _$playerOverlayNotifierHash() =>
-    r'0a31a5bdd4107877ca84343b0dcb6b67130f7bae';
+    r'27971161701786f25d545a29df999d33f679ce53';
 
 final class PlayerOverlayNotifierFamily extends $Family
     with

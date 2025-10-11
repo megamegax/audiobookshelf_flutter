@@ -80,6 +80,34 @@ class Player extends ConsumerWidget {
   final AudioSource source;
   const Player({super.key, required this.source});
 
+  Widget _buildScrollingTitle(BuildContext context, MediaItem mediaItem, PlayerService playerService) {
+    final bookTitle = mediaItem.title;
+    final chapterTitle = playerService.currentChapterTitle();
+    
+    String displayTitle;
+    if (chapterTitle != null && chapterTitle.isNotEmpty && chapterTitle != bookTitle) {
+      displayTitle = '$bookTitle - $chapterTitle';
+    } else {
+      displayTitle = bookTitle;
+    }
+
+    return TextScroll(
+      displayTitle,
+      mode: TextScrollMode.bouncing,
+      velocity: const Velocity(
+        pixelsPerSecond: Offset(100, 0),
+      ),
+      delayBefore: const Duration(seconds: 1),
+      pauseBetween: const Duration(seconds: 1),
+      textAlign: TextAlign.left,
+      selectable: true,
+      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+        color: Theme.of(context).colorScheme.onSurface,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch only the playing state to minimize rebuilds
@@ -87,9 +115,12 @@ class Player extends ConsumerWidget {
       audioPlayerProvider.select((state) => state.isPlaying),
     );
 
-    // Watch position to get updates
+    // Watch position and duration to get updates
     final position = ref.watch(
       audioPlayerProvider.select((state) => state.position),
+    );
+    final duration = ref.watch(
+      audioPlayerProvider.select((state) => state.duration),
     );
 
     // Read other values without watching to avoid constant rebuilds
@@ -189,22 +220,7 @@ class Player extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextScroll(
-                          mediaItem.title,
-                          mode: TextScrollMode.bouncing,
-                          velocity: const Velocity(
-                            pixelsPerSecond: Offset(100, 0),
-                          ),
-                          delayBefore: const Duration(seconds: 1),
-                          pauseBetween: const Duration(seconds: 1),
-                          textAlign: TextAlign.left,
-                          selectable: true,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
+                        _buildScrollingTitle(context, mediaItem, playerService),
                         const SizedBox(height: 2),
                         TextScroll(
                           mediaItem.displayDescription!,
@@ -375,7 +391,7 @@ class Player extends ConsumerWidget {
                       ),
                       const Spacer(),
                       Text(
-                        "-${durationToReadable(Duration(seconds: (playerService.currentTrackDuration() - (position.inSeconds)).round().clamp(0, double.infinity).toInt()))}",
+                        "-${durationToReadable(Duration(seconds: ((duration?.inSeconds ?? 0) - position.inSeconds).round().clamp(0, double.infinity).toInt()))}",
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontFamily: 'monospace',

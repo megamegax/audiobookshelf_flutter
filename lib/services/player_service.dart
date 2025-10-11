@@ -50,7 +50,7 @@ class PlayerState {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 PlayerService playerService(Ref ref) {
   final audioPlayerNotifier = ref.read(audioPlayerProvider.notifier);
   final audioPlayer = audioPlayerNotifier.audioPlayer;
@@ -382,10 +382,12 @@ class PlayerService {
 
   double totalDuration() {
     if (_playbackSession == null) return 0.0;
+
     var total = 0.0;
     for (var at in _playbackSession!.audioTracks) {
       total += (at.duration ?? 0);
     }
+
     return total;
   }
 
@@ -404,6 +406,23 @@ class PlayerService {
   /// Get the duration of the current track/chapter in seconds
   double currentTrackDuration() {
     return currentTrack()?.duration ?? 0.0;
+  }
+
+  /// Get the current chapter title (actual chapter name, not filename)
+  String? currentChapterTitle() {
+    if (_playbackSession == null) return null;
+    
+    final currentTime = overallCurrentTime();
+    
+    // Find the chapter that contains the current time
+    for (final chapter in _playbackSession!.chapters) {
+      if (currentTime >= chapter.start && currentTime < chapter.end) {
+        return chapter.title;
+      }
+    }
+    
+    // Fallback to track title if no chapter found
+    return currentTrack()?.title;
   }
 
   /// Seek to a specific time in the audiobook

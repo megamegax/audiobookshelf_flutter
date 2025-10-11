@@ -42,11 +42,8 @@ class PlayerOverlayNotifier extends _$PlayerOverlayNotifier {
   }
 
   PlayerOverlayState _calculateInitialState(AudioPlayer audioPlayer) {
-    final currentTrack = _playerService.currentTrack();
-    final currentChapterDuration = Duration(
-      seconds: _playerService.currentTrackDuration().round(),
-    );
-    final currentChapterTitle = currentTrack?.title ?? '';
+    final currentChapterDuration = audioPlayer.duration ?? Duration.zero;
+    final currentChapterTitle = _playerService.currentChapterTitle() ?? '';
 
     return PlayerOverlayState(
       position: audioPlayer.position,
@@ -54,7 +51,10 @@ class PlayerOverlayNotifier extends _$PlayerOverlayNotifier {
       isPlaying: audioPlayer.playing,
       isChapterMode: false,
       progress: _calculateFullBookProgress(audioPlayer.position),
-      chapterProgress: _calculateChapterProgress(audioPlayer.position),
+      chapterProgress: _calculateChapterProgress(
+        audioPlayer.position,
+        currentChapterDuration,
+      ),
       currentChapterDuration: currentChapterDuration,
       currentChapterTitle: currentChapterTitle,
     );
@@ -64,13 +64,15 @@ class PlayerOverlayNotifier extends _$PlayerOverlayNotifier {
     Duration position,
     AudioPlayer audioPlayer,
   ) {
-    final currentTrack = _playerService.currentTrack();
-    final currentChapterTitle = currentTrack?.title ?? '';
+    final currentChapterTitle = _playerService.currentChapterTitle() ?? '';
 
     return state.copyWith(
       position: position,
       progress: _calculateFullBookProgress(position),
-      chapterProgress: _calculateChapterProgress(position),
+      chapterProgress: _calculateChapterProgress(
+        position,
+        state.currentChapterDuration,
+      ),
       currentChapterTitle: currentChapterTitle,
     );
   }
@@ -79,9 +81,7 @@ class PlayerOverlayNotifier extends _$PlayerOverlayNotifier {
     Duration? duration,
     AudioPlayer audioPlayer,
   ) {
-    final currentChapterDuration = Duration(
-      seconds: _playerService.currentTrackDuration().round(),
-    );
+    final currentChapterDuration = duration ?? Duration.zero;
 
     return state.copyWith(
       duration: duration ?? Duration.zero,
@@ -94,11 +94,16 @@ class PlayerOverlayNotifier extends _$PlayerOverlayNotifier {
     if (totalDuration <= 0) return 0.0;
 
     final overallTime = _playerService.overallCurrentTime();
-    return overallTime / totalDuration;
+    final progress = overallTime / totalDuration;
+
+    return progress.clamp(0.0, 1.0);
   }
 
-  double _calculateChapterProgress(Duration position) {
-    final currentTrackDuration = _playerService.currentTrackDuration();
+  double _calculateChapterProgress(
+    Duration position,
+    Duration currentChapterDuration,
+  ) {
+    final currentTrackDuration = currentChapterDuration.inSeconds;
     if (currentTrackDuration <= 0) return 0.0;
 
     return position.inSeconds / currentTrackDuration;

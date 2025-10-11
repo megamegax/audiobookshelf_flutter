@@ -21,7 +21,7 @@ final class PlayerServiceProvider
         argument: null,
         retry: null,
         name: r'playerServiceProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -48,4 +48,4 @@ final class PlayerServiceProvider
   }
 }
 
-String _$playerServiceHash() => r'a488eb0c594da2fbb790bc17317a89d892cb9562';
+String _$playerServiceHash() => r'1bbb5ec644b6c69a1c6e5b3bec11146e1563a617';
