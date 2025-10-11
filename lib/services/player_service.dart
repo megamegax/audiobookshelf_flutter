@@ -411,16 +411,16 @@ class PlayerService {
   /// Get the current chapter title (actual chapter name, not filename)
   String? currentChapterTitle() {
     if (_playbackSession == null) return null;
-    
+
     final currentTime = overallCurrentTime();
-    
+
     // Find the chapter that contains the current time
     for (final chapter in _playbackSession!.chapters) {
       if (currentTime >= chapter.start && currentTime < chapter.end) {
         return chapter.title;
       }
     }
-    
+
     // Fallback to track title if no chapter found
     return currentTrack()?.title;
   }

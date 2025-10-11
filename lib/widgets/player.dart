@@ -80,12 +80,18 @@ class Player extends ConsumerWidget {
   final AudioSource source;
   const Player({super.key, required this.source});
 
-  Widget _buildScrollingTitle(BuildContext context, MediaItem mediaItem, PlayerService playerService) {
+  Widget _buildScrollingTitle(
+    BuildContext context,
+    MediaItem mediaItem,
+    PlayerService playerService,
+  ) {
     final bookTitle = mediaItem.title;
     final chapterTitle = playerService.currentChapterTitle();
-    
+
     String displayTitle;
-    if (chapterTitle != null && chapterTitle.isNotEmpty && chapterTitle != bookTitle) {
+    if (chapterTitle != null &&
+        chapterTitle.isNotEmpty &&
+        chapterTitle != bookTitle) {
       displayTitle = '$bookTitle - $chapterTitle';
     } else {
       displayTitle = bookTitle;
@@ -94,9 +100,7 @@ class Player extends ConsumerWidget {
     return TextScroll(
       displayTitle,
       mode: TextScrollMode.bouncing,
-      velocity: const Velocity(
-        pixelsPerSecond: Offset(100, 0),
-      ),
+      velocity: const Velocity(pixelsPerSecond: Offset(100, 0)),
       delayBefore: const Duration(seconds: 1),
       pauseBetween: const Duration(seconds: 1),
       textAlign: TextAlign.left,
